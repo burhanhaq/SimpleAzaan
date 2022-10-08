@@ -10,17 +10,21 @@ import Foundation
 
 
 struct SunShape: View {
+    var filled: Bool
     var body: some View {
         ZStack {
 //            Arc()
 //            Rectangle()
 //                .foregroundColor(Color.blue)
-            Sun()
-                .stroke(lineWidth: 1)
+            if (filled) {
+                Sun()
+            } else {
+                Sun()
+                    .stroke(lineWidth: 1)
+            }
         }
         
             .frame(width: 15, height: 15)
-//        .scaleEffect(x: 0.2, y: 0.2)
     }
 }
 
@@ -40,8 +44,6 @@ struct Sun: Shape {
 //                endAngle: Angle(radians: -pi/6),
 //                clockwise: true)
 //
-////            var xOffset = outerBrokenCircleRadius * sin(pi/2)
-////            var yOffset = outerBrokenCircleRadius * cos(pi/1.3)
 //            path.move(to: CGPoint(x: rect.midX, y: 0))
 //            path.addArc(
 //                center: rectCenter,
@@ -103,6 +105,6 @@ struct Sun: Shape {
 
 struct SunShape_Previews: PreviewProvider {
     static var previews: some View {
-        SunShape()
+        SunShape(filled: false)
     }
 }

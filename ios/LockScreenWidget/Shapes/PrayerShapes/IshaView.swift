@@ -14,7 +14,7 @@ struct IshaView: View {
     
     var body: some View {
         ZStack{
-            MoonShape()
+            MoonShape(filled: true)
             
             Rectangle()
                 .frame(width: 4, height: lineWidth)

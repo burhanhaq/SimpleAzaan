@@ -10,7 +10,7 @@ import SwiftUI
 struct ZuhrView: View {
     var body: some View {
         ZStack {
-            SunShape()
+            SunShape(filled: false)
             SunRays()
                 .stroke(lineWidth: 1)
         }

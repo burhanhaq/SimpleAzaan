@@ -19,6 +19,18 @@
 		01711D7128F0D74900B10A8D /* ZuhrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51BB28F0C363008C4947 /* ZuhrView.swift */; };
 		01711D7228F0D75000B10A8D /* SunShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B828F0B658008C4947 /* SunShape.swift */; };
 		01711D7328F0D75300B10A8D /* MoonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51AB28EF2E66008C4947 /* MoonShape.swift */; };
+		01EE5C3228F0E21400A262D0 /* AsrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3128F0E21400A262D0 /* AsrView.swift */; };
+		01EE5C3328F0E21400A262D0 /* AsrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3128F0E21400A262D0 /* AsrView.swift */; };
+		01EE5C3528F0FD9800A262D0 /* MaghribView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3428F0FD9800A262D0 /* MaghribView.swift */; };
+		01EE5C3628F0FD9800A262D0 /* MaghribView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3428F0FD9800A262D0 /* MaghribView.swift */; };
+		01EE5C3828F101E200A262D0 /* FajrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3728F101E200A262D0 /* FajrView.swift */; };
+		01EE5C3928F101E200A262D0 /* FajrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3728F101E200A262D0 /* FajrView.swift */; };
+		01EE5C3B28F1023C00A262D0 /* StarShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3A28F1023C00A262D0 /* StarShape.swift */; };
+		01EE5C3C28F1023C00A262D0 /* StarShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3A28F1023C00A262D0 /* StarShape.swift */; };
+		01EE5C3E28F12D0000A262D0 /* SunriseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3D28F12D0000A262D0 /* SunriseView.swift */; };
+		01EE5C3F28F12D0000A262D0 /* SunriseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3D28F12D0000A262D0 /* SunriseView.swift */; };
+		01EE5C4128F1CC9A00A262D0 /* PrayerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C4028F1CC9A00A262D0 /* PrayerEnum.swift */; };
+		01EE5C4228F1CC9A00A262D0 /* PrayerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C4028F1CC9A00A262D0 /* PrayerEnum.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -74,6 +86,12 @@
 		01DC51B828F0B658008C4947 /* SunShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunShape.swift; sourceTree = "<group>"; };
 		01DC51BB28F0C363008C4947 /* ZuhrView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZuhrView.swift; sourceTree = "<group>"; };
 		01EE5C3028F0D8DB00A262D0 /* LockScreenWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LockScreenWidgetExtension.entitlements; sourceTree = "<group>"; };
+		01EE5C3128F0E21400A262D0 /* AsrView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsrView.swift; sourceTree = "<group>"; };
+		01EE5C3428F0FD9800A262D0 /* MaghribView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaghribView.swift; sourceTree = "<group>"; };
+		01EE5C3728F101E200A262D0 /* FajrView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FajrView.swift; sourceTree = "<group>"; };
+		01EE5C3A28F1023C00A262D0 /* StarShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarShape.swift; sourceTree = "<group>"; };
+		01EE5C3D28F12D0000A262D0 /* SunriseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunriseView.swift; sourceTree = "<group>"; };
+		01EE5C4028F1CC9A00A262D0 /* PrayerEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEnum.swift; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -114,6 +132,7 @@
 			children = (
 				01DC51AE28EFAAF7008C4947 /* Shapes */,
 				01711D6128F0D60300B10A8D /* LockScreenWidget.swift */,
+				01EE5C4028F1CC9A00A262D0 /* PrayerEnum.swift */,
 				01711D6328F0D60400B10A8D /* Assets.xcassets */,
 				01711D6528F0D60400B10A8D /* Info.plist */,
 			);
@@ -134,6 +153,7 @@
 			children = (
 				01DC51AF28EFB09D008C4947 /* PrayerShapes */,
 				01DC51AB28EF2E66008C4947 /* MoonShape.swift */,
+				01EE5C3A28F1023C00A262D0 /* StarShape.swift */,
 				01DC51B828F0B658008C4947 /* SunShape.swift */,
 			);
 			path = Shapes;
@@ -143,7 +163,11 @@
 			isa = PBXGroup;
 			children = (
 				01DC51B028EFB0B4008C4947 /* IshaView.swift */,
+				01EE5C3428F0FD9800A262D0 /* MaghribView.swift */,
+				01EE5C3728F101E200A262D0 /* FajrView.swift */,
 				01DC51BB28F0C363008C4947 /* ZuhrView.swift */,
+				01EE5C3128F0E21400A262D0 /* AsrView.swift */,
+				01EE5C3D28F12D0000A262D0 /* SunriseView.swift */,
 			);
 			path = PrayerShapes;
 			sourceTree = "<group>";
@@ -336,9 +360,15 @@
 			files = (
 				01711D6F28F0D6CB00B10A8D /* MoonShape.swift in Sources */,
 				01711D6228F0D60300B10A8D /* LockScreenWidget.swift in Sources */,
+				01EE5C3C28F1023C00A262D0 /* StarShape.swift in Sources */,
 				01711D6D28F0D6C600B10A8D /* ZuhrView.swift in Sources */,
+				01EE5C3328F0E21400A262D0 /* AsrView.swift in Sources */,
+				01EE5C4228F1CC9A00A262D0 /* PrayerEnum.swift in Sources */,
+				01EE5C3628F0FD9800A262D0 /* MaghribView.swift in Sources */,
+				01EE5C3F28F12D0000A262D0 /* SunriseView.swift in Sources */,
 				01711D7028F0D6CF00B10A8D /* SunShape.swift in Sources */,
 				01711D6E28F0D6C900B10A8D /* IshaView.swift in Sources */,
+				01EE5C3928F101E200A262D0 /* FajrView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,9 +378,15 @@
 			files = (
 				01711D7328F0D75300B10A8D /* MoonShape.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				01EE5C3B28F1023C00A262D0 /* StarShape.swift in Sources */,
 				01711D7128F0D74900B10A8D /* ZuhrView.swift in Sources */,
+				01EE5C3228F0E21400A262D0 /* AsrView.swift in Sources */,
+				01EE5C4128F1CC9A00A262D0 /* PrayerEnum.swift in Sources */,
+				01EE5C3528F0FD9800A262D0 /* MaghribView.swift in Sources */,
+				01EE5C3E28F12D0000A262D0 /* SunriseView.swift in Sources */,
 				01711D7228F0D75000B10A8D /* SunShape.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				01EE5C3828F101E200A262D0 /* FajrView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

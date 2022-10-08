@@ -9,23 +9,23 @@ import SwiftUI
 import Foundation
 
 struct MoonShape: View {
+    var filled: Bool
     var body: some View {
         ZStack {
-//            Arc()
-//            Rectangle()
-//                .foregroundColor(Color.blue)
-            Arc()
-                .stroke(lineWidth: 1)
+            if (filled) {
+                Arc()
+            } else {
+                Arc()
+                    .stroke(lineWidth: 1)
+            }
         }
-        
-            .frame(width: 15, height: 15)
-//        .scaleEffect(x: 0.2, y: 0.2)
+        .frame(width: 15, height: 15)
     }
 }
 
 struct MoonShape_Previews: PreviewProvider {
     static var previews: some View {
-        MoonShape()
+        MoonShape(filled: true)
     }
 }
 
@@ -54,12 +54,10 @@ struct Arc: Shape {
             let pi = Double.pi
             let r = rect.height / 2.6
             let firstAngle: Double = pi / 1.7
-            let secondAngle: Double = pi / 1.1
+            let secondAngle: Double = pi / 0.95
             let xOffset: CGFloat = r * sin(CGFloat(firstAngle - pi/2))
             let yOffset: CGFloat = r * cos(CGFloat(firstAngle - pi/2))
-            
-//            let a = 5.19615
-//            let b = 3.0
+
             path.move(to: CGPoint(x: rect.midX - xOffset, y: rect.midY + yOffset))
             path.addArc(
                 center: CGPoint(x: rect.midX, y: rect.midY),
