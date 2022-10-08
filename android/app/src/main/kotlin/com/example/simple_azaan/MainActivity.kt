@@ -1,4 +1,4 @@
-package com.example.simple_azaan
+package com.simple_azaan
 
 import io.flutter.embedding.android.FlutterActivity
 

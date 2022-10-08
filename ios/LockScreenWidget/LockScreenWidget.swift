@@ -50,9 +50,13 @@ struct LockScreenWidgetEntryView : View {
 //    var config: PrayerConfig
 
     var body: some View {
+        
+        let data = UserDefaults.init(suiteName:"group.com.simpleAzaan")
+        let m: Int = Int((data?.string(forKey: "id"))!)!
+        
         let hour = Calendar.current.component(.hour, from: entry.date)
         let minute = Calendar.current.component(.minute, from: entry.date)
-        let timeString: String = String(format: "%02d:%02d", hour, minute)
+        let timeString: String = String(format: "%02d:%02d", hour, minute+m)
         
         ZStack{
             Circle()
@@ -90,8 +94,8 @@ struct PrayerView: View {
             MaghribView()
         case Prayer.ISHA:
             IshaView()
-        default:
-            SunShape(filled: false)
+        //default:
+        //    SunShape(filled: false)
         }
     }
 }
