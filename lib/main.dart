@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-// import 'package:home_widget/home_widget.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,24 +37,45 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // HomeWidget.setAppGroupId('group.com.simpleAzaan');
+    HomeWidget.setAppGroupId('group.com.simpleAzaan');
   }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
-      // HomeWidget.saveWidgetData<String>('id', _counter.toString());
-      // HomeWidget.updateWidget(
-      //   name: 'LockScreenWidget',
-      //   // androidName: 'HomeWidgetExampleProvider',
-      //   iOSName: 'LockScreenWidget',
-      //   // qualifiedAndroidName: 'com.app.HomeWidgetExampleProvider',
-      // );
     });
+    HomeWidget.saveWidgetData<String>('id', _counter.toString());
+    HomeWidget.updateWidget(
+      name: 'LockScreenWidgetProvider',
+      // androidName: 'HomeWidgetExampleProvider',
+      iOSName: 'LockScreenWidget',
+      // qualifiedAndroidName: 'com.app.HomeWidgetExampleProvider',
+    );
+
+    WidgetKit.setItem(
+        'widgetData',
+        jsonEncode(FlutterWidgetData(_counter.toString())),
+        'group.com.simpleAzaan');
+    WidgetKit.reloadAllTimelines();
   }
 
   @override
   Widget build(BuildContext context) {
+    var data = "No data yet";
+    HomeWidget.getWidgetData<String>('id', defaultValue: 'default')
+        .then((value) {
+      print('inside method, right before assigning it');
+      data = value ?? 'No value found';
+      print('inside method, right after assigning it. data: $data');
+    });
+    print('data: $data');
+
+    Future<dynamic> x =
+        WidgetKit.getItem('widgetData', 'group.com.simpleAzaan');
+    x.then(((value) {
+      print('value: $value');
+    }));
+    print('x: $x');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -77,4 +101,16 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class FlutterWidgetData {
+  final String text;
+
+  FlutterWidgetData(this.text);
+
+  FlutterWidgetData.fromJson(Map<String, dynamic> json) : text = json['text'];
+
+  Map<String, dynamic> toJson() => {
+        'text': text,
+      };
 }
