@@ -10,14 +10,14 @@ import SwiftUI
 struct ZuhrView: View {
     var body: some View {
         ZStack {
-            SunShape(filled: false)
-            SunRays()
+            SunShape(filled: true)
+            ZuhrSunRays()
                 .stroke(lineWidth: 1)
         }
     }
 }
 
-struct SunRays: Shape {
+struct ZuhrSunRays: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
 //            let rectCenter = CGPoint(x: rect.midX, y: rect.midY)

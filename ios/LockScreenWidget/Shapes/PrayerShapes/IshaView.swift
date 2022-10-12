@@ -10,12 +10,19 @@ import WidgetKit
 import Intents
 
 struct IshaView: View {
-    let lineWidth: CGFloat = 1
     
     var body: some View {
         ZStack{
             MoonShape(filled: true)
-            
+//            IshaLines()
+        }
+    }
+}
+
+struct IshaLines: View {
+    let lineWidth: CGFloat = 1
+    var body: some View {
+        ZStack {
             Rectangle()
                 .frame(width: 4, height: lineWidth)
                 .offset(CGSize(width: 0, height: -5))

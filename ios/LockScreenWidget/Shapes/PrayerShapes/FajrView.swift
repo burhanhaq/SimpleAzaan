@@ -13,8 +13,8 @@ struct FajrView: View {
             MoonShape(filled: false)
             StarShape()
                 .offset(CGSize(width: 5, height: -5))
-            MoonLines()
-                .stroke()
+//            MoonLines()
+//                .stroke()
         }
 //        .frame(width: 15, height: 15)
 //        .overlay (alignment: .topTrailing) {

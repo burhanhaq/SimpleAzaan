@@ -23,8 +23,7 @@ struct SunShape: View {
                     .stroke(lineWidth: 1)
             }
         }
-        
-            .frame(width: 15, height: 15)
+        .frame(width: 15, height: 15)
     }
 }
 
