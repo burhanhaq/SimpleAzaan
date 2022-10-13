@@ -1,5 +1,5 @@
 name: simple_azaan
-description: A new Flutter project.
+description: A simple prayer times app
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -32,8 +32,9 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  home_widget: ^0.1.6
+  # home_widget: ^0.1.6
   flutter_widgetkit: ^1.0.3
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

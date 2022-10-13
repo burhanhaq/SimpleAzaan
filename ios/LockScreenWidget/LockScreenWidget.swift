@@ -11,11 +11,13 @@ import os
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> PrayerEntry {
-        PrayerEntry(date: Date(), prayer: Prayer.ZUHR)
+        let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        return PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (PrayerEntry) -> ()) {
-        let entry = PrayerEntry(date: Date(), prayer: Prayer.ZUHR)
+        let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        let entry = PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
         completion(entry)
     }
 
@@ -48,22 +50,58 @@ struct Provider: TimelineProvider {
 //        let dateFormatter = DateFormatter()
 //        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:SSxxxxx"
         let times = [
+            isoDateFormatter.date(from: prayerData!.time6),
             isoDateFormatter.date(from: prayerData!.time1),
             isoDateFormatter.date(from: prayerData!.time2),
             isoDateFormatter.date(from: prayerData!.time3),
             isoDateFormatter.date(from: prayerData!.time4),
             isoDateFormatter.date(from: prayerData!.time5),
-            isoDateFormatter.date(from: prayerData!.time6),
+        ]
+        
+        let prayers = [
+            PrayerConfig(
+                prayerType: Prayer.FAJR,
+                timePrayerStarts: isoDateFormatter.date(from: prayerData!.time1)!,
+                timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time6)!
+            ),
+            PrayerConfig(
+                prayerType: Prayer.SUNRISE,
+                timePrayerStarts: isoDateFormatter.date(from: prayerData!.time2)!,
+                timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time1)!
+            ),
+            PrayerConfig(
+                prayerType: Prayer.ZUHR,
+                timePrayerStarts: isoDateFormatter.date(from: prayerData!.time3)!,
+                timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time2)!
+            ),
+            PrayerConfig(
+                prayerType: Prayer.ASR,
+                timePrayerStarts: isoDateFormatter.date(from: prayerData!.time4)!,
+                timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time3)!
+            ),
+            PrayerConfig(
+                prayerType: Prayer.MAGHRIB,
+                timePrayerStarts: isoDateFormatter.date(from: prayerData!.time5)!,
+                timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time4)!
+            ),
+            PrayerConfig(
+                prayerType: Prayer.ISHA,
+                timePrayerStarts: isoDateFormatter.date(from: prayerData!.time6)!,
+                timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time5)!
+            )
         ]
         
 //        let data = UserDefaults.init(suiteName:"group.com.simpleAzaan")
 //        let m: Int = Int((data?.string(forKey: "id"))!)!
 
 //        let currentDate = Date()
-        for i in 1...6 {
+        for pc in prayers {
 //            let entryDate = Calendar.current.date(byAdding: .second, value: i * 2, to: currentDate)!
-            let entry = PrayerEntry(date: times[i - 1]!, prayer: Prayer(rawValue: 1)!)
-                entries.append(entry)
+            let entry = PrayerEntry(
+                date: pc.timeToShowPrayerIcon,
+                prayerConfig: pc
+            )
+            entries.append(entry)
         }
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
@@ -73,7 +111,7 @@ struct Provider: TimelineProvider {
 
 struct PrayerEntry: TimelineEntry {
     let date: Date
-    let prayer: Prayer
+    let prayerConfig: PrayerConfig
 }
 
 struct LockScreenWidgetEntryView : View {
@@ -97,11 +135,11 @@ struct LockScreenWidgetEntryView : View {
 //        PrayerDataView
 //            let _ = print(3)
 //        }
-        
+        let dateToShow = entry.prayerConfig.timePrayerStarts
         switch (widgetFamily) {
         case .accessoryCircular:
-            let hour = Calendar.current.component(.hour, from: entry.date)
-            let minute = Calendar.current.component(.minute, from: entry.date)
+            let hour = Calendar.current.component(.hour, from: dateToShow)
+            let minute = Calendar.current.component(.minute, from: dateToShow)
             let timeString: String = String(format: "%02d:%02d", hour, minute)
 
             ZStack{
@@ -129,7 +167,7 @@ struct LockScreenWidgetEntryView : View {
 struct PrayerView: View {
     var entry: PrayerEntry
     var body: some View {
-        switch (entry.prayer) {
+        switch (entry.prayerConfig.prayerType) {
         case Prayer.FAJR:
             FajrView()
         case Prayer.SUNRISE:
@@ -164,10 +202,11 @@ struct LockScreenWidget: Widget {
 
 struct LockScreenWidget_Previews: PreviewProvider {
     static var previews: some View {
-        LockScreenWidgetEntryView(entry: PrayerEntry(date: Date(), prayer: Prayer.ZUHR))
+        let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
-        LockScreenWidgetEntryView(entry: PrayerEntry(date: Date(), prayer: Prayer.ZUHR))
+        LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Inline")
 //        LockScreenWidgetEntryView(entry: SimpleEntry(date: Date(), prayer: Prayer.ZUHR))
@@ -175,13 +214,4 @@ struct LockScreenWidget_Previews: PreviewProvider {
 //            .previewDisplayName("Rectangular")
         
     }
-}
-
-struct PrayerData: Decodable, Hashable {
-    let time1: String
-    let time2: String
-    let time3: String
-    let time4: String
-    let time5: String
-    let time6: String
 }
