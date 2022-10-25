@@ -6,6 +6,7 @@ import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 
 import 'package:simple_azaan/prayer_data.dart';
 import 'package:simple_azaan/aladhan_api.dart';
+import 'package:simple_azaan/constants.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     // HomeWidget.setAppGroupId('group.com.simpleAzaan');
+    getPrayerTimeFromStorage();
   }
 
   void _updatePrayerTime() {
@@ -89,7 +91,26 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       WidgetKit.reloadAllTimelines();
     });
+    setState(() {
+      lastUpdated = DateTime.now();
+    });
   }
+
+  PrayerData? pd;
+  void getPrayerTimeFromStorage() async {
+    Future<dynamic> jsonPrayerData = WidgetKit.getItem(kPrayerKey, kGroup);
+    PrayerData pd2 = await jsonPrayerData.then((value) {
+      print(jsonDecode(value));
+      return PrayerData.fromJson(jsonDecode(value));
+    });
+    setState(() {
+      pd = pd2;
+      // lastUpdated = DateTime.now();
+    });
+    // return pd;
+  }
+
+  // getPrayerTimeFromStorage().then((value) => pd = value);
 
   @override
   Widget build(BuildContext context) {
@@ -120,11 +141,54 @@ class _MyHomePageState extends State<MyHomePage> {
               'Last updated:',
             ),
             Text(
-              '${DateTime.now()}',
+              '$lastUpdated',
               style: Theme.of(context).textTheme.headline4,
             ),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Text('Fajr'),
+                    Text(pd == null ? "" : pd!.getTimeString(pd!.time1)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Sunrise'),
+                    Text(pd == null ? "" : pd!.getTimeString(pd!.time2)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Zuhr'),
+                    Text(pd == null ? "" : pd!.getTimeString(pd!.time3)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Asr'),
+                    Text(pd == null ? "" : pd!.getTimeString(pd!.time4)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Maghrib'),
+                    Text(pd == null ? "" : pd!.getTimeString(pd!.time5)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text('Isha'),
+                    Text(pd == null ? "" : pd!.getTimeString(pd!.time6)),
+                  ],
+                ),
+              ],
+            ),
             FloatingActionButton(
-              onPressed: _updatePrayerTime,
+              onPressed: () {
+                _updatePrayerTime();
+                getPrayerTimeFromStorage();
+              },
               tooltip: 'Update',
               child: const Icon(Icons.update),
             ),

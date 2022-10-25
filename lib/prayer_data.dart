@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class PrayerData {
   final DateTime time1;
   final DateTime time2;
@@ -15,6 +17,11 @@ class PrayerData {
     this.time6,
   );
 
+  String getTimeString(DateTime t) {
+    String formattedDate = DateFormat('kk:mm').format(t);
+    return formattedDate;
+  }
+
   PrayerData.fromAlAdhanApi(Map<String, dynamic> json)
       : time1 = DateTime.parse(json['data']['timings']['Fajr']).toLocal(),
         time2 = DateTime.parse(json['data']['timings']['Sunrise']).toLocal(),
@@ -24,12 +31,12 @@ class PrayerData {
         time6 = DateTime.parse(json['data']['timings']['Isha']).toLocal();
 
   PrayerData.fromJson(Map<String, dynamic> json)
-      : time1 = json['time1'],
-        time2 = json['time2'],
-        time3 = json['time3'],
-        time4 = json['time4'],
-        time5 = json['time5'],
-        time6 = json['time6'];
+      : time1 = DateTime.parse(json['time1']),
+        time2 = DateTime.parse(json['time2']),
+        time3 = DateTime.parse(json['time3']),
+        time4 = DateTime.parse(json['time4']),
+        time5 = DateTime.parse(json['time5']),
+        time6 = DateTime.parse(json['time6']);
 
   Map<String, dynamic> toJson() => {
         'time1': time1.toIso8601String(),

@@ -39,24 +39,12 @@ struct Provider: TimelineProvider {
             }
         }
         
-        
         let isoDateFormatter = ISO8601DateFormatter()
         isoDateFormatter.formatOptions = [
             .withFullDate,
             .withTime,
             .withColonSeparatorInTime]
         isoDateFormatter.timeZone = TimeZone.current
-//        isoDateFormatter.date(from: <#T##String#>)
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:SSxxxxx"
-        let times = [
-            isoDateFormatter.date(from: prayerData!.time6),
-            isoDateFormatter.date(from: prayerData!.time1),
-            isoDateFormatter.date(from: prayerData!.time2),
-            isoDateFormatter.date(from: prayerData!.time3),
-            isoDateFormatter.date(from: prayerData!.time4),
-            isoDateFormatter.date(from: prayerData!.time5),
-        ]
         
         let prayers = [
             PrayerConfig(
@@ -94,9 +82,7 @@ struct Provider: TimelineProvider {
 //        let data = UserDefaults.init(suiteName:"group.com.simpleAzaan")
 //        let m: Int = Int((data?.string(forKey: "id"))!)!
 
-//        let currentDate = Date()
         for pc in prayers {
-//            let entryDate = Calendar.current.date(byAdding: .second, value: i * 2, to: currentDate)!
             let entry = PrayerEntry(
                 date: pc.timeToShowPrayerIcon,
                 prayerConfig: pc
@@ -114,52 +100,74 @@ struct PrayerEntry: TimelineEntry {
     let prayerConfig: PrayerConfig
 }
 
+func getTimeString(entry: PrayerEntry) -> String{
+    let dateToShow = entry.prayerConfig.timePrayerStarts
+    let hour = Calendar.current.component(.hour, from: dateToShow)
+    let minute = Calendar.current.component(.minute, from: dateToShow)
+    let timeString: String = String(format: "%02d:%02d", hour, minute)
+    
+    return timeString
+}
+
 struct LockScreenWidgetEntryView : View {
     var entry: PrayerEntry
     @Environment(\.widgetFamily) var widgetFamily
-    
-//    private var PrayerDataView: some View {
-//        Text(entry.date, style: .time)
-//    }
-//
-//    private var NoDataView: some View {
-//      Text("No Data found! Go to the Flutter App")
-//    }
-    
-//    var config: PrayerConfig
 
     var body: some View {
-//        if(entry.prayerData == nil) {
-//            NoDataView
-//        } else {
-//        PrayerDataView
-//            let _ = print(3)
-//        }
-        let dateToShow = entry.prayerConfig.timePrayerStarts
+//        let dateToShow = entry.prayerConfig.timePrayerStarts
+//        let hour = Calendar.current.component(.hour, from: dateToShow)
+//        let minute = Calendar.current.component(.minute, from: dateToShow)
+//        let timeString: String = String(format: "%02d:%02d", hour, minute)
+        
         switch (widgetFamily) {
         case .accessoryCircular:
-            let hour = Calendar.current.component(.hour, from: dateToShow)
-            let minute = Calendar.current.component(.minute, from: dateToShow)
-            let timeString: String = String(format: "%02d:%02d", hour, minute)
+            CircularWidget(entry: entry)
+        case .accessoryInline:
+            InlineWidget(entry: entry)
+        default:
+            Text(entry.date, style: .time)
+        }
+    }
+}
 
-            ZStack{
-                Circle()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(.gray)
-                    .blur(radius: 20)
-                    .opacity(0.7)
-    // .foregroundColor(Color.init(.sRGB, red: 0.89, green: 0.89, blue: 0.89, opacity: 0.75))
+struct InlineWidget: View {
+    let entry: PrayerEntry
+    var body: some View {
+        let timeString: String = getTimeString(entry: entry)
+        HStack {
+//            CircularWidget(entry: entry)
+            
+//            PrayerView(entry: entry)
+//            MoonShape(filled: true)
+//                .frame(width: 5, height: 5)
+            Text("\(entry.prayerConfig.prayerType) \(timeString)" as String)
+        }
+    }
+}
+
+struct CircularWidget: View {
+    let entry: PrayerEntry
+    var body: some View {
+        let timeString: String = getTimeString(entry: entry)
+        ZStack{
+            Circle()
+                .frame(width: 60, height: 60)
+                .foregroundColor(.gray)
+                .blur(radius: 20)
+                .opacity(0.7)
+            // .foregroundColor(Color.init(.sRGB, red: 0.89, green: 0.89, blue: 0.89, opacity: 0.75))
+            
+//            if (entry.prayerConfig.prayerType == Prayer.MOSQUE) {
+//                MosqueShape()
+//            } else {
                 VStack(spacing: 2){
                     PrayerView(entry: entry)
                         .frame(width: 15, height: 15)
-    //                Rectangle()
-    //                    .frame(width: 25, height: 1)
+//                    Text("\(entry.prayerConfig.prayerType.rawValue)")
                     Text(timeString)
                         .font(.system(size: 14))
                 }
-            }
-        default:
-            Text(entry.date, style: .time)
+//            }
         }
     }
 }
@@ -203,15 +211,13 @@ struct LockScreenWidget: Widget {
 struct LockScreenWidget_Previews: PreviewProvider {
     static var previews: some View {
         let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        
         LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
         LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Inline")
-//        LockScreenWidgetEntryView(entry: SimpleEntry(date: Date(), prayer: Prayer.ZUHR))
-//            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
-//            .previewDisplayName("Rectangular")
         
     }
 }
