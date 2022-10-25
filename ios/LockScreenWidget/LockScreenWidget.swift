@@ -11,12 +11,12 @@ import os
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> PrayerEntry {
-        let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        let pc = PrayerConfig(prayerType: Prayer.Zuhr, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
         return PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (PrayerEntry) -> ()) {
-        let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        let pc = PrayerConfig(prayerType: Prayer.Zuhr, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
         let entry = PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
         completion(entry)
     }
@@ -48,32 +48,32 @@ struct Provider: TimelineProvider {
         
         let prayers = [
             PrayerConfig(
-                prayerType: Prayer.FAJR,
+                prayerType: Prayer.Fajr,
                 timePrayerStarts: isoDateFormatter.date(from: prayerData!.time1)!,
                 timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time6)!
             ),
             PrayerConfig(
-                prayerType: Prayer.SUNRISE,
+                prayerType: Prayer.Sunrise,
                 timePrayerStarts: isoDateFormatter.date(from: prayerData!.time2)!,
                 timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time1)!
             ),
             PrayerConfig(
-                prayerType: Prayer.ZUHR,
+                prayerType: Prayer.Zuhr,
                 timePrayerStarts: isoDateFormatter.date(from: prayerData!.time3)!,
                 timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time2)!
             ),
             PrayerConfig(
-                prayerType: Prayer.ASR,
+                prayerType: Prayer.Asr,
                 timePrayerStarts: isoDateFormatter.date(from: prayerData!.time4)!,
                 timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time3)!
             ),
             PrayerConfig(
-                prayerType: Prayer.MAGHRIB,
+                prayerType: Prayer.Maghrib,
                 timePrayerStarts: isoDateFormatter.date(from: prayerData!.time5)!,
                 timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time4)!
             ),
             PrayerConfig(
-                prayerType: Prayer.ISHA,
+                prayerType: Prayer.Isha,
                 timePrayerStarts: isoDateFormatter.date(from: prayerData!.time6)!,
                 timeToShowPrayerIcon: isoDateFormatter.date(from: prayerData!.time5)!
             )
@@ -176,17 +176,17 @@ struct PrayerView: View {
     var entry: PrayerEntry
     var body: some View {
         switch (entry.prayerConfig.prayerType) {
-        case Prayer.FAJR:
+        case Prayer.Fajr:
             FajrView()
-        case Prayer.SUNRISE:
+        case Prayer.Sunrise:
             SunriseView()
-        case Prayer.ZUHR:
+        case Prayer.Zuhr:
             ZuhrView()
-        case Prayer.ASR:
+        case Prayer.Asr:
             AsrView()
-        case Prayer.MAGHRIB:
+        case Prayer.Maghrib:
             MaghribView()
-        case Prayer.ISHA:
+        case Prayer.Isha:
             IshaView()
         //default:
         //    SunShape(filled: false)
@@ -210,7 +210,7 @@ struct LockScreenWidget: Widget {
 
 struct LockScreenWidget_Previews: PreviewProvider {
     static var previews: some View {
-        let pc = PrayerConfig(prayerType: Prayer.ZUHR, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        let pc = PrayerConfig(prayerType: Prayer.Zuhr, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
         
         LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))

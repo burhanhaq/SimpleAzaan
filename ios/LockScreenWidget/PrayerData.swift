@@ -14,12 +14,12 @@ struct PrayerConfig {
 }
 
 enum Prayer: Int {
-    case FAJR = 1
-    case SUNRISE = 2
-    case ZUHR = 3
-    case ASR = 4
-    case MAGHRIB = 5
-    case ISHA = 6
+    case Fajr = 1
+    case Sunrise = 2
+    case Zuhr = 3
+    case Asr = 4
+    case Maghrib = 5
+    case Isha = 6
 }
 
 struct PrayerData: Decodable, Hashable {
