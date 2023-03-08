@@ -9,6 +9,7 @@ import 'package:simple_azaan/aladhan_api.dart';
 import 'package:simple_azaan/constants.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -41,22 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // HomeWidget.setAppGroupId('group.com.simpleAzaan');
     getPrayerTimeFromStorage();
   }
 
   void _updatePrayerTime() {
-    // setState(() {
-    //   _counter++;
-    // });
-    // HomeWidget.saveWidgetData<String>('id', _counter.toString());
-    // HomeWidget.updateWidget(
-    //   name: 'LockScreenWidgetProvider',
-    //   // androidName: 'HomeWidgetExampleProvider',
-    //   iOSName: 'LockScreenWidget',
-    //   // qualifiedAndroidName: 'com.app.HomeWidgetExampleProvider',
-    // );
-
     AlAdhanApi api = AlAdhanApi();
     Future<dynamic> x = api.getPrayerTimeToday();
     x.then((value) {
@@ -89,6 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
         jsonEncode(pd),
         'group.com.simpleAzaan',
       );
+      // Shouldn't be required for lock screen widgets
+      // Still required for in-app time
       WidgetKit.reloadAllTimelines();
     });
     setState(() {
@@ -114,19 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // var data = "No data yet";
-    // HomeWidget.getWidgetData<String>('id', defaultValue: 'default')
-    //     .then((value) {
-    //   print('inside method, right before assigning it');
-    //   data = value ?? 'No value found';
-    //   print('inside method, right after assigning it. data: $data');
-    // });
-
-    // Future<dynamic> x =
-    //     WidgetKit.getItem('widgetData', 'group.com.simpleAzaan');
-    // x.then(((value) {
-    //   print('value: $value');
-    // }));
     _updatePrayerTime();
 
     return Scaffold(

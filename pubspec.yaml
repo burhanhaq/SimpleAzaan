@@ -36,7 +36,7 @@ dependencies:
   flutter_widgetkit: ^1.0.3
   http: ^0.13.5
   workmanager: ^0.5.1
-  intl: ^0.17.0
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
