@@ -19,6 +19,9 @@
 		01711D7128F0D74900B10A8D /* ZuhrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51BB28F0C363008C4947 /* ZuhrView.swift */; };
 		01711D7228F0D75000B10A8D /* SunShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B828F0B658008C4947 /* SunShape.swift */; };
 		01711D7328F0D75300B10A8D /* MoonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51AB28EF2E66008C4947 /* MoonShape.swift */; };
+		01D1B92529BCE15B00B03EC8 /* PrayerEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92429BCE15B00B03EC8 /* PrayerEntry.swift */; };
+		01D1B92729BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92629BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift */; };
+		01D1B92B29BCE46700B03EC8 /* TimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92A29BCE46700B03EC8 /* TimelineProvider.swift */; };
 		01EE5C3228F0E21400A262D0 /* AsrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3128F0E21400A262D0 /* AsrView.swift */; };
 		01EE5C3328F0E21400A262D0 /* AsrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3128F0E21400A262D0 /* AsrView.swift */; };
 		01EE5C3528F0FD9800A262D0 /* MaghribView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3428F0FD9800A262D0 /* MaghribView.swift */; };
@@ -81,6 +84,9 @@
 		01711D6128F0D60300B10A8D /* LockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidget.swift; sourceTree = "<group>"; };
 		01711D6328F0D60400B10A8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01711D6528F0D60400B10A8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01D1B92429BCE15B00B03EC8 /* PrayerEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEntry.swift; sourceTree = "<group>"; };
+		01D1B92629BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgetEntryView.swift; sourceTree = "<group>"; };
+		01D1B92A29BCE46700B03EC8 /* TimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineProvider.swift; sourceTree = "<group>"; };
 		01DC519328E74A20008C4947 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		01DC519528E74A20008C4947 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		01DC51AB28EF2E66008C4947 /* MoonShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonShape.swift; sourceTree = "<group>"; };
@@ -141,6 +147,9 @@
 			children = (
 				01DC51AE28EFAAF7008C4947 /* Shapes */,
 				01711D6128F0D60300B10A8D /* LockScreenWidget.swift */,
+				01D1B92629BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift */,
+				01D1B92A29BCE46700B03EC8 /* TimelineProvider.swift */,
+				01D1B92429BCE15B00B03EC8 /* PrayerEntry.swift */,
 				01EE5C4428F88DEF00A262D0 /* PrayerData.swift */,
 				01711D6328F0D60400B10A8D /* Assets.xcassets */,
 				01711D6528F0D60400B10A8D /* Info.plist */,
@@ -444,6 +453,7 @@
 				01711D6F28F0D6CB00B10A8D /* MoonShape.swift in Sources */,
 				01711D6228F0D60300B10A8D /* LockScreenWidget.swift in Sources */,
 				01EE5C3C28F1023C00A262D0 /* StarShape.swift in Sources */,
+				01D1B92B29BCE46700B03EC8 /* TimelineProvider.swift in Sources */,
 				01711D6D28F0D6C600B10A8D /* ZuhrView.swift in Sources */,
 				01EE5C4628F88DEF00A262D0 /* PrayerData.swift in Sources */,
 				01EE5C3328F0E21400A262D0 /* AsrView.swift in Sources */,
@@ -451,8 +461,10 @@
 				01EE5C3F28F12D0000A262D0 /* SunriseView.swift in Sources */,
 				01711D7028F0D6CF00B10A8D /* SunShape.swift in Sources */,
 				01711D6E28F0D6C900B10A8D /* IshaView.swift in Sources */,
+				01D1B92729BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift in Sources */,
 				01EE5C3928F101E200A262D0 /* FajrView.swift in Sources */,
 				01EE5C4928FA677700A262D0 /* MosqueShape.swift in Sources */,
+				01D1B92529BCE15B00B03EC8 /* PrayerEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
