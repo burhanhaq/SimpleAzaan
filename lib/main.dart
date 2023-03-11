@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _updatePrayerTime();
     getPrayerTimeFromStorage();
   }
 
@@ -51,12 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
     x.then((value) {
       // print(value);
       var pd = PrayerData.fromAlAdhanApi(value);
-      print('time1: ${pd.time1}');
-      print('time2: ${pd.time2}');
-      print('time3: ${pd.time3}');
-      print('time4: ${pd.time4}');
-      print('time5: ${pd.time5}');
-      print('time6: ${pd.time6}');
+      // print('time1: ${pd.time1}');
+      // print('time2: ${pd.time2}');
+      // print('time3: ${pd.time3}');
+      // print('time4: ${pd.time4}');
+      // print('time5: ${pd.time5}');
+      // print('time6: ${pd.time6}');
 
       // PrayerData prayerData1 = PrayerData(
       //   // DateTime(2022, 10, 9, 5, 0),
@@ -79,8 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         'group.com.simpleAzaan',
       );
       // Shouldn't be required for lock screen widgets
-      // Still required for in-app time
-      WidgetKit.reloadAllTimelines();
+      // WidgetKit.reloadAllTimelines();
     });
     setState(() {
       lastUpdated = DateTime.now();
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void getPrayerTimeFromStorage() async {
     Future<dynamic> jsonPrayerData = WidgetKit.getItem(kPrayerKey, kGroup);
     PrayerData pd2 = await jsonPrayerData.then((value) {
-      print(jsonDecode(value));
+      // print(jsonDecode(value));
       return PrayerData.fromJson(jsonDecode(value));
     });
     setState(() {
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$lastUpdated',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             Column(
               children: [

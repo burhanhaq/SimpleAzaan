@@ -24,7 +24,7 @@ class AlAdhanApi {
   }
 
   _responseJson(http.Response response) {
-    print(response.statusCode);
+    // print(response.statusCode);
 
     switch (response.statusCode) {
       case 200:
