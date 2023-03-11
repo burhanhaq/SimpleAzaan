@@ -8,6 +8,7 @@
 //
 
 import WidgetKit
+import UserNotifications
 
 struct Provider: TimelineProvider {
     // A placeholder view is a generic visual representation with no specific content.
@@ -29,8 +30,6 @@ struct Provider: TimelineProvider {
 
     // Called after getSnapshot(), to fetch real data
     func getTimeline(in context: Context, completion: @escaping (Timeline<PrayerEntry>) -> ()) {
-        var entries: [PrayerEntry] = []
-        
         let isoDateFormatter = ISO8601DateFormatter()
         isoDateFormatter.formatOptions = [
             .withFullDate,
@@ -52,7 +51,6 @@ struct Provider: TimelineProvider {
             if error == nil && data != nil {
                 do {
                     let newJsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]
-                    print(newJsonData!)
                     let newData = newJsonData!["data"] as? [String: Any]
                     let timings = newData!["timings"] as? [String: Any]
                     let fajr = timings?["Fajr"] as! String
@@ -94,6 +92,7 @@ struct Provider: TimelineProvider {
                             timeToShowPrayerIcon: isoDateFormatter.date(from: isha)!
                         )
                     ]
+                    var entries: [PrayerEntry] = []
                     for pc in prayers {
                         let entry = PrayerEntry(
                             date: pc.timeToShowPrayerIcon,
@@ -101,6 +100,7 @@ struct Provider: TimelineProvider {
                         )
                         entries.append(entry)
                     }
+                    setPrayerNotifications(prayerConfigList: prayers)
                     // Create the timeline with the entry and a reload policy with the date for the next update.
                     let timeline = Timeline(entries: entries, policy: .atEnd)
                     // Call the completion to pass the timeline to WidgetKit.
@@ -111,5 +111,41 @@ struct Provider: TimelineProvider {
             }
         }
         task.resume()
+    }
+
+    func setPrayerNotifications(prayerConfigList: [PrayerConfig]) {
+        // Remove all notifications before creating new ones
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+
+        // Create notification per prayer
+        for pc in prayerConfigList {
+            let prayerName = "\(pc.prayerType)" as String
+            let prayerTime: Date = pc.timePrayerStarts
+            
+            if (prayerTime < Date()) {
+                continue
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = prayerName
+            content.subtitle = "It's \(prayerName) time in Bellevue 🙂"
+            //        content.body = "Local Notfication Body"
+            content.sound = UNNotificationSound.default
+            // 2. Create Trigger and Configure the desired behaviour
+            let dateComponents = Calendar.current.dateComponents([.month, .day, .hour, .minute, .second], from: prayerTime)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+//            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 8, repeats: false)
+            
+            // Choose a random identifier, this is important if you want to be able to cancel the Notification
+            let notificationIdentifier = UUID().uuidString + "_" + prayerName
+//            let notificationIdentifier = "_" + prayerName
+            // 3. Create the Request
+            let notificationRequest = UNNotificationRequest(identifier: notificationIdentifier,
+                                                            content: content,
+                                                            trigger: trigger)
+            // 4. Add our Notification Request to the que
+            UNUserNotificationCenter.current().add(notificationRequest)
+        }
     }
 }
