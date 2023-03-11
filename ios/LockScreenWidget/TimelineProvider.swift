@@ -1,7 +1,8 @@
 //
 //  TimelineProvider.swift
 //  LockScreenWidgetExtension
-//  A timeline provider generates a timeline that consists of timeline entries, each specifying the date and time to update the widget’s content.
+//  A timeline provider generates a timeline that consists of timeline entries,
+//  each specifying the date and time to update the widget’s content.
 //
 //  Created by Burhan Ul Haq on 3/11/23.
 //
@@ -13,7 +14,7 @@ struct Provider: TimelineProvider {
     // When WidgetKit renders your widget, it may need to render your content as a placeholder;
     // for example, while you load data in the background. 
     func placeholder(in context: Context) -> PrayerEntry {
-        let pc = PrayerConfig(prayerType: Prayer.Zuhr, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        let pc = PrayerConfig(prayerType: Prayer.Mosque, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
         return PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
     }
 
@@ -91,11 +92,6 @@ struct Provider: TimelineProvider {
                             prayerType: Prayer.Fajr,
                             timePrayerStarts: isoDateFormatter.date(from: fajr)!,
                             timeToShowPrayerIcon: isoDateFormatter.date(from: isha)!
-//                        ),
-//                        PrayerConfig(
-//                            prayerType: Prayer.Fajr,
-//                            timePrayerStarts: isoDateFormatter.date(from: fajr)!,
-//                            timeToShowPrayerIcon: isoDateFormatter.date(from: fajr)!
                         )
                     ]
                     for pc in prayers {

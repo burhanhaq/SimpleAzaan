@@ -14,16 +14,16 @@ struct LockScreenWidgetEntryView : View {
     var body: some View {
         switch (widgetFamily) {
         case .accessoryCircular:
-            CircularIconAndTimeWidget(entry: entry)
+            IconAndTimeCircularWidget(entry: entry)
         case .accessoryInline:
-            InlineNameAndTimeWidget(entry: entry)
+            NameAndTimeInlineWidget(entry: entry)
         default:
             Text(entry.date, style: .time)
         }
     }
 }
 
-struct InlineNameAndTimeWidget: View {
+struct NameAndTimeInlineWidget: View {
     let entry: PrayerEntry
     var body: some View {
         let timeString: String = getTimeString(entry: entry)
@@ -33,7 +33,7 @@ struct InlineNameAndTimeWidget: View {
     }
 }
 
-struct CircularIconAndTimeWidget: View {
+struct IconAndTimeCircularWidget: View {
     let entry: PrayerEntry
     var body: some View {
         let timeString: String = getTimeString(entry: entry)
@@ -41,21 +41,16 @@ struct CircularIconAndTimeWidget: View {
             Circle()
                 .frame(width: 60, height: 60)
                 .foregroundColor(.gray)
-                .blur(radius: 20)
+                .blur(radius: 8)
                 .opacity(0.7)
             // .foregroundColor(Color.init(.sRGB, red: 0.89, green: 0.89, blue: 0.89, opacity: 0.75))
             
-//            if (entry.prayerConfig.prayerType == Prayer.MOSQUE) {
-//                MosqueShape()
-//            } else {
-                VStack(spacing: 2){
-                    PrayerView(entry: entry)
-                        .frame(width: 15, height: 15)
-//                    Text("\(entry.prayerConfig.prayerType.rawValue)")
-                    Text(timeString)
-                        .font(.system(size: 14))
-                }
-//            }
+            VStack(spacing: 2){
+                PrayerView(entry: entry)
+                    .frame(width: 15, height: 15)
+                Text(timeString)
+                    .font(.system(size: 14))
+            }
         }
     }
 }
@@ -76,8 +71,8 @@ struct PrayerView: View {
             MaghribView()
         case Prayer.Isha:
             IshaView()
-//        default:
-//            MosqueShape()
+        default:
+            MosqueView()
         }
     }
 }

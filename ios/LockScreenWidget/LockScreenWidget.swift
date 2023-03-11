@@ -16,7 +16,7 @@ struct LockScreenWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             LockScreenWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Simple Azaan Widget")
+        .configurationDisplayName("Simple Azaan")
         .description("Prayer Time Widget")
         .supportedFamilies([.accessoryInline, .accessoryCircular])
     }

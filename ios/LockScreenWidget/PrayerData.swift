@@ -20,6 +20,7 @@ enum Prayer: Int {
     case Asr = 4
     case Maghrib = 5
     case Isha = 6
+    case Mosque = 7
 }
 
 struct PrayerData: Decodable, Hashable {
