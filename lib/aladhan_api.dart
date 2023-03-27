@@ -6,13 +6,20 @@ import 'package:http/http.dart' as http;
 class AlAdhanApi {
   HttpRequest web = HttpRequest();
 
-  AlAdhanApi();
+  AlAdhanApi({
+    this.city,
+    this.state,
+    this.country = "United States",
+    this.method = "2",
+  });
+  final city;
+  final state;
+  final country;
+  final method;
 
   static const String apiUrl = 'http://api.aladhan.com/v1/';
 
   static const timingsByCity = 'timingsByCity?';
-  static const params =
-      'city=Bellevue&country=United States&method=2&iso8601=true';
 
   _get(url, params) async {
     var headers = {
@@ -35,7 +42,8 @@ class AlAdhanApi {
   }
 
   getPrayerTimeToday() async {
-    var params = 'city=Bellevue&country=United States&method=2&iso8601=true';
+    var params =
+        'city=$city&state=$state&country=$country&method=$method&iso8601=true';
     return await _get(apiUrl + timingsByCity, params);
   }
 }
