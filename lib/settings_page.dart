@@ -12,10 +12,19 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenHeight = size.height;
-    return Container(
-      color: Colors.green,
-      height: screenHeight,
-      width: 6,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          color: Colors.green,
+          height: screenHeight,
+          width: 6,
+        ),
+        const Icon(
+          Icons.arrow_forward_ios,
+          color: Colors.green,
+        )
+      ],
     );
   }
 }
