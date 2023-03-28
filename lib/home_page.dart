@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_azaan/aladhan_api.dart';
+import 'package:simple_azaan/clock_dial_widget.dart';
 import 'package:simple_azaan/prayer.dart';
 import 'package:simple_azaan/prayer_card.dart';
 import 'package:simple_azaan/prayer_data.dart';
@@ -46,9 +47,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _updatePrayerTime();
 
-    var screenSize = MediaQuery.of(context).size;
-    var clockDiameter = screenSize.width / 1.3;
-
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -61,14 +59,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 40,
                 ),
-                Container(
-                  height: clockDiameter,
-                  width: clockDiameter,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffffffff),
-                  ),
-                ),
+                ClockDial(),
                 const Spacer(),
                 Column(children: [
                   Column(
