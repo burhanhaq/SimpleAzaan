@@ -81,7 +81,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 40,
                 ),
-                ClockDial(),
+                ClockDial(
+                  currentPrayerTime: DateTime.parse('2023-03-29 13:27:00'),
+                  nextPrayerTime: DateTime.parse('2023-03-29 18:27:00'),
+                ),
                 const Spacer(),
                 Text(
                   fajr?.getDateString() ?? 'Current Date',
