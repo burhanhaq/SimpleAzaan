@@ -17,9 +17,14 @@ class _ClockDialState extends State<ClockDial> {
       height: clockDiameter,
       width: clockDiameter,
       decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color(0xffffffff),
-      ),
+          shape: BoxShape.circle,
+          color: Color(0xffffffff),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.green,
+              blurRadius: 9,
+            )
+          ]),
     );
   }
 }
