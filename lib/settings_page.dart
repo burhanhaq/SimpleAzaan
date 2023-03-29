@@ -29,11 +29,14 @@ class _SettingsPageState extends State<SettingsPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         AnimatedContainer(
-          color: Colors.green,
           height: screenHeight,
           width: settingsPageWidth,
           duration: const Duration(microseconds: 9000),
           curve: Curves.bounceIn,
+          decoration: const BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
         ),
         Transform.translate(
           offset: const Offset(-15, 0),
