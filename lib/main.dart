@@ -12,13 +12,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Simple Azaan',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Material(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Simple Azaan',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const HomePage(),
       ),
-      home: const HomePage(),
     );
   }
 }
