@@ -3,23 +3,39 @@ import 'package:simple_azaan/models/prayer.dart';
 
 class PrayerCard extends StatefulWidget {
   final Prayer? prayer;
-  const PrayerCard({super.key, required this.prayer});
+  const PrayerCard({
+    super.key,
+    required this.prayer,
+  });
 
   @override
   State<PrayerCard> createState() => _PrayerCardState();
 }
 
 class _PrayerCardState extends State<PrayerCard> {
+  _hasPrayerPassed() {
+    if (widget.prayer == null) return false;
+    if (widget.prayer!.isPrayerCurrent) return false;
+    return widget.prayer!.hasPrayerPassed;
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     var cardWidth = screenSize.width * 0.8;
     var cardHeight = cardWidth / 7;
 
-    var prayerPassed =
-        widget.prayer?.prayerTime.isBefore(DateTime.now()) ?? false;
     var prayerName = widget.prayer?.name ?? 'Prayer';
     var prayerTime = widget.prayer?.getTimeString() ?? '12:00';
+    var isCurrentPrayer = widget.prayer?.isCurrentPrayer ?? false;
+
+    var prayerNameFontWeight =
+        isCurrentPrayer ? FontWeight.w800 : FontWeight.w500;
+    var prayerNameFontColor = _hasPrayerPassed() ? Colors.grey : Colors.green;
+
+    var prayerTimeFontWeight =
+        isCurrentPrayer ? FontWeight.w800 : FontWeight.w400;
+    var prayerTimeFontColor = _hasPrayerPassed() ? Colors.grey : Colors.green;
 
     return Container(
       width: cardWidth,
@@ -33,8 +49,8 @@ class _PrayerCardState extends State<PrayerCard> {
             prayerName,
             style: TextStyle(
               fontSize: 30,
-              color: prayerPassed ? Colors.grey : Colors.green,
-              fontWeight: FontWeight.w500,
+              color: prayerNameFontColor,
+              fontWeight: prayerNameFontWeight,
               decoration: TextDecoration.none,
             ),
           ),
@@ -42,8 +58,8 @@ class _PrayerCardState extends State<PrayerCard> {
             prayerTime,
             style: TextStyle(
               fontSize: 30,
-              color: prayerPassed ? Colors.grey : Colors.green,
-              fontWeight: FontWeight.w400,
+              color: prayerTimeFontColor,
+              fontWeight: prayerTimeFontWeight,
               decoration: TextDecoration.none,
             ),
           )

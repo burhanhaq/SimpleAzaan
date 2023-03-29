@@ -43,6 +43,28 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  _getPrayerCards() {
+    List<Prayer?> listOfPrayers = [fajr, sunrise, zuhr, asr, maghrib, isha];
+    int currentPrayerIndex = listOfPrayers.indexWhere(
+      (element) => element?.hasPrayerPassed == false,
+    );
+
+    // TODO: Sets Isha time if -1. Needs to be fixed.
+    if (currentPrayerIndex == -1) {
+      listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
+    } else if (currentPrayerIndex == 0) {
+      listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
+    } else if (currentPrayerIndex > 0 &&
+        currentPrayerIndex <= listOfPrayers.length + 1) {
+      --currentPrayerIndex;
+      listOfPrayers[currentPrayerIndex]?.isCurrentPrayer = true;
+    }
+
+    return List.generate(listOfPrayers.length, (index) {
+      return PrayerCard(prayer: listOfPrayers[index]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _updatePrayerTime();
@@ -64,14 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      PrayerCard(prayer: fajr),
-                      PrayerCard(prayer: sunrise),
-                      PrayerCard(prayer: zuhr),
-                      PrayerCard(prayer: asr),
-                      PrayerCard(prayer: maghrib),
-                      PrayerCard(prayer: isha),
-                    ],
+                    children: _getPrayerCards(),
                   ),
                 ]),
               ],
