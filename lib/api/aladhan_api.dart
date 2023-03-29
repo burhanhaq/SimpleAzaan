@@ -1,5 +1,4 @@
 import 'dart:convert';
-// import 'package:flutter/material.dart';
 import 'package:simple_azaan/service/http_request.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,10 +11,10 @@ class AlAdhanApi {
     this.country = "United States",
     this.method = "2",
   });
-  final city;
-  final state;
-  final country;
-  final method;
+  final String? city;
+  final String? state;
+  final String? country;
+  final String? method;
 
   static const String apiUrl = 'http://api.aladhan.com/v1/';
 
@@ -41,9 +40,18 @@ class AlAdhanApi {
     }
   }
 
+  getParams() {
+    var params = "";
+    params += 'iso8601=true';
+    params += city == null ? '' : '&city=$city';
+    params += state == null ? '' : '&state=$state';
+    params += country == null ? '' : '&country=$country';
+    params += method == null ? '' : '&method=$method';
+
+    return params;
+  }
+
   getPrayerTimeToday() async {
-    var params =
-        'city=$city&state=$state&country=$country&method=$method&iso8601=true';
-    return await _get(apiUrl + timingsByCity, params);
+    return await _get(apiUrl + timingsByCity, getParams());
   }
 }
