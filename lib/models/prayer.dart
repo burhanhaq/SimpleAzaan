@@ -25,4 +25,9 @@ class Prayer {
     String formattedDate = DateFormat('kk:mm').format(prayerTime);
     return formattedDate;
   }
+
+  String getDateString() {
+    String formattedDate = DateFormat("EEE, MMM d, ''yy").format(prayerTime);
+    return formattedDate;
+  }
 }

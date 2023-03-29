@@ -83,6 +83,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 ClockDial(),
                 const Spacer(),
+                Text(
+                  fajr?.getDateString() ?? 'Current Date',
+                  style: const TextStyle(
+                    decoration: TextDecoration.none,
+                    fontSize: 24,
+                    color: Colors.green,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Column(children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
