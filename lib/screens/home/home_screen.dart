@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:simple_azaan/aladhan_api.dart';
-import 'package:simple_azaan/clock_dial_widget.dart';
-import 'package:simple_azaan/prayer.dart';
-import 'package:simple_azaan/prayer_card.dart';
-import 'package:simple_azaan/prayer_data.dart';
-import 'package:simple_azaan/settings_page.dart';
+import 'package:simple_azaan/api/aladhan_api.dart';
+import 'package:simple_azaan/widgets/clock_dial_widget.dart';
+import 'package:simple_azaan/models/prayer.dart';
+import 'package:simple_azaan/widgets/prayer_card.dart';
+import 'package:simple_azaan/models/prayer_data.dart';
+import 'package:simple_azaan/screens/settings/settings_screen.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   Prayer? fajr;
   Prayer? sunrise;
   Prayer? zuhr;
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
         ),
         const Positioned(
           left: 0,
-          child: SettingsPage(),
+          child: SettingsScreen(),
         ),
       ],
     );

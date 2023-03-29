@@ -1,6 +1,6 @@
 import 'dart:convert';
 // import 'package:flutter/material.dart';
-import 'package:simple_azaan/http_request.dart';
+import 'package:simple_azaan/service/http_request.dart';
 import 'package:http/http.dart' as http;
 
 class AlAdhanApi {

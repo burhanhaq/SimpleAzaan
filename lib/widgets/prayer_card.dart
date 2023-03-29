@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_azaan/prayer.dart';
+import 'package:simple_azaan/models/prayer.dart';
 
 class PrayerCard extends StatefulWidget {
   final Prayer? prayer;

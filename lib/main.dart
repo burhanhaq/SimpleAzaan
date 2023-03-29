@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:simple_azaan/home_page.dart';
+import 'package:simple_azaan/screens/home/home_screen.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const HomePage(),
+        home: const HomeScreen(),
       ),
     );
   }

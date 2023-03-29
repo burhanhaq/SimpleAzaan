@@ -2,19 +2,19 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
-  var settingsPageOpen = false;
+class _SettingsScreenState extends State<SettingsScreen> {
+  var settingsScreenOpen = false;
 
   _onPressed() {
     setState(() {
-      settingsPageOpen = !settingsPageOpen;
+      settingsScreenOpen = !settingsScreenOpen;
     });
   }
 
@@ -23,14 +23,14 @@ class _SettingsPageState extends State<SettingsPage> {
     final size = MediaQuery.of(context).size;
     final screenHeight = size.height;
     final screenWidth = size.width;
-    final settingsPageWidth = settingsPageOpen ? screenWidth / 1.2 : 6.0;
+    final settingsScreenWidth = settingsScreenOpen ? screenWidth / 1.2 : 6.0;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         AnimatedContainer(
           height: screenHeight,
-          width: settingsPageWidth,
+          width: settingsScreenWidth,
           duration: const Duration(microseconds: 9000),
           curve: Curves.bounceIn,
           decoration: const BoxDecoration(
@@ -41,7 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
         Transform.translate(
           offset: const Offset(-15, 0),
           child: Transform.rotate(
-            angle: settingsPageOpen ? pi : 0,
+            angle: settingsScreenOpen ? pi : 0,
             child: IconButton(
               onPressed: _onPressed,
               icon: const Icon(Icons.arrow_forward_ios),
