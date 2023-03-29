@@ -40,9 +40,10 @@ struct Provider: TimelineProvider {
         let url = "https://api.aladhan.com/v1/"
         let timingsByCity = "timingsByCity?"
         let city = "Quakertown"
+        let state = "PA"
         let country = "US"
         let method = "2"
-        let params = "city=" + city + "&country=" + country + "&method=" + method + "&iso8601=true"
+        let params = "city=" + city + "&state=" + state + "&country=" + country + "&method=" + method + "&iso8601=true"
         let apiUrl = url+timingsByCity+params
         var request = URLRequest(url: URL(string: apiUrl)!)
         request.allHTTPHeaderFields = [
