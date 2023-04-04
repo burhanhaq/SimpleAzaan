@@ -23,7 +23,7 @@ class _ClockDialState extends State<ClockDial> {
     Duration totalPrayerTimeDifference =
         widget.nextPrayerTime.difference(widget.currentPrayerTime);
 
-    const graduationsCount = 30;
+    const graduationsCount = 60;
     List<Widget> graduations = List.generate(graduationsCount, (index) {
       var angle = index / graduationsCount * 2 * pi;
       var isGraduationPassedAngle = prayerTimeElapsed.inSeconds /
