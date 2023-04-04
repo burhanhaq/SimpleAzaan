@@ -39,8 +39,8 @@ struct Provider: TimelineProvider {
 
         let url = "https://api.aladhan.com/v1/"
         let timingsByCity = "timingsByCity?"
-        let city = "Quakertown"
-        let state = "PA"
+        let city = "Bellevue"
+        let state = "WA"
         let country = "US"
         let method = "2"
         let params = "city=" + city + "&state=" + state + "&country=" + country + "&method=" + method + "&iso8601=true"
@@ -94,6 +94,11 @@ struct Provider: TimelineProvider {
                             prayerType: Prayer.Fajr,
                             timePrayerStarts: isoDateFormatter.date(from: fajr)!,
                             timeToShowPrayerIcon: isoDateFormatter.date(from: isha)!
+                        ),
+                        PrayerConfig(
+                            prayerType: Prayer.Fajr,
+                            timePrayerStarts: isoDateFormatter.date(from: fajr)!,
+                            timeToShowPrayerIcon: isoDateFormatter.date(from: fajr)!
                         )
                     ]
                     var entries: [PrayerEntry] = []

@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Color(0xfff6f7f9),
                     ),
                     Text(
-                      'Quakertown, PA',
+                      'Bellevue, WA',
                       style: TextStyle(
                         decoration: TextDecoration.none,
                         fontSize: 20,

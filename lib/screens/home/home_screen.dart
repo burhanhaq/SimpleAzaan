@@ -23,8 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _updatePrayerTime() {
     AlAdhanApi api = AlAdhanApi(
-      city: 'Quakertown',
-      state: 'PA',
+      city: 'Bellevue',
+      state: 'WA',
       country: 'United States',
       method: '2',
     );
