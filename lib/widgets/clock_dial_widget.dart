@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:simple_azaan/widgets/clock_graduation.dart';
 
 class ClockDial extends StatefulWidget {
   ClockDial({
@@ -62,21 +63,6 @@ class _ClockDialState extends State<ClockDial> {
         alignment: Alignment.center,
         children: createClockGraduations(),
       ),
-    );
-  }
-}
-
-class ClockGraduation extends StatelessWidget {
-  bool isGraduationPassed;
-  ClockGraduation({super.key, this.isGraduationPassed = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: isGraduationPassed ? Colors.black12 : Colors.black54,
-      width: 3,
-      height: isGraduationPassed ? 15 : 30,
-      margin: EdgeInsets.only(bottom: isGraduationPassed ? 247.5 : 240),
     );
   }
 }
