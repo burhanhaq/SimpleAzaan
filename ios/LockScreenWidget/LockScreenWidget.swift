@@ -24,12 +24,12 @@ struct LockScreenWidget: Widget {
 
 struct LockScreenWidget_Previews: PreviewProvider {
     static var previews: some View {
-        let pc = PrayerConfig(prayerType: Prayer.Zuhr, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
+        let pc = PrayerConfig(prayerType: Prayer.Zuhr, prayerTime: Date(), timeWhenIconVisible: Date())
         
-        LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
+        LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.prayerTime, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryInline))
             .previewDisplayName("Inline")
-        LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc))
+        LockScreenWidgetEntryView(entry: PrayerEntry(date: pc.prayerTime, prayerConfig: pc))
             .previewContext(WidgetPreviewContext(family: .accessoryCircular))
             .previewDisplayName("Circular")
     }

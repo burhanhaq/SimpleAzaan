@@ -15,16 +15,16 @@ struct Provider: TimelineProvider {
     // When WidgetKit renders your widget, it may need to render your content as a placeholder;
     // for example, while you load data in the background. 
     func placeholder(in context: Context) -> PrayerEntry {
-        let pc = PrayerConfig(prayerType: Prayer.Mosque, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
-        return PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
+        let pc = PrayerConfig(prayerType: Prayer.Mosque, prayerTime: Date(), timeWhenIconVisible: Date())
+        return PrayerEntry(date: pc.prayerTime, prayerConfig: pc)
     }
 
     // To show your widget in the widget gallery, WidgetKit asks the provider for a preview snapshot.
     // This is just a snapshot of the data and does not necessarily need to be real data.
     // This is used in the Widget gallery to give an idea to the user of how the widget will look.
     func getSnapshot(in context: Context, completion: @escaping (PrayerEntry) -> ()) {
-        let pc = PrayerConfig(prayerType: Prayer.Zuhr, timePrayerStarts: Date(), timeToShowPrayerIcon: Date())
-        let entry = PrayerEntry(date: pc.timePrayerStarts, prayerConfig: pc)
+        let pc = PrayerConfig(prayerType: Prayer.Zuhr, prayerTime: Date(), timeWhenIconVisible: Date())
+        let entry = PrayerEntry(date: pc.prayerTime, prayerConfig: pc)
         completion(entry)
     }
 
@@ -77,44 +77,44 @@ struct Provider: TimelineProvider {
                     let prayers = [
                         PrayerConfig(
                             prayerType: Prayer.Fajr,
-                            timePrayerStarts: fajrTime,
-                            timeToShowPrayerIcon: dateTomorrowMidnight
+                            prayerTime: fajrTime,
+                            timeWhenIconVisible: dateTomorrowMidnight
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Sunrise,
-                            timePrayerStarts: sunriseTime,
-                            timeToShowPrayerIcon: fajrTime
+                            prayerTime: sunriseTime,
+                            timeWhenIconVisible: fajrTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Zuhr,
-                            timePrayerStarts: zuhrTime,
-                            timeToShowPrayerIcon: sunriseTime
+                            prayerTime: zuhrTime,
+                            timeWhenIconVisible: sunriseTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Asr,
-                            timePrayerStarts: asrTime,
-                            timeToShowPrayerIcon: zuhrTime
+                            prayerTime: asrTime,
+                            timeWhenIconVisible: zuhrTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Maghrib,
-                            timePrayerStarts: maghribTime,
-                            timeToShowPrayerIcon: asrTime
+                            prayerTime: maghribTime,
+                            timeWhenIconVisible: asrTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Isha,
-                            timePrayerStarts: ishaTime,
-                            timeToShowPrayerIcon: maghribTime
+                            prayerTime: ishaTime,
+                            timeWhenIconVisible: maghribTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Fajr,
-                            timePrayerStarts: fajrTime,
-                            timeToShowPrayerIcon: ishaTime
+                            prayerTime: fajrTime,
+                            timeWhenIconVisible: ishaTime
                         )
                     ]
                     var entries: [PrayerEntry] = []
                     for pc in prayers {
                         let entry = PrayerEntry(
-                            date: pc.timeToShowPrayerIcon,
+                            date: pc.timeWhenIconVisible,
                             prayerConfig: pc
                         )
                         entries.append(entry)
@@ -140,7 +140,7 @@ struct Provider: TimelineProvider {
         // Create notification per prayer
         for pc in prayerConfigList {
             let prayerName = "\(pc.prayerType)" as String
-            let prayerTime: Date = pc.timePrayerStarts
+            let prayerTime: Date = pc.prayerTime
             let city = "Bellevue"
             
             if (prayerTime < Date()) {

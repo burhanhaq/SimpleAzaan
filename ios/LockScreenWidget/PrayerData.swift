@@ -9,8 +9,8 @@ import Foundation
 
 struct PrayerConfig {
     let prayerType: Prayer
-    let timePrayerStarts: Date
-    let timeToShowPrayerIcon: Date
+    let prayerTime: Date
+    let timeWhenIconVisible: Date
 }
 
 enum Prayer: Int {

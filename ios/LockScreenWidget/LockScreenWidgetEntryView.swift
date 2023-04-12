@@ -78,7 +78,7 @@ struct PrayerView: View {
 }
 
 func getTimeString(entry: PrayerEntry) -> String{
-    let dateToShow = entry.prayerConfig.timePrayerStarts
+    let dateToShow = entry.prayerConfig.prayerTime
     let hour = Calendar.current.component(.hour, from: dateToShow)
     let minute = Calendar.current.component(.minute, from: dateToShow)
     let timeString: String = String(format: "%02d:%02d", hour, minute)
