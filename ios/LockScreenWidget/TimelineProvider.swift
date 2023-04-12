@@ -63,42 +63,52 @@ struct Provider: TimelineProvider {
                     let asr = timings!["Asr"] as! String
                     let maghrib = timings!["Maghrib"] as! String
                     let isha = timings!["Isha"] as! String
+                    
+                    let fajrTime = isoDateFormatter.date(from: fajr)!
+                    let sunriseTime = isoDateFormatter.date(from: sunrise)!
+                    let zuhrTime = isoDateFormatter.date(from: zuhr)!
+                    let asrTime = isoDateFormatter.date(from: asr)!
+                    let maghribTime = isoDateFormatter.date(from: maghrib)!
+                    let ishaTime = isoDateFormatter.date(from: isha)!
+
+                    let dateTomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+                    let dateTomorrowMidnight = Calendar.current.date(bySettingHour: 0, minute: 5, second: 0, of: dateTomorrow)!
 
                     let prayers = [
                         PrayerConfig(
+                            prayerType: Prayer.Fajr,
+                            timePrayerStarts: fajrTime,
+                            timeToShowPrayerIcon: dateTomorrowMidnight
+                        ),
+                        PrayerConfig(
                             prayerType: Prayer.Sunrise,
-                            timePrayerStarts: isoDateFormatter.date(from: sunrise)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: fajr)!
+                            timePrayerStarts: sunriseTime,
+                            timeToShowPrayerIcon: fajrTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Zuhr,
-                            timePrayerStarts: isoDateFormatter.date(from: zuhr)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: sunrise)!
+                            timePrayerStarts: zuhrTime,
+                            timeToShowPrayerIcon: sunriseTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Asr,
-                            timePrayerStarts: isoDateFormatter.date(from: asr)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: zuhr)!
+                            timePrayerStarts: asrTime,
+                            timeToShowPrayerIcon: zuhrTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Maghrib,
-                            timePrayerStarts: isoDateFormatter.date(from: maghrib)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: asr)!
+                            timePrayerStarts: maghribTime,
+                            timeToShowPrayerIcon: asrTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Isha,
-                            timePrayerStarts: isoDateFormatter.date(from: isha)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: maghrib)!
+                            timePrayerStarts: ishaTime,
+                            timeToShowPrayerIcon: maghribTime
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Fajr,
-                            timePrayerStarts: isoDateFormatter.date(from: fajr)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: isha)!
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Fajr,
-                            timePrayerStarts: isoDateFormatter.date(from: fajr)!,
-                            timeToShowPrayerIcon: isoDateFormatter.date(from: fajr)!
+                            timePrayerStarts: fajrTime,
+                            timeToShowPrayerIcon: ishaTime
                         )
                     ]
                     var entries: [PrayerEntry] = []
@@ -111,7 +121,7 @@ struct Provider: TimelineProvider {
                     }
                     setPrayerNotifications(prayerConfigList: prayers)
                     // Create the timeline with the entry and a reload policy with the date for the next update.
-                    let timeline = Timeline(entries: entries, policy: .atEnd)
+                    let timeline = Timeline(entries: entries, policy: .after(dateTomorrowMidnight))
                     // Call the completion to pass the timeline to WidgetKit.
                     completion(timeline)
                 } catch {
