@@ -131,24 +131,24 @@ struct Provider: TimelineProvider {
         for pc in prayerConfigList {
             let prayerName = "\(pc.prayerType)" as String
             let prayerTime: Date = pc.timePrayerStarts
+            let city = "Bellevue"
             
             if (prayerTime < Date()) {
                 continue
             }
-            
+
             let content = UNMutableNotificationContent()
             content.title = prayerName
-            content.subtitle = "It's \(prayerName) time in Bellevue 🙂"
+            content.subtitle = "It's \(prayerName) time in \(city) 🙂"
             //        content.body = "Local Notfication Body"
             content.sound = UNNotificationSound.default
             // 2. Create Trigger and Configure the desired behaviour
             let dateComponents = Calendar.current.dateComponents([.month, .day, .hour, .minute, .second], from: prayerTime)
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-//            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 8, repeats: false)
-            
+
             // Choose a random identifier, this is important if you want to be able to cancel the Notification
-            let notificationIdentifier = UUID().uuidString + "_" + prayerName
-//            let notificationIdentifier = "_" + prayerName
+            let notificationIdentifier = UUID().uuidString
+
             // 3. Create the Request
             let notificationRequest = UNNotificationRequest(identifier: notificationIdentifier,
                                                             content: content,
