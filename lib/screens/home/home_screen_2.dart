@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_azaan/api/aladhan_api.dart';
+import 'package:simple_azaan/constants.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/screens/home/date_display_widget.dart';
 import 'package:simple_azaan/screens/home/go_to_today_widget.dart';
@@ -127,7 +128,10 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
       return Column(
         children: [
           PrayerNameCard(prayer: listOfPrayers[index]),
-          PrayerTimeCard(prayer: listOfPrayers[index]),
+          PrayerTimeCard(
+            prayer: listOfPrayers[index],
+            timeToDisplay: PrayerTimeDisplay.prayerTime,
+          ),
         ],
       );
     });

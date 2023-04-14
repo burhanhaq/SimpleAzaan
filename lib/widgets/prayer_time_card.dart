@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:simple_azaan/models/prayer.dart';
+import 'package:simple_azaan/constants.dart';
 
 class PrayerTimeCard extends StatefulWidget {
   final Prayer? prayer;
+  final PrayerTimeDisplay timeToDisplay;
   const PrayerTimeCard({
     super.key,
     required this.prayer,
+    required this.timeToDisplay,
   });
 
   @override
@@ -38,6 +41,52 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
         isCurrentPrayer ? activePrayerTimeFontSize : inactivePrayerTimeFontSize;
     var prayerTimeFontColor = isCurrentPrayer ? Colors.black : Colors.grey;
 
+    return LayoutBuilder(builder: (context, constraints) {
+      switch (widget.timeToDisplay) {
+        case PrayerTimeDisplay.prayerTime:
+          return PrayerTimeWidget(
+            screenHeight: screenHeight,
+            prayerTime: prayerTime,
+            prayerTimeFontSize: prayerTimeFontSize,
+            prayerTimeFontColor: prayerTimeFontColor,
+            prayerTimeFontWeight: prayerTimeFontWeight,
+          );
+        case PrayerTimeDisplay.timeToNextPrayer:
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
+            child: Text(
+              '4 mins to ',
+              style: TextStyle(
+                fontSize: inactivePrayerTimeFontSize,
+                color: prayerTimeFontColor,
+                fontWeight: prayerTimeFontWeight,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          );
+      }
+    });
+  }
+}
+
+class PrayerTimeWidget extends StatelessWidget {
+  const PrayerTimeWidget({
+    super.key,
+    required this.screenHeight,
+    required this.prayerTime,
+    required this.prayerTimeFontSize,
+    required this.prayerTimeFontColor,
+    required this.prayerTimeFontWeight,
+  });
+
+  final double screenHeight;
+  final String prayerTime;
+  final double prayerTimeFontSize;
+  final Color prayerTimeFontColor;
+  final FontWeight prayerTimeFontWeight;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
       child: Text(
