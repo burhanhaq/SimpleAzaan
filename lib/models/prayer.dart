@@ -11,7 +11,15 @@ class Prayer {
   );
 
   DateTime get getPrayerTime => prayerTime;
-  bool get isCurrentPrayer => _isCurrentPrayer;
+  bool get isCurrentPrayer {
+    final DateTime now = DateTime.now();
+    if (now.year == prayerTime.year &&
+        now.month == prayerTime.month &&
+        now.day == prayerTime.day) {
+      return _isCurrentPrayer;
+    }
+    return false;
+  }
 
   set isCurrentPrayer(value) {
     _isCurrentPrayer = value;
