@@ -134,8 +134,14 @@ struct Provider: TimelineProvider {
 
     func setPrayerNotifications(prayerConfigList: [PrayerConfig]) {
         // Remove all notifications before creating new ones
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+//        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ["SimpleAzaanNotificationIdentifier-\(Prayer.Fajr)",
+              "SimpleAzaanNotificationIdentifier-\(Prayer.Sunrise)",
+              "SimpleAzaanNotificationIdentifier-\(Prayer.Zuhr)",
+              "SimpleAzaanNotificationIdentifier-\(Prayer.Asr)",
+              "SimpleAzaanNotificationIdentifier-\(Prayer.Maghrib)",
+              "SimpleAzaanNotificationIdentifier-\(Prayer.Isha)",])
+//        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
         // Create notification per prayer
         for pc in prayerConfigList {
@@ -157,7 +163,8 @@ struct Provider: TimelineProvider {
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
 
             // Choose a random identifier, this is important if you want to be able to cancel the Notification
-            let notificationIdentifier = UUID().uuidString
+            let notificationIdentifier = "SimpleAzaanNotificationIdentifier-\(prayerName)"
+//            let notificationIdentifier = "SimpleAzaanNotificationIdentifier"
 
             // 3. Create the Request
             let notificationRequest = UNNotificationRequest(identifier: notificationIdentifier,
