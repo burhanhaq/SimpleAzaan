@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_azaan/api/aladhan_api.dart';
 import 'package:simple_azaan/models/prayer.dart';
+import 'package:simple_azaan/widgets/date_display_widget.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
@@ -126,49 +127,37 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     _updatePrayerTime();
 
     return SafeArea(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Transform.translate(
-            offset: const Offset(-5, 0),
-            child: IconButton(
-              onPressed: _getPreviousDayPrayerTime,
-              icon: const Icon(Icons.arrow_back_ios),
-              color: Colors.black26,
-              iconSize: 30,
-            ),
-          ),
-          Column(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                fajr?.getDateString() ?? 'Current Date',
-                style: const TextStyle(
-                  decoration: TextDecoration.none,
-                  fontSize: 24,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300,
-                ),
+              IconButton(
+                onPressed: _getPreviousDayPrayerTime,
+                icon: const Icon(Icons.arrow_back_ios),
+                color: Colors.black26,
+                iconSize: 30,
               ),
-              const SizedBox(
-                height: 20,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  DateDisplayWidget(
+                      date: fajr?.getDateString() ?? 'Current Date'),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: _getPrayerCards(_getPrayers()),
+                  ),
+                ],
               ),
-              ..._getPrayerCards(_getPrayers()),
+              IconButton(
+                onPressed: _getNextDayPrayerTime,
+                icon: const Icon(Icons.arrow_forward_ios),
+                color: Colors.black26,
+                iconSize: 30,
+              ),
             ],
-          ),
-          // const Icon(
-          //   Icons.arrow_forward_ios,
-          //   color: Colors.grey,
-          //   size: 30,
-          // ),
-          Transform.translate(
-            offset: const Offset(5, 0),
-            child: IconButton(
-              onPressed: _getNextDayPrayerTime,
-              icon: const Icon(Icons.arrow_forward_ios),
-              color: Colors.black26,
-              iconSize: 30,
-            ),
           ),
         ],
       ),
