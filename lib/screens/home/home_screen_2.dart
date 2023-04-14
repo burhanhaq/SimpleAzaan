@@ -56,6 +56,15 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     });
   }
 
+  void _getCurrentDayPrayerTime() {
+    dateForFetchingPrayerTimes = DateTime.now();
+    Future<dynamic> x = api.getPrayerTimeToday();
+    x.then((value) {
+      PrayerData pd = PrayerData.fromAlAdhanApi(value);
+      _updatePrayerState(pd);
+    });
+  }
+
   void _getNextDayPrayerTime() {
     dateForFetchingPrayerTimes =
         dateForFetchingPrayerTimes.add(const Duration(days: 1));
@@ -122,9 +131,18 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     });
   }
 
+  bool _isToday(DateTime other) {
+    DateTime now = DateTime.now();
+    return now.year == other.year &&
+        now.month == other.month &&
+        now.day == other.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     _updatePrayerTime();
+
+    bool showGoToTodayWidget = _isToday(fajr?.getPrayerTime ?? DateTime.now());
 
     return SafeArea(
       child: Stack(
@@ -158,6 +176,25 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
                 iconSize: 30,
               ),
             ],
+          ),
+          Positioned(
+            left: 30,
+            bottom: 30,
+            child: Offstage(
+              offstage: showGoToTodayWidget,
+              child: GestureDetector(
+                onTap: _getCurrentDayPrayerTime,
+                child: const Text(
+                  'Go To\nToday',
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                    fontSize: 24,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
