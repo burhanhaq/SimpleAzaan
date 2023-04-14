@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 class Prayer {
   final String name;
   final DateTime prayerTime;
-  bool isPrayerCurrent = false;
+  bool _isCurrentPrayer = false;
 
   Prayer(
     this.name,
@@ -11,10 +11,10 @@ class Prayer {
   );
 
   DateTime get getPrayerTime => prayerTime;
-  bool get isCurrentPrayer => isPrayerCurrent;
+  bool get isCurrentPrayer => _isCurrentPrayer;
 
   set isCurrentPrayer(value) {
-    isPrayerCurrent = value;
+    _isCurrentPrayer = value;
   }
 
   bool get hasPrayerPassed {

@@ -15,7 +15,7 @@ class PrayerTimeCard extends StatefulWidget {
 class _PrayerTimeCardState extends State<PrayerTimeCard> {
   _hasPrayerPassed() {
     if (widget.prayer == null) return false;
-    if (widget.prayer!.isPrayerCurrent) return false;
+    if (widget.prayer!.isCurrentPrayer) return false;
     return widget.prayer!.hasPrayerPassed;
   }
 
