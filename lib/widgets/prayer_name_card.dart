@@ -23,6 +23,7 @@ class _PrayerNameCardState extends State<PrayerNameCard> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     var screenWidth = screenSize.width;
+    var screenHeight = screenSize.height;
 
     var activePrayerNameFontSize = screenWidth * 0.18;
     var inactivePrayerNameFontSize = screenWidth * 0.08;
@@ -37,8 +38,7 @@ class _PrayerNameCardState extends State<PrayerNameCard> {
     var prayerNameFontColor = isCurrentPrayer ? Colors.black : Colors.grey;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      margin: const EdgeInsets.symmetric(vertical: 3),
+      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.006),
       child: Text(
         prayerName,
         style: TextStyle(

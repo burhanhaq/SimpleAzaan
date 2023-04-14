@@ -23,6 +23,7 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     var screenWidth = screenSize.width;
+    var screenHeight = screenSize.height;
 
     var activePrayerTimeFontSize = screenWidth * 0.11;
     var inactivePrayerTimeFontSize = screenWidth * 0.08;
@@ -38,8 +39,7 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
     var prayerTimeFontColor = isCurrentPrayer ? Colors.black : Colors.grey;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      margin: const EdgeInsets.symmetric(vertical: 3),
+      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
       child: Text(
         prayerTime,
         style: TextStyle(
