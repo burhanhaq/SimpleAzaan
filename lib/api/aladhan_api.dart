@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:simple_azaan/service/http_request.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,9 +17,9 @@ class AlAdhanApi {
   final String? country;
   final String? method;
 
-  static const String apiUrl = 'http://api.aladhan.com/v1/';
+  static const String apiUrl = 'http://api.aladhan.com/v1';
 
-  static const timingsByCity = 'timingsByCity?';
+  static const timingsByCity = '/timingsByCity';
 
   _get(url, params) async {
     var headers = {
@@ -30,7 +31,7 @@ class AlAdhanApi {
   }
 
   _responseJson(http.Response response) {
-    // print(response.statusCode);
+    // print(response.body);
 
     switch (response.statusCode) {
       case 200:
@@ -51,7 +52,17 @@ class AlAdhanApi {
     return params;
   }
 
+  _getPrayerTimeOnDate(DateTime date) async {
+    String formattedDate = DateFormat('dd-MM-yyyy').format(date);
+    String formattedDateInUrl = "/$formattedDate";
+    return await _get("$apiUrl$timingsByCity$formattedDateInUrl?", getParams());
+  }
+
   getPrayerTimeToday() async {
-    return await _get(apiUrl + timingsByCity, getParams());
+    return await _getPrayerTimeOnDate(DateTime.now());
+  }
+
+  getPrayerTimeForDate(DateTime date) async {
+    return await _getPrayerTimeOnDate(date);
   }
 }
