@@ -7,9 +7,9 @@ class ClockGraduation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isGraduationPassed ? Colors.black12 : Colors.black87,
+      color: isGraduationPassed ? Colors.black12 : Colors.black54,
       width: 3,
-      height: isGraduationPassed ? 15 : 30,
+      height: isGraduationPassed ? 15 : 25,
       margin: EdgeInsets.only(bottom: isGraduationPassed ? 225 : 240),
     );
   }

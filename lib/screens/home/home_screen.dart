@@ -43,8 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  _getPrayerCards() {
+  _getPrayers() {
     List<Prayer?> listOfPrayers = [fajr, sunrise, zuhr, asr, maghrib, isha];
+    if (listOfPrayers[0] == null) {
+      return <Prayer?>[];
+    }
+
     int currentPrayerIndex = listOfPrayers.indexWhere(
       (element) => element?.hasPrayerPassed == false,
     );
@@ -60,6 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
       listOfPrayers[currentPrayerIndex]?.isCurrentPrayer = true;
     }
 
+    return listOfPrayers;
+  }
+
+  _getPrayerCards(List<Prayer?> listOfPrayers) {
     return List.generate(listOfPrayers.length, (index) {
       return PrayerCard(prayer: listOfPrayers[index]);
     });
@@ -82,8 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 40,
                 ),
                 ClockDial(
-                  currentPrayerTime: DateTime.parse('2023-03-29 13:27:00'),
-                  nextPrayerTime: DateTime.parse('2023-03-29 18:27:00'),
+                  listOfPrayers: _getPrayers(),
+                  // currentPrayerTime: DateTime.parse('2023-03-29 13:27:00'),
+                  // nextPrayerTime: DateTime.parse('2023-03-29 18:27:00'),
                 ),
                 const Spacer(),
                 Text(
@@ -99,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _getPrayerCards(),
+                    children: _getPrayerCards(_getPrayers()),
                   ),
                 ]),
               ],
