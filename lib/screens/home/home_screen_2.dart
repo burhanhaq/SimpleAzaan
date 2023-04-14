@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:simple_azaan/api/aladhan_api.dart';
 import 'package:simple_azaan/models/prayer.dart';
-import 'package:simple_azaan/widgets/date_display_widget.dart';
+import 'package:simple_azaan/screens/home/date_display_widget.dart';
+import 'package:simple_azaan/screens/home/go_to_today_widget.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
@@ -177,24 +178,9 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
               ),
             ],
           ),
-          Positioned(
-            left: 30,
-            bottom: 30,
-            child: Offstage(
-              offstage: showGoToTodayWidget,
-              child: GestureDetector(
-                onTap: _getCurrentDayPrayerTime,
-                child: const Text(
-                  'Go To\nToday',
-                  style: TextStyle(
-                    decoration: TextDecoration.none,
-                    fontSize: 24,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-            ),
+          GoToTodayWidget(
+            offstage: showGoToTodayWidget,
+            tapHandler: _getCurrentDayPrayerTime,
           ),
         ],
       ),
