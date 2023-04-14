@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:simple_azaan/screens/home/home_screen.dart';
+import 'package:simple_azaan/archive/home_screen.dart';
+import 'package:simple_azaan/screens/home/home_screen_2.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const HomeScreen(),
+        home: const HomeScreen2(),
       ),
     );
   }
