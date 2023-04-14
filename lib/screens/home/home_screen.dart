@@ -13,13 +13,29 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Prayer? fajr;
   Prayer? sunrise;
   Prayer? zuhr;
   Prayer? asr;
   Prayer? maghrib;
   Prayer? isha;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        _updatePrayerTime();
+      });
+    }
+  }
 
   void _updatePrayerTime() {
     AlAdhanApi api = AlAdhanApi(
