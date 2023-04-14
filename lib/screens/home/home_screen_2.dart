@@ -3,6 +3,7 @@ import 'package:simple_azaan/api/aladhan_api.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/screens/home/date_display_widget.dart';
 import 'package:simple_azaan/screens/home/go_to_today_widget.dart';
+import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
@@ -163,7 +164,8 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   DateDisplayWidget(
-                      date: fajr?.getDateString() ?? 'Current Date'),
+                    date: fajr?.getDateString() ?? 'Current Date',
+                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: _getPrayerCards(_getPrayers()),
@@ -182,6 +184,7 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
             offstage: showGoToTodayWidget,
             tapHandler: _getCurrentDayPrayerTime,
           ),
+          const MenuIconWidget(),
         ],
       ),
     );
