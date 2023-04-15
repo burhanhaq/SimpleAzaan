@@ -19,7 +19,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       var borderColor = Colors.black;
       if (!widget.showWelcomeScreen) {
         maxIndividualHeight = 0;
-        borderColor = Colors.white;
+        borderColor = const Color(0xfff6f7f9);
       }
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -30,7 +30,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             width: maxWidth,
             height: maxIndividualHeight,
             decoration: BoxDecoration(
-              color: Color(0xfff6f7f9),
+              color: const Color(0xfff6f7f9),
               border: Border(bottom: BorderSide(color: borderColor)),
             ),
           ),
@@ -40,7 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             width: maxWidth,
             height: maxIndividualHeight,
             decoration: BoxDecoration(
-              color: Color(0xfff6f7f9),
+              color: const Color(0xfff6f7f9),
               border: Border(top: BorderSide(color: borderColor)),
             ),
           ),

@@ -44,11 +44,9 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // setState(() {
       if (fajr == null) {
         _updatePrayerTime();
       }
-      // });
     }
   }
 
@@ -151,47 +149,50 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
 
     bool showGoToTodayWidget = _isToday(fajr?.getPrayerTime ?? DateTime.now());
 
-    return SafeArea(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: _getPreviousDayPrayerTime,
-                icon: const Icon(Icons.arrow_back_ios),
-                color: Colors.black26,
-                iconSize: 30,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  DateDisplayWidget(
-                    date: fajr?.getDateString() ?? 'Current Date',
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: _getPrayerCards(_getPrayers()),
-                  ),
-                ],
-              ),
-              IconButton(
-                onPressed: _getNextDayPrayerTime,
-                icon: const Icon(Icons.arrow_forward_ios),
-                color: Colors.black26,
-                iconSize: 30,
-              ),
-            ],
-          ),
-          GoToTodayWidget(
-            offstage: showGoToTodayWidget,
-            tapHandler: _getCurrentDayPrayerTime,
-          ),
-          const MenuIconWidget(),
-          WelcomeScreen(showWelcomeScreen: fajr == null),
-        ],
+    return Container(
+      color: const Color(0xfff6f7f9),
+      child: SafeArea(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: _getPreviousDayPrayerTime,
+                  icon: const Icon(Icons.arrow_back_ios),
+                  color: Colors.black26,
+                  iconSize: 30,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    DateDisplayWidget(
+                      date: fajr?.getDateString() ?? 'Current Date',
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: _getPrayerCards(_getPrayers()),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: _getNextDayPrayerTime,
+                  icon: const Icon(Icons.arrow_forward_ios),
+                  color: Colors.black26,
+                  iconSize: 30,
+                ),
+              ],
+            ),
+            GoToTodayWidget(
+              offstage: showGoToTodayWidget,
+              tapHandler: _getCurrentDayPrayerTime,
+            ),
+            const MenuIconWidget(),
+            WelcomeScreen(showWelcomeScreen: fajr == null),
+          ],
+        ),
       ),
     );
   }
