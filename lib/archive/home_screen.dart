@@ -4,7 +4,7 @@ import 'package:simple_azaan/widgets/clock_dial_widget.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/archive/prayer_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
-import 'package:simple_azaan/screens/settings/settings_screen.dart';
+import 'package:simple_azaan/archive/settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
