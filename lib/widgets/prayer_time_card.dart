@@ -30,6 +30,7 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
 
     var activePrayerTimeFontSize = screenWidth * 0.11;
     var inactivePrayerTimeFontSize = screenWidth * 0.08;
+    var timeToNextPrayerFontSize = screenWidth * 0.06;
 
     var prayerTime = widget.prayer?.getTimeString() ?? '12:00';
     var isCurrentPrayer = widget.prayer?.isCurrentPrayer ?? false;
@@ -55,9 +56,9 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
           return Container(
             margin: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
             child: Text(
-              '4 mins to ',
+              '4 minutes 3 seconds to',
               style: TextStyle(
-                fontSize: inactivePrayerTimeFontSize,
+                fontSize: timeToNextPrayerFontSize,
                 color: prayerTimeFontColor,
                 fontWeight: prayerTimeFontWeight,
                 decoration: TextDecoration.none,
