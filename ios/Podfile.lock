@@ -11,7 +11,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_widgetkit (from `.symlinks/plugins/flutter_widgetkit/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 EXTERNAL SOURCES:
@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
   flutter_widgetkit:
     :path: ".symlinks/plugins/flutter_widgetkit/ios"
   path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/ios"
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   workmanager:
     :path: ".symlinks/plugins/workmanager/ios"
 
