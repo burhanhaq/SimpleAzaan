@@ -73,12 +73,13 @@ struct Provider: TimelineProvider {
 
                     let dateTomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
                     let dateTomorrowMidnight = Calendar.current.date(bySettingHour: 0, minute: 5, second: 0, of: dateTomorrow)!
+                    let dateTodayMidnight = Calendar.current.date(byAdding: .day, value: -1, to: dateTomorrowMidnight)!
 
                     let prayers = [
                         PrayerConfig(
                             prayerType: Prayer.Fajr,
                             prayerTime: fajrTime,
-                            timeWhenIconVisible: dateTomorrowMidnight
+                            timeWhenIconVisible: dateTodayMidnight
                         ),
                         PrayerConfig(
                             prayerType: Prayer.Sunrise,
