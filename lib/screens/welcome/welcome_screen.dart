@@ -11,6 +11,15 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+    var screenWidth = screenSize.width;
+
+    var textStyle = TextStyle(
+      fontSize: screenWidth * 0.15,
+      color: Colors.black,
+      fontWeight: FontWeight.w400,
+      decoration: TextDecoration.none,
+    );
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       var maxHeight = constraints.maxHeight;
@@ -33,6 +42,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               color: const Color(0xfff6f7f9),
               border: Border(bottom: BorderSide(color: borderColor)),
             ),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                'Simple',
+                style: textStyle,
+              ),
+            ),
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 500),
@@ -42,6 +58,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             decoration: BoxDecoration(
               color: const Color(0xfff6f7f9),
               border: Border(top: BorderSide(color: borderColor)),
+            ),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                'Azaan',
+                style: textStyle,
+              ),
             ),
           ),
         ],
