@@ -15,9 +15,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     var screenWidth = screenSize.width;
 
     var textStyle = TextStyle(
-      fontSize: screenWidth * 0.15,
+      fontSize: screenWidth * 0.2,
       color: Colors.black,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w300,
       decoration: TextDecoration.none,
     );
     return LayoutBuilder(
@@ -42,11 +42,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               color: const Color(0xfff6f7f9),
               border: Border(bottom: BorderSide(color: borderColor)),
             ),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                'Simple',
-                style: textStyle,
+            child: Container(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  'Simple',
+                  style: textStyle,
+                ),
               ),
             ),
           ),
@@ -59,11 +62,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               color: const Color(0xfff6f7f9),
               border: Border(top: BorderSide(color: borderColor)),
             ),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Text(
-                'Azaan',
-                style: textStyle,
+            child: Container(
+              padding: const EdgeInsets.only(top: 30),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Text(
+                  'Azaan',
+                  style: textStyle,
+                ),
               ),
             ),
           ),
