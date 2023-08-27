@@ -24,6 +24,7 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   Prayer? asr;
   Prayer? maghrib;
   Prayer? isha;
+  AppLifecycleState? _appLifecycleState = AppLifecycleState.resumed;
 
   DateTime dateForFetchingPrayerTimes = DateTime.now();
 
@@ -34,6 +35,17 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     method: '2',
   );
 
+  bool canShowWelcomeScreen() {
+    if (_appLifecycleState != AppLifecycleState.resumed) {
+      return true;
+    }
+    if (fajr != null) {
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +55,9 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+    setState(() {
+      _appLifecycleState = state;
+    });
     if (state == AppLifecycleState.resumed) {
       if (fajr == null) {
         _updatePrayerTime();
@@ -51,6 +66,9 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   }
 
   void _updatePrayerTime() {
+    if (fajr != null) {
+      return;
+    }
     Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
     x.then((value) {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
@@ -145,8 +163,10 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    _updatePrayerTime();
-
+    bool showWelcomeScreen = canShowWelcomeScreen();
+    if (showWelcomeScreen) {
+      _updatePrayerTime();
+    }
     bool showGoToTodayWidget = _isToday(fajr?.getPrayerTime ?? DateTime.now());
 
     return Container(
@@ -190,7 +210,7 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
               tapHandler: _getCurrentDayPrayerTime,
             ),
             const MenuIconWidget(),
-            WelcomeScreen(showWelcomeScreen: fajr == null),
+            WelcomeScreen(showWelcomeScreen: showWelcomeScreen),
           ],
         ),
       ),
