@@ -127,13 +127,17 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     );
 
     // TODO: Sets Isha time if -1. Needs to be fixed.
-    if (currentPrayerIndex == -1) {
-      listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
-    } else if (currentPrayerIndex == 0) {
-      listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
-    } else if (currentPrayerIndex > 0 &&
-        currentPrayerIndex <= listOfPrayers.length + 1) {
-      --currentPrayerIndex;
+    // if (currentPrayerIndex == -1) {
+    //   listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
+    // } else if (currentPrayerIndex == 0) {
+    //   listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
+    // } else if (currentPrayerIndex > 0 &&
+    //     currentPrayerIndex <= listOfPrayers.length + 1) {
+    //   --currentPrayerIndex;
+    //   listOfPrayers[currentPrayerIndex]?.isCurrentPrayer = true;
+    // }
+
+    if (currentPrayerIndex >= 0) {
       listOfPrayers[currentPrayerIndex]?.isCurrentPrayer = true;
     }
 
