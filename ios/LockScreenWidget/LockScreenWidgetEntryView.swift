@@ -14,7 +14,14 @@ struct LockScreenWidgetEntryView : View {
     var body: some View {
         switch (widgetFamily) {
         case .accessoryCircular:
-            IconAndTimeCircularWidget(entry: entry)
+            if #available(iOSApplicationExtension 17.0, *) {
+                IconAndTimeCircularWidget(entry: entry)
+                .containerBackground(for: .widget) {
+                    Color.clear
+                }
+            } else {
+                IconAndTimeCircularWidget(entry: entry)
+            }
         case .accessoryInline:
             NameAndTimeInlineWidget(entry: entry)
         default:
