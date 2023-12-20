@@ -122,23 +122,23 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
       return <Prayer?>[];
     }
 
-    int currentPrayerIndex = listOfPrayers.indexWhere(
+    int nextPrayerIndex = listOfPrayers.indexWhere(
       (element) => element?.hasPrayerPassed == false,
     );
 
     // TODO: Sets Isha time if -1. Needs to be fixed.
-    // if (currentPrayerIndex == -1) {
+    // if (nextPrayerIndex == -1) {
     //   listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
-    // } else if (currentPrayerIndex == 0) {
+    // } else if (nextPrayerIndex == 0) {
     //   listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
-    // } else if (currentPrayerIndex > 0 &&
-    //     currentPrayerIndex <= listOfPrayers.length + 1) {
-    //   --currentPrayerIndex;
-    //   listOfPrayers[currentPrayerIndex]?.isCurrentPrayer = true;
+    // } else if (nextPrayerIndex > 0 &&
+    //     nextPrayerIndex <= listOfPrayers.length + 1) {
+    //   --nextPrayerIndex;
+    //   listOfPrayers[nextPrayerIndex]?.isCurrentPrayer = true;
     // }
 
-    if (currentPrayerIndex >= 0) {
-      listOfPrayers[currentPrayerIndex]?.isCurrentPrayer = true;
+    if (nextPrayerIndex >= 0) {
+      listOfPrayers[nextPrayerIndex]?.isCurrentPrayer = true;
     }
 
     return listOfPrayers;
