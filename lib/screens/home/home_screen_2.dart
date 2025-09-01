@@ -9,6 +9,7 @@ import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
+import 'package:simple_azaan/service/notification_service.dart';
 import 'package:simple_azaan/service/widget_sync.dart';
 import 'package:simple_azaan/service/settings_service.dart';
 
@@ -137,6 +138,9 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
       maghrib = Prayer('Maghrib', pd.time5);
       isha = Prayer('Isha', pd.time6);
     });
+    // Schedule iOS local notifications for remaining prayers today
+    NotificationService()
+        .scheduleForPrayerData(pd, cityLabel: api?.city ?? 'Your city');
   }
 
   _getPrayers() {

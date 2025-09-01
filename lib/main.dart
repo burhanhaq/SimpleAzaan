@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:simple_azaan/screens/home/home_screen_2.dart';
+import 'package:simple_azaan/service/notification_service.dart';
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize iOS local notifications and request permissions
+  await NotificationService().init();
   runApp(const MyApp());
 }
 

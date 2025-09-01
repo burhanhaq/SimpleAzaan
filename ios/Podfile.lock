@@ -1,5 +1,9 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
+  - flutter_native_timezone (0.0.1):
+    - Flutter
   - flutter_widgetkit (0.0.1):
     - Flutter
   - geocoding_ios (1.0.5):
@@ -15,6 +19,8 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - flutter_native_timezone (from `.symlinks/plugins/flutter_native_timezone/ios`)
   - flutter_widgetkit (from `.symlinks/plugins/flutter_widgetkit/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
@@ -24,6 +30,10 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  flutter_native_timezone:
+    :path: ".symlinks/plugins/flutter_native_timezone/ios"
   flutter_widgetkit:
     :path: ".symlinks/plugins/flutter_widgetkit/ios"
   geocoding_ios:
@@ -37,6 +47,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
+  flutter_native_timezone: 5f05b2de06c9776b4cc70e1839f03de178394d22
   flutter_widgetkit: a0e9b0d50ee9bec366dad36c639509daaafc397a
   geocoding_ios: eafacae6ad11a1eb56681f7d11df602a5fd49416
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd

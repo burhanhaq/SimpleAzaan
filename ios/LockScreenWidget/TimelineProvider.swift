@@ -124,7 +124,8 @@ struct Provider: TimelineProvider {
                 )
                 entries.append(entry)
             }
-            setPrayerNotifications(prayerConfigList: prayers)
+                    // Notifications are now scheduled by the Flutter app.
+                    // setPrayerNotifications(prayerConfigList: prayers)
             let timeline = Timeline(entries: entries, policy: .after(dateTomorrowMidnight))
             completion(timeline)
         } catch {

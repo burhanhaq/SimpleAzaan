@@ -39,6 +39,10 @@ dependencies:
   intl: ^0.18.0
   # google_fonts: ^4.0.3
   get: ^4.6.5
+  # iOS local notifications + timezone handling
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.9.1
+  flutter_native_timezone: ^2.0.0
   shared_preferences: ^2.2.2
   geolocator: ^10.1.0
   geocoding: ^3.0.0
