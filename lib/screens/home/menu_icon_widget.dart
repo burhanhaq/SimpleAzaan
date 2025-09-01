@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_azaan/screens/settings/settings_screen.dart';
 
 class MenuIconWidget extends StatefulWidget {
   const MenuIconWidget({super.key});
@@ -20,7 +21,14 @@ class _MenuIconWidgetState extends State<MenuIconWidget> {
           color: Colors.black,
         ),
         child: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SettingsScreen(),
+              ),
+            );
+          },
           iconSize: 24,
           color: Colors.white,
           icon: const Icon(Icons.mosque),

@@ -10,6 +10,7 @@ import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
 import 'package:simple_azaan/service/widget_sync.dart';
+import 'package:simple_azaan/service/settings_service.dart';
 
 class HomeScreen2 extends StatefulWidget {
   const HomeScreen2({super.key});
@@ -28,13 +29,8 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   AppLifecycleState? _appLifecycleState = AppLifecycleState.resumed;
 
   DateTime dateForFetchingPrayerTimes = DateTime.now();
-
-  AlAdhanApi api = AlAdhanApi(
-    city: 'Bellevue',
-    state: 'WA',
-    country: 'United States',
-    method: '2',
-  );
+  final SettingsService _settingsService = SettingsService.instance;
+  AlAdhanApi? api;
 
   bool canShowWelcomeScreen() {
     if (_appLifecycleState != AppLifecycleState.resumed) {
@@ -51,6 +47,20 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _initializeApi();
+  }
+
+  Future<void> _initializeApi() async {
+    final settings = await _settingsService.loadSettings();
+    api = AlAdhanApi(
+      city: settings.customCity,
+      state: settings.customState,
+      country: settings.customCountry,
+      method: '2',
+    );
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -67,10 +77,10 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   }
 
   void _updatePrayerTime() {
-    if (fajr != null) {
+    if (fajr != null || api == null) {
       return;
     }
-    Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
+    Future<dynamic> x = api!.getPrayerTimeForDate(dateForFetchingPrayerTimes);
     x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
@@ -79,9 +89,12 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     });
   }
 
-  void _getCurrentDayPrayerTime() {
+  void _getCurrentDayPrayerTime() async {
+    await _initializeApi();
+    if (api == null) return;
+    
     dateForFetchingPrayerTimes = DateTime.now();
-    Future<dynamic> x = api.getPrayerTimeToday();
+    Future<dynamic> x = api!.getPrayerTimeToday();
     x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
@@ -90,9 +103,11 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   }
 
   void _getNextDayPrayerTime() {
+    if (api == null) return;
+    
     dateForFetchingPrayerTimes =
         dateForFetchingPrayerTimes.add(const Duration(days: 1));
-    Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
+    Future<dynamic> x = api!.getPrayerTimeForDate(dateForFetchingPrayerTimes);
     x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
@@ -101,9 +116,11 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   }
 
   void _getPreviousDayPrayerTime() {
+    if (api == null) return;
+    
     dateForFetchingPrayerTimes =
         dateForFetchingPrayerTimes.subtract(const Duration(days: 1));
-    Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
+    Future<dynamic> x = api!.getPrayerTimeForDate(dateForFetchingPrayerTimes);
     x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
