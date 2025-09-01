@@ -2,16 +2,12 @@ PODS:
   - Flutter (1.0.0)
   - flutter_widgetkit (0.0.1):
     - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - workmanager (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_widgetkit (from `.symlinks/plugins/flutter_widgetkit/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 EXTERNAL SOURCES:
@@ -19,17 +15,14 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_widgetkit:
     :path: ".symlinks/plugins/flutter_widgetkit/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   workmanager:
     :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_widgetkit: a0e9b0d50ee9bec366dad36c639509daaafc397a
-  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
 
 PODFILE CHECKSUM: 5a367937f10bf0c459576e5e472a1159ee029c13
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.16.2
