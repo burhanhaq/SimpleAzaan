@@ -3,6 +3,7 @@ import 'package:simple_azaan/api/aladhan_api.dart';
 import 'package:simple_azaan/constants.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/screens/home/date_display_widget.dart';
+import 'package:simple_azaan/screens/home/location_display_widget.dart';
 import 'package:simple_azaan/screens/home/go_to_today_widget.dart';
 import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
 import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
@@ -32,6 +33,7 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   DateTime dateForFetchingPrayerTimes = DateTime.now();
   final SettingsService _settingsService = SettingsService.instance;
   AlAdhanApi? api;
+  String _currentLocation = '';
 
   bool canShowWelcomeScreen() {
     if (_appLifecycleState != AppLifecycleState.resumed) {
@@ -59,6 +61,7 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
       country: settings.customCountry,
       method: '2',
     );
+    _currentLocation = '${settings.customCity}, ${settings.customState}';
     if (mounted) {
       setState(() {});
     }
@@ -222,6 +225,10 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
                     DateDisplayWidget(
                       date: fajr?.getDateString() ?? 'Current Date',
                     ),
+                    LocationDisplayWidget(
+                      location: _currentLocation.isEmpty ? 'Loading location...' : _currentLocation,
+                    ),
+                    const SizedBox(height: 10),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: _getPrayerCards(_getPrayers()),
