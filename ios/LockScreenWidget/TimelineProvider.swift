@@ -8,6 +8,7 @@
 //
 
 import WidgetKit
+import Foundation
 import UserNotifications
 
 struct Provider: TimelineProvider {
@@ -28,109 +29,108 @@ struct Provider: TimelineProvider {
         completion(entry)
     }
 
-    // Called after getSnapshot(), to fetch real data
+    // Called after getSnapshot(), to fetch real data from shared App Group cache
     func getTimeline(in context: Context, completion: @escaping (Timeline<PrayerEntry>) -> ()) {
-        let isoDateFormatter = ISO8601DateFormatter()
-        isoDateFormatter.formatOptions = [
-            .withFullDate,
-            .withTime,
-            .withColonSeparatorInTime]
-        isoDateFormatter.timeZone = TimeZone.current
-
-        let url = "https://api.aladhan.com/v1/"
-        let timingsByCity = "timingsByCity?"
-        let city = "Bellevue"
-        let state = "WA"
-        let country = "US"
-        let method = "2"
-        let params = "city=" + city + "&state=" + state + "&country=" + country + "&method=" + method + "&iso8601=true"
-        let apiUrl = url+timingsByCity+params
-        var request = URLRequest(url: URL(string: apiUrl)!)
-        request.allHTTPHeaderFields = [
-            "content-Type": "application/x-www-form-urlencoded",
-            "accept": "application/json"]
-        request.httpMethod = "GET"
-        let session = URLSession.shared
-        let task = session.dataTask(with: request) { (data, response, error) in
-            if error == nil && data != nil {
-                do {
-                    let newJsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]
-                    let newData = newJsonData!["data"] as? [String: Any]
-                    let timings = newData!["timings"] as? [String: Any]
-                    let fajr = timings?["Fajr"] as! String
-                    let sunrise = timings?["Sunrise"] as! String
-                    let zuhr = timings!["Dhuhr"] as! String
-                    let asr = timings!["Asr"] as! String
-                    let maghrib = timings!["Maghrib"] as! String
-                    let isha = timings!["Isha"] as! String
-                    
-                    let fajrTime = isoDateFormatter.date(from: fajr)!
-                    let sunriseTime = isoDateFormatter.date(from: sunrise)!
-                    let zuhrTime = isoDateFormatter.date(from: zuhr)!
-                    let asrTime = isoDateFormatter.date(from: asr)!
-                    let maghribTime = isoDateFormatter.date(from: maghrib)!
-                    let ishaTime = isoDateFormatter.date(from: isha)!
-
-                    let dateTomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-                    let dateTomorrowMidnight = Calendar.current.date(bySettingHour: 0, minute: 5, second: 0, of: dateTomorrow)!
-                    let dateTodayMidnight = Calendar.current.date(byAdding: .day, value: -1, to: dateTomorrowMidnight)!
-
-                    let prayers = [
-                        PrayerConfig(
-                            prayerType: Prayer.Fajr,
-                            prayerTime: fajrTime,
-                            timeWhenIconVisible: dateTodayMidnight
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Sunrise,
-                            prayerTime: sunriseTime,
-                            timeWhenIconVisible: fajrTime
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Zuhr,
-                            prayerTime: zuhrTime,
-                            timeWhenIconVisible: sunriseTime
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Asr,
-                            prayerTime: asrTime,
-                            timeWhenIconVisible: zuhrTime
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Maghrib,
-                            prayerTime: maghribTime,
-                            timeWhenIconVisible: asrTime
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Isha,
-                            prayerTime: ishaTime,
-                            timeWhenIconVisible: maghribTime
-                        ),
-                        PrayerConfig(
-                            prayerType: Prayer.Fajr,
-                            prayerTime: fajrTime,
-                            timeWhenIconVisible: ishaTime
-                        )
-                    ]
-                    var entries: [PrayerEntry] = []
-                    for pc in prayers {
-                        let entry = PrayerEntry(
-                            date: pc.timeWhenIconVisible,
-                            prayerConfig: pc
-                        )
-                        entries.append(entry)
-                    }
-                    setPrayerNotifications(prayerConfigList: prayers)
-                    // Create the timeline with the entry and a reload policy with the date for the next update.
-                    let timeline = Timeline(entries: entries, policy: .after(dateTomorrowMidnight))
-                    // Call the completion to pass the timeline to WidgetKit.
-                    completion(timeline)
-                } catch {
-                    print("Error parsing response data")
-                }
-            }
+        struct StoredPrayerData: Decodable {
+            let time1: String
+            let time2: String
+            let time3: String
+            let time4: String
+            let time5: String
+            let time6: String
         }
-        task.resume()
+
+        let suiteName = "group.com.simpleAzaan"
+        let key = "prayerData"
+
+        // Default: show placeholder-like entry and try again soon
+        let fallbackEntry: PrayerEntry = {
+            let pc = PrayerConfig(prayerType: Prayer.Mosque, prayerTime: Date(), timeWhenIconVisible: Date())
+            return PrayerEntry(date: pc.prayerTime, prayerConfig: pc)
+        }()
+
+        guard let defaults = UserDefaults(suiteName: suiteName),
+              let jsonString = defaults.string(forKey: key),
+              let data = jsonString.data(using: .utf8) else {
+            let timeline = Timeline(entries: [fallbackEntry], policy: .after(Date().addingTimeInterval(30 * 60)))
+            completion(timeline)
+            return
+        }
+
+        do {
+            let decoder = JSONDecoder()
+            let stored = try decoder.decode(StoredPrayerData.self, from: data)
+            let iso = ISO8601DateFormatter()
+            iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+            guard let fajrTime = iso.date(from: stored.time1),
+                  let sunriseTime = iso.date(from: stored.time2),
+                  let zuhrTime = iso.date(from: stored.time3),
+                  let asrTime = iso.date(from: stored.time4),
+                  let maghribTime = iso.date(from: stored.time5),
+                  let ishaTime = iso.date(from: stored.time6) else {
+                let timeline = Timeline(entries: [fallbackEntry], policy: .after(Date().addingTimeInterval(30 * 60)))
+                completion(timeline)
+                return
+            }
+
+            let dateTomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+            let dateTomorrowMidnight = Calendar.current.date(bySettingHour: 0, minute: 5, second: 0, of: dateTomorrow)!
+            let dateTodayMidnight = Calendar.current.date(byAdding: .day, value: -1, to: dateTomorrowMidnight)!
+
+            let prayers = [
+                PrayerConfig(
+                    prayerType: Prayer.Fajr,
+                    prayerTime: fajrTime,
+                    timeWhenIconVisible: dateTodayMidnight
+                ),
+                PrayerConfig(
+                    prayerType: Prayer.Sunrise,
+                    prayerTime: sunriseTime,
+                    timeWhenIconVisible: fajrTime
+                ),
+                PrayerConfig(
+                    prayerType: Prayer.Zuhr,
+                    prayerTime: zuhrTime,
+                    timeWhenIconVisible: sunriseTime
+                ),
+                PrayerConfig(
+                    prayerType: Prayer.Asr,
+                    prayerTime: asrTime,
+                    timeWhenIconVisible: zuhrTime
+                ),
+                PrayerConfig(
+                    prayerType: Prayer.Maghrib,
+                    prayerTime: maghribTime,
+                    timeWhenIconVisible: asrTime
+                ),
+                PrayerConfig(
+                    prayerType: Prayer.Isha,
+                    prayerTime: ishaTime,
+                    timeWhenIconVisible: maghribTime
+                ),
+                PrayerConfig(
+                    prayerType: Prayer.Fajr,
+                    prayerTime: fajrTime,
+                    timeWhenIconVisible: ishaTime
+                )
+            ]
+
+            var entries: [PrayerEntry] = []
+            for pc in prayers {
+                let entry = PrayerEntry(
+                    date: pc.timeWhenIconVisible,
+                    prayerConfig: pc
+                )
+                entries.append(entry)
+            }
+            setPrayerNotifications(prayerConfigList: prayers)
+            let timeline = Timeline(entries: entries, policy: .after(dateTomorrowMidnight))
+            completion(timeline)
+        } catch {
+            let timeline = Timeline(entries: [fallbackEntry], policy: .after(Date().addingTimeInterval(30 * 60)))
+            completion(timeline)
+        }
     }
 
     func setPrayerNotifications(prayerConfigList: [PrayerConfig]) {

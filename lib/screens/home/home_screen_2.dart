@@ -9,6 +9,7 @@ import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
+import 'package:simple_azaan/service/widget_sync.dart';
 
 class HomeScreen2 extends StatefulWidget {
   const HomeScreen2({super.key});
@@ -70,18 +71,21 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
       return;
     }
     Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
-    x.then((value) {
+    x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
+      // Sync latest data to iOS widget
+      await WidgetSync.pushPrayerDataToWidget(pd);
     });
   }
 
   void _getCurrentDayPrayerTime() {
     dateForFetchingPrayerTimes = DateTime.now();
     Future<dynamic> x = api.getPrayerTimeToday();
-    x.then((value) {
+    x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
+      await WidgetSync.pushPrayerDataToWidget(pd);
     });
   }
 
@@ -89,9 +93,10 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     dateForFetchingPrayerTimes =
         dateForFetchingPrayerTimes.add(const Duration(days: 1));
     Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
-    x.then((value) {
+    x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
+      await WidgetSync.pushPrayerDataToWidget(pd);
     });
   }
 
@@ -99,9 +104,10 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     dateForFetchingPrayerTimes =
         dateForFetchingPrayerTimes.subtract(const Duration(days: 1));
     Future<dynamic> x = api.getPrayerTimeForDate(dateForFetchingPrayerTimes);
-    x.then((value) {
+    x.then((value) async {
       PrayerData pd = PrayerData.fromAlAdhanApi(value);
       _updatePrayerState(pd);
+      await WidgetSync.pushPrayerDataToWidget(pd);
     });
   }
 

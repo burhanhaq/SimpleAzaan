@@ -39,11 +39,12 @@ class PrayerData {
         time6 = DateTime.parse(json['time6']);
 
   Map<String, dynamic> toJson() => {
-        'time1': time1.toIso8601String(),
-        'time2': time2.toIso8601String(),
-        'time3': time3.toIso8601String(),
-        'time4': time4.toIso8601String(),
-        'time5': time5.toIso8601String(),
-        'time6': time6.toIso8601String(),
+        // Store as UTC ISO-8601 so iOS can parse reliably
+        'time1': time1.toUtc().toIso8601String(),
+        'time2': time2.toUtc().toIso8601String(),
+        'time3': time3.toUtc().toIso8601String(),
+        'time4': time4.toUtc().toIso8601String(),
+        'time5': time5.toUtc().toIso8601String(),
+        'time6': time6.toUtc().toIso8601String(),
       };
 }
