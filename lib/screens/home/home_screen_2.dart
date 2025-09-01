@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_azaan/api/aladhan_api.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_azaan/constants.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/screens/home/date_display_widget.dart';
@@ -9,10 +9,8 @@ import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
 import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
-import 'package:simple_azaan/models/prayer_data.dart';
-import 'package:simple_azaan/service/notification_service.dart';
-import 'package:simple_azaan/service/widget_sync.dart';
-import 'package:simple_azaan/service/settings_service.dart';
+import 'package:simple_azaan/providers/location_provider.dart';
+import 'package:simple_azaan/providers/prayer_times_provider.dart';
 
 class HomeScreen2 extends StatefulWidget {
   const HomeScreen2({super.key});
@@ -22,24 +20,16 @@ class HomeScreen2 extends StatefulWidget {
 }
 
 class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
-  Prayer? fajr;
-  Prayer? sunrise;
-  Prayer? zuhr;
-  Prayer? asr;
-  Prayer? maghrib;
-  Prayer? isha;
   AppLifecycleState? _appLifecycleState = AppLifecycleState.resumed;
-
-  DateTime dateForFetchingPrayerTimes = DateTime.now();
-  final SettingsService _settingsService = SettingsService.instance;
-  AlAdhanApi? api;
-  String _currentLocation = '';
+  bool _isInitialized = false;
 
   bool canShowWelcomeScreen() {
     if (_appLifecycleState != AppLifecycleState.resumed) {
       return true;
     }
-    if (fajr != null) {
+    
+    final prayerTimesProvider = context.read<PrayerTimesProvider>();
+    if (prayerTimesProvider.hasData) {
       return false;
     }
 
@@ -50,18 +40,25 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initializeApi();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeProviders();
+    });
   }
 
-  Future<void> _initializeApi() async {
-    final settings = await _settingsService.loadSettings();
-    api = AlAdhanApi(
-      city: settings.customCity,
-      state: settings.customState,
-      country: settings.customCountry,
-      method: '2',
-    );
-    _currentLocation = '${settings.customCity}, ${settings.customState}';
+  Future<void> _initializeProviders() async {
+    if (_isInitialized) return;
+    
+    final locationProvider = context.read<LocationProvider>();
+    final prayerTimesProvider = context.read<PrayerTimesProvider>();
+    
+    await locationProvider.initialize();
+    
+    if (locationProvider.currentLocation != null) {
+      await prayerTimesProvider.loadPrayerTimes(locationProvider.currentLocation!);
+    }
+    
+    _isInitialized = true;
     if (mounted) {
       setState(() {});
     }
@@ -74,107 +71,47 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
       _appLifecycleState = state;
     });
     if (state == AppLifecycleState.resumed) {
-      if (fajr == null) {
-        _updatePrayerTime();
+      final prayerTimesProvider = context.read<PrayerTimesProvider>();
+      if (!prayerTimesProvider.hasData) {
+        _initializeProviders();
+      } else {
+        prayerTimesProvider.refreshPrayerTimes();
       }
     }
   }
 
-  void _updatePrayerTime() {
-    if (fajr != null || api == null) {
-      return;
-    }
-    Future<dynamic> x = api!.getPrayerTimeForDate(dateForFetchingPrayerTimes);
-    x.then((value) async {
-      PrayerData pd = PrayerData.fromAlAdhanApi(value);
-      _updatePrayerState(pd);
-      // Sync latest data to iOS widget
-      await WidgetSync.pushPrayerDataToWidget(pd);
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _refreshPrayerTimes() {
+    final prayerTimesProvider = context.read<PrayerTimesProvider>();
+    prayerTimesProvider.refreshPrayerTimes();
   }
 
   void _getCurrentDayPrayerTime() async {
-    await _initializeApi();
-    if (api == null) return;
-    
-    dateForFetchingPrayerTimes = DateTime.now();
-    Future<dynamic> x = api!.getPrayerTimeToday();
-    x.then((value) async {
-      PrayerData pd = PrayerData.fromAlAdhanApi(value);
-      _updatePrayerState(pd);
-      await WidgetSync.pushPrayerDataToWidget(pd);
-    });
+    final prayerTimesProvider = context.read<PrayerTimesProvider>();
+    await prayerTimesProvider.goToToday();
   }
 
   void _getNextDayPrayerTime() {
-    if (api == null) return;
-    
-    dateForFetchingPrayerTimes =
-        dateForFetchingPrayerTimes.add(const Duration(days: 1));
-    Future<dynamic> x = api!.getPrayerTimeForDate(dateForFetchingPrayerTimes);
-    x.then((value) async {
-      PrayerData pd = PrayerData.fromAlAdhanApi(value);
-      _updatePrayerState(pd);
-      await WidgetSync.pushPrayerDataToWidget(pd);
-    });
+    final prayerTimesProvider = context.read<PrayerTimesProvider>();
+    prayerTimesProvider.goToNextDay();
   }
 
   void _getPreviousDayPrayerTime() {
-    if (api == null) return;
-    
-    dateForFetchingPrayerTimes =
-        dateForFetchingPrayerTimes.subtract(const Duration(days: 1));
-    Future<dynamic> x = api!.getPrayerTimeForDate(dateForFetchingPrayerTimes);
-    x.then((value) async {
-      PrayerData pd = PrayerData.fromAlAdhanApi(value);
-      _updatePrayerState(pd);
-      await WidgetSync.pushPrayerDataToWidget(pd);
-    });
+    final prayerTimesProvider = context.read<PrayerTimesProvider>();
+    prayerTimesProvider.goToPreviousDay();
   }
 
-  void _updatePrayerState(PrayerData pd) {
-    setState(() {
-      fajr = Prayer('Fajr', pd.time1);
-      sunrise = Prayer('Sunrise', pd.time2);
-      zuhr = Prayer('Zuhr', pd.time3);
-      asr = Prayer('Asr', pd.time4);
-      maghrib = Prayer('Maghrib', pd.time5);
-      isha = Prayer('Isha', pd.time6);
-    });
-    // Schedule iOS local notifications for remaining prayers today
-    NotificationService()
-        .scheduleForPrayerData(pd, cityLabel: api?.city ?? 'Your city');
+
+  List<Prayer> _getPrayers(PrayerTimesProvider prayerTimesProvider) {
+    return prayerTimesProvider.prayers;
   }
 
-  _getPrayers() {
-    List<Prayer?> listOfPrayers = [fajr, sunrise, zuhr, asr, maghrib, isha];
-    if (listOfPrayers[0] == null) {
-      return <Prayer?>[];
-    }
-
-    int nextPrayerIndex = listOfPrayers.indexWhere(
-      (element) => element?.hasPrayerPassed == false,
-    );
-
-    // TODO: Sets Isha time if -1. Needs to be fixed.
-    // if (nextPrayerIndex == -1) {
-    //   listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
-    // } else if (nextPrayerIndex == 0) {
-    //   listOfPrayers[listOfPrayers.length - 1]?.isCurrentPrayer = true;
-    // } else if (nextPrayerIndex > 0 &&
-    //     nextPrayerIndex <= listOfPrayers.length + 1) {
-    //   --nextPrayerIndex;
-    //   listOfPrayers[nextPrayerIndex]?.isCurrentPrayer = true;
-    // }
-
-    if (nextPrayerIndex >= 0) {
-      listOfPrayers[nextPrayerIndex]?.isCurrentPrayer = true;
-    }
-
-    return listOfPrayers;
-  }
-
-  _getPrayerCards(List<Prayer?> listOfPrayers) {
+  _getPrayerCards(List<Prayer> listOfPrayers) {
     return List.generate(listOfPrayers.length, (index) {
       return Column(
         children: [
@@ -188,30 +125,40 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
     });
   }
 
-  bool _isToday(DateTime other) {
-    DateTime now = DateTime.now();
-    return now.year == other.year &&
-        now.month == other.month &&
-        now.day == other.day;
-  }
 
   @override
   Widget build(BuildContext context) {
     bool showWelcomeScreen = canShowWelcomeScreen();
     if (showWelcomeScreen) {
-      _updatePrayerTime();
+      _refreshPrayerTimes();
     }
-    bool showGoToTodayWidget = _isToday(fajr?.getPrayerTime ?? DateTime.now());
+    
+    return Consumer2<LocationProvider, PrayerTimesProvider>(
+      builder: (context, locationProvider, prayerTimesProvider, child) {
+        final prayers = _getPrayers(prayerTimesProvider);
+        bool showGoToTodayWidget = prayerTimesProvider.isToday;
+        
+        String dateDisplay = 'Current Date';
+        if (prayers.isNotEmpty) {
+          dateDisplay = prayers.first.getDateString();
+        } else {
+          dateDisplay = prayerTimesProvider.selectedDate.toString().split(' ')[0];
+        }
+        
+        String locationDisplay = kLoadingLocation;
+        if (locationProvider.hasError) {
+          locationDisplay = 'Error: ${locationProvider.errorMessage}';
+        } else if (locationProvider.currentLocation != null) {
+          locationDisplay = locationProvider.displayLocation;
+        }
 
-    return Container(
+        return Container(
       color: const Color(0xfff6f7f9),
       child: SafeArea(
         child: Stack(
           alignment: Alignment.center,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 IconButton(
                   onPressed: _getPreviousDayPrayerTime,
@@ -219,21 +166,47 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
                   color: Colors.black26,
                   iconSize: 30,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    DateDisplayWidget(
-                      date: fajr?.getDateString() ?? 'Current Date',
-                    ),
-                    LocationDisplayWidget(
-                      location: _currentLocation.isEmpty ? 'Loading location...' : _currentLocation,
-                    ),
-                    const SizedBox(height: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: _getPrayerCards(_getPrayers()),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      DateDisplayWidget(date: dateDisplay),
+                      LocationDisplayWidget(location: locationDisplay),
+                      const SizedBox(height: 10),
+                      if (prayerTimesProvider.isLoading)
+                        const CircularProgressIndicator()
+                      else if (prayerTimesProvider.hasError)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Error loading prayer times',
+                                style: TextStyle(color: Colors.red[700]),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                prayerTimesProvider.errorMessage ?? '',
+                                style: const TextStyle(fontSize: 12),
+                                textAlign: TextAlign.center,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: _refreshPrayerTimes,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: _getPrayerCards(prayers),
+                        ),
+                    ],
+                  ),
                 ),
                 IconButton(
                   onPressed: _getNextDayPrayerTime,
@@ -252,6 +225,8 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
           ],
         ),
       ),
+        );
+      },
     );
   }
 }

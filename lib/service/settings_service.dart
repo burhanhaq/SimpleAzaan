@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_azaan/constants.dart';
 
 enum AppThemeMode {
   light,
@@ -25,9 +26,9 @@ class AppSettings {
 
   AppSettings({
     this.useCurrentLocation = true,
-    this.customCity = 'Bellevue',
-    this.customState = 'WA',
-    this.customCountry = 'United States',
+    this.customCity = kDefaultCity,
+    this.customState = kDefaultState,
+    this.customCountry = kDefaultCountry,
     Map<PrayerType, bool>? notificationSettings,
     this.themeMode = AppThemeMode.light,
   }) : notificationSettings = notificationSettings ??
@@ -42,12 +43,12 @@ class AppSettings {
 }
 
 class SettingsService {
-  static const String _useCurrentLocationKey = 'use_current_location';
-  static const String _customCityKey = 'custom_city';
-  static const String _customStateKey = 'custom_state';
-  static const String _customCountryKey = 'custom_country';
-  static const String _themeModeKey = 'theme_mode';
-  static const String _notificationPrefix = 'notification_';
+  static const String _useCurrentLocationKey = kUseCurrentLocationKey;
+  static const String _customCityKey = kCustomCityKey;
+  static const String _customStateKey = kCustomStateKey;
+  static const String _customCountryKey = kCustomCountryKey;
+  static const String _themeModeKey = kThemeModeKey;
+  static const String _notificationPrefix = kNotificationPrefix;
 
   static SettingsService? _instance;
   static SettingsService get instance {
@@ -61,9 +62,9 @@ class SettingsService {
     final prefs = await SharedPreferences.getInstance();
 
     final useCurrentLocation = prefs.getBool(_useCurrentLocationKey) ?? true;
-    final customCity = prefs.getString(_customCityKey) ?? 'Bellevue';
-    final customState = prefs.getString(_customStateKey) ?? 'WA';
-    final customCountry = prefs.getString(_customCountryKey) ?? 'United States';
+    final customCity = prefs.getString(_customCityKey) ?? kDefaultCity;
+    final customState = prefs.getString(_customStateKey) ?? kDefaultState;
+    final customCountry = prefs.getString(_customCountryKey) ?? kDefaultCountry;
     final themeModeIndex = prefs.getInt(_themeModeKey) ?? 0;
     final themeMode = AppThemeMode.values[themeModeIndex];
 

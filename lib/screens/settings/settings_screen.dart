@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_azaan/service/settings_service.dart';
+import 'package:simple_azaan/providers/location_provider.dart';
+import 'package:simple_azaan/constants.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -43,68 +44,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Location permission denied')),
-            );
+      final locationProvider = context.read<LocationProvider>();
+      await locationProvider.detectCurrentLocation();
+      
+      if (locationProvider.hasError) {
+        if (mounted) {
+          String message = locationProvider.errorMessage ?? kLocationDetectionFailed;
+          bool isPermissionError = message.contains('permission') || message.contains('denied');
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(seconds: 6),
+              action: isPermissionError 
+                ? SnackBarAction(
+                    label: 'OK', 
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    }
+                  )
+                : null,
+            ),
+          );
+          
+          // If it's a permission error, refresh the UI to reflect manual mode
+          if (isPermissionError && !locationProvider.useCurrentLocation) {
+            setState(() {
+              _currentSettings.useCurrentLocation = false;
+            });
           }
-          return;
         }
-      }
+      } else if (locationProvider.currentLocation != null) {
+        final location = locationProvider.currentLocation!;
+        setState(() {
+          _currentSettings.customCity = location.city;
+          _currentSettings.customState = location.state;
+          _currentSettings.customCountry = location.country;
+          _cityController.text = location.city;
+        });
 
-      if (permission == LocationPermission.deniedForever) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permission permanently denied')),
+            SnackBar(content: Text('Location detected: ${location.displayName}')),
           );
-        }
-        return;
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      if (placemarks.isNotEmpty) {
-        final placemark = placemarks.first;
-        final city = placemark.locality ?? placemark.subAdministrativeArea ?? '';
-        final state = placemark.administrativeArea ?? '';
-        final country = placemark.country ?? '';
-
-        if (city.isNotEmpty) {
-          setState(() {
-            _currentSettings.customCity = city;
-            _currentSettings.customState = state;
-            _currentSettings.customCountry = country;
-            _cityController.text = city;
-          });
-
-          await _settingsService.updateLocationSettings(
-            customCity: city,
-            customState: state,
-            customCountry: country,
-          );
-
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Location detected: $city, $state')),
-            );
-          }
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to detect location')),
+          SnackBar(content: Text('$kLocationDetectionFailed: ${e.toString()}')),
         );
       }
     } finally {
@@ -169,9 +157,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 _currentSettings.useCurrentLocation = value;
               });
-              await _settingsService.updateLocationSettings(
-                useCurrentLocation: value,
-              );
+              
+              final locationProvider = context.read<LocationProvider>();
+              await locationProvider.toggleLocationMode(value);
+              
+              if (locationProvider.currentLocation != null) {
+                final location = locationProvider.currentLocation!;
+                setState(() {
+                  _currentSettings.customCity = location.city;
+                  _currentSettings.customState = location.state;
+                  _currentSettings.customCountry = location.country;
+                  if (!value) {
+                    _cityController.text = location.city;
+                  }
+                });
+              }
             },
           ),
           if (!_currentSettings.useCurrentLocation) ...[
@@ -185,12 +185,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   border: InputBorder.none,
                 ),
                 onSubmitted: (value) async {
-                  setState(() {
-                    _currentSettings.customCity = value;
-                  });
-                  await _settingsService.updateLocationSettings(
-                    customCity: value,
-                  );
+                  if (value.trim().isNotEmpty) {
+                    final locationProvider = context.read<LocationProvider>();
+                    await locationProvider.setCustomLocation(value.trim());
+                    
+                    if (locationProvider.currentLocation != null) {
+                      final location = locationProvider.currentLocation!;
+                      setState(() {
+                        _currentSettings.customCity = location.city;
+                        _currentSettings.customState = location.state;
+                        _currentSettings.customCountry = location.country;
+                      });
+                    }
+                    
+                    if (locationProvider.hasError) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(locationProvider.errorMessage ?? 'Failed to set location')),
+                        );
+                      }
+                    }
+                  }
                 },
               ),
             ),
