@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_azaan/service/settings_service.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
+import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
 import 'package:simple_azaan/constants.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -221,7 +222,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     )
                   : const Icon(Icons.location_searching),
               title: const Text('Detect Location'),
-              subtitle: const Text('Use GPS to find your current city'),
+              subtitle: _isDetectingLocation 
+                  ? const SleekLoadingIndicator(
+                      height: 2,
+                      primaryColor: Colors.black,
+                      backgroundColor: kLoadingBackgroundColor,
+                    )
+                  : const Text('Use GPS to find your current city'),
               onTap: _isDetectingLocation ? null : _detectCurrentLocation,
             ),
           ],
@@ -304,7 +311,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xfff6f7f9),
+      backgroundColor: kAppBackgroundColor,
       appBar: AppBar(
         title: const Text('Settings'),
         backgroundColor: Colors.transparent,

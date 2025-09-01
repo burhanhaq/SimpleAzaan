@@ -9,6 +9,7 @@ import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
 import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
+import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
 
@@ -153,69 +154,98 @@ class _HomeScreen2State extends State<HomeScreen2> with WidgetsBindingObserver {
         }
 
         return Container(
-      color: const Color(0xfff6f7f9),
+      color: kAppBackgroundColor,
       child: SafeArea(
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: _getPreviousDayPrayerTime,
-                  icon: const Icon(Icons.arrow_back_ios),
-                  color: Colors.black26,
-                  iconSize: 30,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      DateDisplayWidget(date: dateDisplay),
-                      LocationDisplayWidget(location: locationDisplay),
-                      const SizedBox(height: 10),
-                      if (prayerTimesProvider.isLoading)
-                        const CircularProgressIndicator()
-                      else if (prayerTimesProvider.hasError)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Error loading prayer times',
-                                style: TextStyle(color: Colors.red[700]),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                prayerTimesProvider.errorMessage ?? '',
-                                style: const TextStyle(fontSize: 12),
-                                textAlign: TextAlign.center,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 8),
-                              ElevatedButton(
-                                onPressed: _refreshPrayerTimes,
-                                child: const Text('Retry'),
-                              ),
-                            ],
-                          ),
-                        )
-                      else
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: _getPrayerCards(prayers),
-                        ),
-                    ],
+            if (prayerTimesProvider.isLoading)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: _getPreviousDayPrayerTime,
+                    icon: const Icon(Icons.arrow_back_ios),
+                    color: Colors.black26,
+                    iconSize: 30,
                   ),
-                ),
-                IconButton(
-                  onPressed: _getNextDayPrayerTime,
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  color: Colors.black26,
-                  iconSize: 30,
-                ),
-              ],
-            ),
+                  const Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: SleekLoadingIndicator(
+                        width: 200,
+                        height: 2,
+                        primaryColor: Colors.black26,
+                        backgroundColor: kLoadingBackgroundColor,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _getNextDayPrayerTime,
+                    icon: const Icon(Icons.arrow_forward_ios),
+                    color: Colors.black26,
+                    iconSize: 30,
+                  ),
+                ],
+              )
+            else
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: _getPreviousDayPrayerTime,
+                    icon: const Icon(Icons.arrow_back_ios),
+                    color: Colors.black26,
+                    iconSize: 30,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        DateDisplayWidget(date: dateDisplay),
+                        LocationDisplayWidget(location: locationDisplay),
+                        const SizedBox(height: 10),
+                        if (prayerTimesProvider.hasError)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              children: [
+                                const Text(
+                                  'Error loading prayer times',
+                                  style: TextStyle(color: kErrorColor),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  prayerTimesProvider.errorMessage ?? '',
+                                  style: const TextStyle(fontSize: 12),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 8),
+                                ElevatedButton(
+                                  onPressed: _refreshPrayerTimes,
+                                  child: const Text('Retry'),
+                                ),
+                              ],
+                            ),
+                          )
+                        else
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: _getPrayerCards(prayers),
+                          ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _getNextDayPrayerTime,
+                    icon: const Icon(Icons.arrow_forward_ios),
+                    color: Colors.black26,
+                    iconSize: 30,
+                  ),
+                ],
+              ),
             GoToTodayWidget(
               offstage: showGoToTodayWidget,
               tapHandler: _getCurrentDayPrayerTime,

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 // App Group and Core Keys
 const String kPrayerKey = 'prayerData';
 const String kGroup = 'group.com.simpleAzaan';
@@ -40,3 +42,10 @@ const String kUnknownLocation = 'Unknown Location';
 // API Constants
 const String kAladhanApiBaseUrl = 'https://api.aladhan.com/v1';
 const String kTimingsByCityEndpoint = '/timingsByCity';
+
+// App Colors
+const Color kAppBackgroundColor = Color(0xfff6f7f9);
+const Color kPrimaryColor = Color(0xFF4A90E2);
+const Color kLoadingBackgroundColor = Color(0xFFE8E8E8);
+const Color kErrorColor = Color(0xFFE57373);
+const Color kSuccessColor = Color(0xFF81C784);
