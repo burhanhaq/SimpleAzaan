@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:simple_azaan/screens/home/home_screen_2.dart';
+import 'package:simple_azaan/screens/home/home_screen.dart';
 import 'package:simple_azaan/service/notification_service.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
             // When location changes, load new prayer times
             if (locationProvider.currentLocation != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                prayerTimesProvider?.loadPrayerTimes(locationProvider.currentLocation!);
+                prayerTimesProvider
+                    ?.loadPrayerTimes(locationProvider.currentLocation!);
               });
             }
             return prayerTimesProvider ?? PrayerTimesProvider();
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const HomeScreen2(),
+          home: const HomeScreen(),
         ),
       ),
     );
