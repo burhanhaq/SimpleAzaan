@@ -9,6 +9,7 @@ import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
 import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
+import 'package:simple_azaan/widgets/compact_prayer_view.dart';
 import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
@@ -25,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   AppLifecycleState? _appLifecycleState = AppLifecycleState.resumed;
   bool _isInitialized = false;
+  final PageController _pageController = PageController();
+  int _currentViewIndex = 0;
 
   bool canShowWelcomeScreen() {
     if (_appLifecycleState != AppLifecycleState.resumed) {
@@ -86,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _pageController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -215,12 +219,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           locationDisplay = locationProvider.displayLocation;
         }
 
-        return Container(
-          color: themeProvider.backgroundColor,
-          child: SafeArea(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
+        Widget mainContent = Stack(
+          alignment: Alignment.center,
+          children: [
                 if (prayerTimesProvider.isLoading)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -317,14 +318,93 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   offstage: showGoToTodayWidget,
                   tapHandler: _getCurrentDayPrayerTime,
                 ),
-                const MenuIconWidget(),
-                _buildDebugStatusIndicator(themeProvider),
-                WelcomeScreen(showWelcomeScreen: showWelcomeScreen),
+            const MenuIconWidget(),
+            _buildDebugStatusIndicator(themeProvider),
+            WelcomeScreen(showWelcomeScreen: showWelcomeScreen),
+          ],
+        );
+
+        Widget content;
+        if (!showWelcomeScreen && prayers.isNotEmpty) {
+          content = PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentViewIndex = index;
+              });
+            },
+            children: [
+              const CompactPrayerView(),
+              mainContent,
+            ],
+          );
+        } else {
+          content = mainContent;
+        }
+
+        return Container(
+          color: themeProvider.backgroundColor,
+          child: SafeArea(
+            child: Stack(
+              children: [
+                content,
+                if (!showWelcomeScreen && prayers.isNotEmpty)
+                  _buildViewIndicator(themeProvider),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildViewIndicator(ThemeProvider themeProvider) {
+    return Positioned(
+      bottom: 10,
+      left: 0,
+      right: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: themeProvider.secondaryTextColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Compact view indicator
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _currentViewIndex == 0 ? 24 : 6,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: _currentViewIndex == 0
+                        ? themeProvider.primaryTextColor
+                        : themeProvider.secondaryTextColor.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                // Detailed view indicator
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _currentViewIndex == 1 ? 24 : 6,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: _currentViewIndex == 1
+                        ? themeProvider.primaryTextColor
+                        : themeProvider.secondaryTextColor.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
