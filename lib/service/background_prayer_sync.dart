@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_azaan/api/aladhan_api.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
 import 'package:simple_azaan/service/widget_sync.dart';
@@ -30,7 +32,7 @@ class BackgroundPrayerSync {
           _dailySyncTaskName,
           _dailySyncTaskName,
           frequency: const Duration(days: 1),
-          initialDelay: _getInitialDelay(),
+          initialDelay: await _getInitialDelay(),
           tag: _taskTag,
           constraints: Constraints(
             networkType: NetworkType.connected,
@@ -45,7 +47,7 @@ class BackgroundPrayerSync {
         await Workmanager().registerOneOffTask(
           _dailySyncTaskName,
           _dailySyncTaskName,
-          initialDelay: _getInitialDelay(),
+          initialDelay: await _getInitialDelay(),
           constraints: Constraints(
             networkType: NetworkType.connected,
             requiresBatteryNotLow: false,
@@ -66,14 +68,55 @@ class BackgroundPrayerSync {
     }
   }
 
-  /// Calculate initial delay to sync at 2:05 AM
-  static Duration _getInitialDelay() {
+  /// Get current prayer data from cache asynchronously
+  static Future<PrayerData?> _getCurrentPrayerData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = prefs.getString(kPrayerKey);
+      if (jsonString != null) {
+        final jsonData = jsonDecode(jsonString);
+        return PrayerData.fromJson(jsonData);
+      }
+      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print('BackgroundPrayerSync: Error reading cached prayer data: $e');
+      }
+      return null;
+    }
+  }
+
+  /// Calculate initial delay to sync 1 minute after Isha prayer
+  static Future<Duration> _getInitialDelay() async {
     final now = DateTime.now();
-    final tomorrow = DateTime(now.year, now.month, now.day + 1, 2, 5); // 2:05 AM tomorrow
+    
+    try {
+      // Try to get current prayer data for Isha time
+      final prayerData = await _getCurrentPrayerData();
+      if (prayerData != null) {
+        final ishaTime = prayerData.time6;
+        final syncTime = ishaTime.add(const Duration(minutes: 1));
+        
+        // If today's Isha + 1min already passed, schedule for tomorrow
+        if (syncTime.isAfter(now)) {
+          if (kDebugMode) {
+            print('BackgroundPrayerSync: Next sync scheduled for ${syncTime.toString()} (1min after today\'s Isha)');
+          }
+          return syncTime.difference(now);
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('BackgroundPrayerSync: Could not get current prayer data: $e');
+      }
+    }
+    
+    // Fallback: Use 2:05 AM next day if prayer data unavailable or Isha passed
+    final tomorrow = DateTime(now.year, now.month, now.day + 1, 2, 5);
     final delay = tomorrow.difference(now);
     
     if (kDebugMode) {
-      print('BackgroundPrayerSync: Next sync scheduled for ${tomorrow.toString()}');
+      print('BackgroundPrayerSync: Next sync scheduled for ${tomorrow.toString()} (fallback time)');
     }
     
     return delay;
@@ -100,7 +143,7 @@ class BackgroundPrayerSync {
       await Workmanager().registerOneOffTask(
         _dailySyncTaskName,
         _dailySyncTaskName,
-        initialDelay: const Duration(days: 1), // Next day at the same time
+        initialDelay: await _getInitialDelay(), // Dynamic delay based on prayer times
         constraints: Constraints(
           networkType: NetworkType.connected,
           requiresBatteryNotLow: false,

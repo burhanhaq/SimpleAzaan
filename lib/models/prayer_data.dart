@@ -30,13 +30,14 @@ class PrayerData {
         time5 = DateTime.parse(json['data']['timings']['Maghrib']).toLocal(),
         time6 = DateTime.parse(json['data']['timings']['Isha']).toLocal();
 
+  // Load from persisted JSON (stored as UTC ISO-8601) and convert to local
   PrayerData.fromJson(Map<String, dynamic> json)
-      : time1 = DateTime.parse(json['time1']),
-        time2 = DateTime.parse(json['time2']),
-        time3 = DateTime.parse(json['time3']),
-        time4 = DateTime.parse(json['time4']),
-        time5 = DateTime.parse(json['time5']),
-        time6 = DateTime.parse(json['time6']);
+      : time1 = DateTime.parse(json['time1']).toLocal(),
+        time2 = DateTime.parse(json['time2']).toLocal(),
+        time3 = DateTime.parse(json['time3']).toLocal(),
+        time4 = DateTime.parse(json['time4']).toLocal(),
+        time5 = DateTime.parse(json['time5']).toLocal(),
+        time6 = DateTime.parse(json['time6']).toLocal();
 
   Map<String, dynamic> toJson() => {
         // Store as UTC ISO-8601 so iOS can parse reliably
