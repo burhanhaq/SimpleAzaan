@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:simple_azaan/screens/home/home_screen.dart';
@@ -15,6 +16,14 @@ Future<void> main() async {
   
   // Initialize background prayer sync for automatic widget updates
   await BackgroundPrayerSync.initialize();
+
+  // Ensure status bar icons/text are dark on light backgrounds
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // keep status bar transparent
+    statusBarIconBrightness: Brightness.dark, // Android: dark icons
+    statusBarBrightness: Brightness.light, // iOS: dark icons
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
   
   runApp(const MyApp());
 }
