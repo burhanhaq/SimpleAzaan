@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_azaan/providers/theme_provider.dart';
 
 class DateDisplayWidget extends StatefulWidget {
   const DateDisplayWidget({super.key, required this.date});
@@ -13,15 +15,16 @@ class DateDisplayWidgetState extends State<DateDisplayWidget> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     var screenWidth = screenSize.width;
+    final themeProvider = context.watch<ThemeProvider>();
 
     return Column(
       children: [
         Text(
           widget.date,
-          style: const TextStyle(
+          style: TextStyle(
             decoration: TextDecoration.none,
             fontSize: 24,
-            color: Colors.black,
+            color: themeProvider.primaryTextColor,
             fontWeight: FontWeight.w300,
           ),
         ),
@@ -29,7 +32,7 @@ class DateDisplayWidgetState extends State<DateDisplayWidget> {
           margin: const EdgeInsets.only(top: 10, bottom: 10),
           height: 1,
           width: screenWidth * 0.6,
-          color: Colors.black,
+          color: themeProvider.dividerColor,
         ),
       ],
     );

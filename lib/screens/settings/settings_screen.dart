@@ -6,6 +6,9 @@ import 'package:simple_azaan/service/notification_service.dart';
 import 'package:simple_azaan/service/background_prayer_sync.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
+import 'package:simple_azaan/providers/theme_provider.dart';
+import 'package:simple_azaan/themes/app_theme.dart';
+import 'package:simple_azaan/debug/mock_prayer.dart';
 import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
 import 'package:simple_azaan/constants.dart';
 
@@ -125,14 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _getThemeDisplayName(AppThemeMode themeMode) {
-    switch (themeMode) {
-      case AppThemeMode.light:
-        return 'Light';
-      case AppThemeMode.dark:
-        return 'Dark';
-      case AppThemeMode.dual:
-        return 'Dual';
-    }
+    return AppThemes.getThemeDisplayName(themeMode);
   }
 
   Widget _buildSectionTitle(String title) {
@@ -140,10 +136,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.black87,
+          color: context.watch<ThemeProvider>().primaryTextColor,
         ),
       ),
     );
@@ -227,10 +223,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   : const Icon(Icons.location_searching),
               title: const Text('Detect Location'),
               subtitle: _isDetectingLocation 
-                  ? const SleekLoadingIndicator(
+                  ? SleekLoadingIndicator(
                       height: 2,
-                      primaryColor: Colors.black,
-                      backgroundColor: kLoadingBackgroundColor,
+                      primaryColor: context.watch<ThemeProvider>().primaryTextColor,
+                      backgroundColor: context.watch<ThemeProvider>().loadingBackgroundColor,
                     )
                   : const Text('Use GPS to find your current city'),
               onTap: _isDetectingLocation ? null : _detectCurrentLocation,
@@ -297,12 +293,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         value: themeMode,
                         groupValue: _currentSettings.themeMode,
                         onChanged: (AppThemeMode? value) async {
-                          if (value != null) {
+                          if (value != null && mounted) {
                             setState(() {
                               _currentSettings.themeMode = value;
                             });
                             await _settingsService.updateThemeMode(value);
-                            if (mounted) Navigator.of(context).pop();
+                            // Update the theme provider to apply theme immediately
+                            if (mounted) {
+                              final themeProvider = context.read<ThemeProvider>();
+                              await themeProvider.setTheme(value);
+                              if (mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            }
                           }
                         },
                       );
@@ -325,6 +328,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Prayer Color Tester Section
+            _buildPrayerColorTesterSection(),
+            const SizedBox(height: 24),
+            
+            // Widget Sync Testing Section
             const Text(
               'Widget Sync Testing',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -369,23 +377,120 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  Widget _buildPrayerColorTesterSection() {
+    final themeProvider = context.watch<ThemeProvider>();
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text(
+              'Prayer Color Tester',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            if (themeProvider.hasDebugOverride) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  'DEBUG',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          themeProvider.hasDebugOverride 
+            ? 'Override active - UI shows ${MockPrayer.prayerDisplayNames[themeProvider.debugOverridePrayer]} colors'
+            : 'Test different prayer time color schemes',
+          style: const TextStyle(color: Colors.grey),
+        ),
+        const SizedBox(height: 12),
+        
+        // Prayer Type Buttons
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: PrayerType.values.map((prayerType) {
+            final isSelected = themeProvider.debugOverridePrayer == prayerType;
+            final displayName = MockPrayer.prayerDisplayNames[prayerType] ?? prayerType.name;
+            final colorDesc = MockPrayer.prayerColorDescriptions[prayerType] ?? '';
+            
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    themeProvider.setDebugPrayer(prayerType);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isSelected ? themeProvider.primaryColor : null,
+                    foregroundColor: isSelected ? Colors.white : null,
+                  ),
+                  child: Text(displayName.split(' ')[0]), // Just prayer name
+                ),
+                if (isSelected) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    colorDesc,
+                    style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            );
+          }).toList(),
+        ),
+        
+        const SizedBox(height: 12),
+        
+        // Reset Button
+        if (themeProvider.hasDebugOverride) ...[
+          Center(
+            child: OutlinedButton.icon(
+              onPressed: () {
+                themeProvider.clearDebugOverride();
+              },
+              icon: const Icon(Icons.refresh),
+              label: const Text('Reset to Auto'),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(
+      return Scaffold(
+        backgroundColor: themeProvider.backgroundColor,
+        body: const Center(
           child: CircularProgressIndicator(),
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: kAppBackgroundColor,
+      backgroundColor: themeProvider.backgroundColor,
       appBar: AppBar(
         title: const Text('Settings'),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Colors.black87,
+        foregroundColor: themeProvider.primaryTextColor,
       ),
       body: SingleChildScrollView(
         child: Column(

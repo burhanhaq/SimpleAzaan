@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/constants.dart';
+import 'package:simple_azaan/providers/theme_provider.dart';
 
 class PrayerTimeCard extends StatefulWidget {
   final Prayer? prayer;
@@ -27,6 +29,7 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
     var screenSize = MediaQuery.of(context).size;
     var screenWidth = screenSize.width;
     var screenHeight = screenSize.height;
+    final themeProvider = context.watch<ThemeProvider>();
 
     var activePrayerTimeFontSize = screenWidth * 0.11;
     var inactivePrayerTimeFontSize = screenWidth * 0.08;
@@ -40,7 +43,12 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
 
     var prayerTimeFontSize =
         isCurrentPrayer ? activePrayerTimeFontSize : inactivePrayerTimeFontSize;
-    var prayerTimeFontColor = isCurrentPrayer ? Colors.black : Colors.grey;
+    // Use per-prayer color scheme so each prayer renders with its own palette
+    final perPrayerColors =
+        widget.prayer != null ? themeProvider.getColorsForPrayerModel(widget.prayer!) : null;
+    var prayerTimeFontColor = isCurrentPrayer
+        ? (perPrayerColors?.primaryTextColor ?? themeProvider.getCurrentPrayerTextColor())
+        : (perPrayerColors?.secondaryTextColor ?? themeProvider.getInactivePrayerTextColor());
 
     return LayoutBuilder(builder: (context, constraints) {
       switch (widget.timeToDisplay) {

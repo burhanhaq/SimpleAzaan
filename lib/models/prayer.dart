@@ -1,4 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:simple_azaan/service/settings_service.dart';
+import 'package:simple_azaan/themes/prayer_colors.dart';
 
 class Prayer {
   final String name;
@@ -9,6 +11,11 @@ class Prayer {
     this.name,
     this.prayerTime,
   );
+
+  /// Gets the PrayerType enum for this prayer based on its name
+  PrayerType? get prayerType {
+    return PrayerTypeHelper.getPrayerType(name);
+  }
 
   DateTime get getPrayerTime => prayerTime;
   bool get isCurrentPrayer {
