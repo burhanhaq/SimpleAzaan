@@ -3,13 +3,19 @@ import 'package:provider/provider.dart';
 
 import 'package:simple_azaan/screens/home/home_screen.dart';
 import 'package:simple_azaan/service/notification_service.dart';
+import 'package:simple_azaan/service/background_prayer_sync.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   // Initialize iOS local notifications and request permissions
   await NotificationService().init();
+  
+  // Initialize background prayer sync for automatic widget updates
+  await BackgroundPrayerSync.initialize();
+  
   runApp(const MyApp());
 }
 

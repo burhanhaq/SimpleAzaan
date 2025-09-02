@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_azaan/service/settings_service.dart';
 import 'package:simple_azaan/service/notification_service.dart';
+import 'package:simple_azaan/service/background_prayer_sync.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
@@ -315,6 +317,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  Widget _buildDebugSection() {
+    return Card(
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Widget Sync Testing',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Test automatic widget sync functionality',
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Testing widget sync...')),
+                  );
+                  await BackgroundPrayerSync.syncNow();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Widget sync test completed successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Widget sync test failed: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              },
+              child: const Text('Test Widget Sync'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -343,6 +397,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildNotificationSection(),
             _buildSectionTitle('Appearance'),
             _buildThemeSection(),
+            if (kDebugMode) ...[
+              _buildSectionTitle('Debug'),
+              _buildDebugSection(),
+            ],
             const SizedBox(height: 24),
           ],
         ),
