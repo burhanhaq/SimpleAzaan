@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_azaan/service/settings_service.dart';
+import 'package:simple_azaan/service/notification_service.dart';
+import 'package:simple_azaan/providers/prayer_times_provider.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
 import 'package:simple_azaan/constants.dart';
@@ -251,6 +253,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _currentSettings.notificationSettings[prayerType] = value;
               });
               await _settingsService.updateNotificationSetting(prayerType, value);
+
+              // Immediately reschedule notifications to reflect the change
+              final prayerTimesProvider = context.read<PrayerTimesProvider>();
+              final prayerData = prayerTimesProvider.prayerData;
+              final locProvider = context.read<LocationProvider>();
+              final location = locProvider.currentLocation;
+              if (prayerData != null && location != null) {
+                // Schedules only the enabled prayers (filtering inside service)
+                await NotificationService().scheduleForPrayerData(
+                  prayerData,
+                  cityLabel: location.displayName,
+                );
+              }
             },
           );
         }).toList(),

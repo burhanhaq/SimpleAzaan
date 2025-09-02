@@ -7,6 +7,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'package:simple_azaan/models/prayer_data.dart';
+import 'package:simple_azaan/service/settings_service.dart';
 
 class NotificationService {
   NotificationService._internal();
@@ -76,14 +77,50 @@ class NotificationService {
 
     final now = DateTime.now();
 
+    // Load notification preferences from Settings
+    final settings = await SettingsService.instance.loadSettings();
+
     final entries = <_PrayerEntry>[
-      _PrayerEntry(id: 100, name: 'Fajr', time: pd.time1),
-      _PrayerEntry(id: 101, name: 'Sunrise', time: pd.time2),
-      _PrayerEntry(id: 102, name: 'Zuhr', time: pd.time3),
-      _PrayerEntry(id: 103, name: 'Asr', time: pd.time4),
-      _PrayerEntry(id: 104, name: 'Maghrib', time: pd.time5),
-      _PrayerEntry(id: 105, name: 'Isha', time: pd.time6),
-    ];
+      _PrayerEntry(
+        id: 100,
+        name: 'Fajr',
+        time: pd.time1,
+        type: PrayerType.fajr,
+      ),
+      _PrayerEntry(
+        id: 101,
+        name: 'Sunrise',
+        time: pd.time2,
+        type: PrayerType.sunrise,
+      ),
+      _PrayerEntry(
+        id: 102,
+        name: 'Zuhr',
+        time: pd.time3,
+        type: PrayerType.zuhr,
+      ),
+      _PrayerEntry(
+        id: 103,
+        name: 'Asr',
+        time: pd.time4,
+        type: PrayerType.asr,
+      ),
+      _PrayerEntry(
+        id: 104,
+        name: 'Maghrib',
+        time: pd.time5,
+        type: PrayerType.maghrib,
+      ),
+      _PrayerEntry(
+        id: 105,
+        name: 'Isha',
+        time: pd.time6,
+        type: PrayerType.isha,
+      ),
+    ]
+        // Keep only prayers enabled in settings
+        .where((e) => settings.notificationSettings[e.type] == true)
+        .toList();
 
     final details = const NotificationDetails(
       iOS: DarwinNotificationDetails(
@@ -123,5 +160,11 @@ class _PrayerEntry {
   final int id;
   final String name;
   final DateTime time;
-  _PrayerEntry({required this.id, required this.name, required this.time});
+  final PrayerType type;
+  _PrayerEntry({
+    required this.id,
+    required this.name,
+    required this.time,
+    required this.type,
+  });
 }
