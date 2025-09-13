@@ -7,6 +7,7 @@ import 'package:simple_azaan/api/aladhan_api.dart';
 import 'package:simple_azaan/models/prayer_data.dart';
 import 'package:simple_azaan/service/widget_sync.dart';
 import 'package:simple_azaan/constants.dart';
+import 'package:simple_azaan/service/settings_service.dart';
 
 class BackgroundPrayerSync {
   static const String _dailySyncTaskName = 'dailyPrayerSync';
@@ -166,20 +167,27 @@ class BackgroundPrayerSync {
   /// Perform the actual prayer data sync
   static Future<void> _performPrayerSync() async {
     try {
+      // Load last saved location from settings (avoid background geolocation)
+      final settings = await SettingsService.instance.loadSettings();
+
       final api = AlAdhanApi(
-        city: kDefaultCity,
-        state: kDefaultState,
-        country: kDefaultCountry,
+        city: settings.customCity.isNotEmpty ? settings.customCity : kDefaultCity,
+        state: settings.customState.isNotEmpty ? settings.customState : kDefaultState,
+        country: settings.customCountry.isNotEmpty ? settings.customCountry : kDefaultCountry,
         method: kDefaultMethod,
       );
-      final response = await api.getPrayerTimeToday();
+
+      // Fetch for the current calendar day (the scheduler ensures a post-midnight run too).
+      final now = DateTime.now();
+      final targetDate = now;
+      final response = await api.getPrayerTimeForDate(targetDate);
       final prayerData = PrayerData.fromAlAdhanApi(response);
       
       // Update widget with fresh data
       await WidgetSync.pushPrayerDataToWidget(prayerData);
-      
+
       if (kDebugMode) {
-        print('BackgroundPrayerSync: Prayer data updated successfully');
+        print('BackgroundPrayerSync: Prayer data updated successfully for ${targetDate.toIso8601String()}');
       }
     } catch (e) {
       if (kDebugMode) {

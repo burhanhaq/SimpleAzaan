@@ -17,7 +17,8 @@ class AlAdhanApi {
   final String? country;
   final String? method;
 
-  static const String apiUrl = 'http://api.aladhan.com/v1';
+  // Use HTTPS to satisfy iOS App Transport Security (ATS)
+  static const String apiUrl = 'https://api.aladhan.com/v1';
 
   static const timingsByCity = '/timingsByCity';
 
