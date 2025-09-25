@@ -1,4 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_widgetkit/flutter_widgetkit.dart';
+import 'package:simple_azaan/constants.dart';
 import 'package:simple_azaan/constants.dart';
 
 enum AppThemeMode {
@@ -97,6 +99,17 @@ class SettingsService {
     for (final entry in settings.notificationSettings.entries) {
       final key = '$_notificationPrefix${entry.key.name}';
       await prefs.setBool(key, entry.value);
+    }
+
+    // Also mirror location settings into the App Group for widgets/complications
+    try {
+      await WidgetKit.setItem(kCustomCityKey, settings.customCity, kGroup);
+      await WidgetKit.setItem(kCustomStateKey, settings.customState, kGroup);
+      await WidgetKit.setItem(kCustomCountryKey, settings.customCountry, kGroup);
+      // Trigger a reload so widgets can pick up updated location
+      WidgetKit.reloadAllTimelines();
+    } catch (_) {
+      // Ignore group write failures silently; widgets will fall back to defaults
     }
   }
 
