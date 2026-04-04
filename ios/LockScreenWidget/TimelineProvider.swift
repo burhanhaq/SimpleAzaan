@@ -66,6 +66,55 @@ struct Provider: TimelineProvider {
             return configs.map { PrayerEntry(date: $0.timeWhenIconVisible, prayerConfig: $0) }
         }
 
+        func fetchAndBuildTimeline(
+            for targetDay: Date,
+            now: Date,
+            completion handler: @escaping (Timeline<PrayerEntry>) -> Void
+        ) {
+            fetchTimings(for: targetDay) { result in
+                guard let (fajr, sunrise, dhuhr, asr, maghrib, isha) = result else {
+                    handler(Timeline(entries: [fallback], policy: .after(Date().addingTimeInterval(30 * 60))))
+                    return
+                }
+
+                var entries = buildEntries(
+                    forDay: fajr,
+                    sunrise: sunrise,
+                    zuhr: dhuhr,
+                    asr: asr,
+                    maghrib: maghrib,
+                    isha: isha
+                )
+
+                // After today's Isha, show tomorrow's Fajr immediately instead of
+                // waiting until the first scheduled entry on the next calendar day.
+                if !Calendar.current.isDate(now, inSameDayAs: fajr) {
+                    let preConfig = PrayerConfig(
+                        prayerType: Prayer.Fajr,
+                        prayerTime: fajr,
+                        timeWhenIconVisible: now
+                    )
+                    let preEntry = PrayerEntry(date: now, prayerConfig: preConfig)
+                    entries.insert(preEntry, at: 0)
+                }
+
+                handler(Timeline(entries: entries, policy: .after(isha.addingTimeInterval(60))))
+            }
+        }
+
+        func targetDay(afterIshaFrom fajr: Date?, isha: Date?, now: Date) -> Date {
+            if let fajr, let isha,
+               Calendar.current.isDate(now, inSameDayAs: fajr) {
+                return now < isha ? now : Calendar.current.date(byAdding: .day, value: 1, to: now)!
+            }
+
+            if let fajr, fajr < now {
+                return Calendar.current.date(byAdding: .day, value: 1, to: now)!
+            }
+
+            return now
+        }
+
         func fetchTimings(for date: Date, completion handler: @escaping ((Date, Date, Date, Date, Date, Date)?) -> Void) {
             let defaults = UserDefaults(suiteName: suiteName)
             let city = defaults?.string(forKey: "custom_city") ?? "Bellevue"
@@ -153,45 +202,28 @@ struct Provider: TimelineProvider {
                     let entries = buildEntries(forDay: fajr, sunrise: sunrise, zuhr: dhuhr, asr: asr, maghrib: maghrib, isha: isha)
                     completion(Timeline(entries: entries, policy: .after(isha.addingTimeInterval(60))))
                 } else {
-                    // Cache is from a previous day, or we’ve passed Isha → fetch target day
-                    let targetDay = sameDay ? Calendar.current.date(byAdding: .day, value: 1, to: now)! : now
-                    fetchTimings(for: targetDay) { result in
-                        guard let (nfajr, nsunrise, ndhuhr, nasr, nmaghrib, nisha) = result else {
-                            completion(Timeline(entries: [fallback], policy: .after(Date().addingTimeInterval(30 * 60))))
-                            return
-                        }
-                        var entries = buildEntries(forDay: nfajr, sunrise: nsunrise, zuhr: ndhuhr, asr: nasr, maghrib: nmaghrib, isha: nisha)
-                        // If we fetched tomorrow while it's still today (post-Isha),
-                        // insert an immediate entry so the widget shows tomorrow's Fajr right away.
-                        if !Calendar.current.isDate(now, inSameDayAs: nfajr) {
-                            let preConfig = PrayerConfig(prayerType: Prayer.Fajr, prayerTime: nfajr, timeWhenIconVisible: now)
-                            let preEntry = PrayerEntry(date: now, prayerConfig: preConfig)
-                            entries.insert(preEntry, at: 0)
-                        }
-                        completion(Timeline(entries: entries, policy: .after(nisha.addingTimeInterval(60))))
-                    }
+                    // Cache is from a previous day, or we’ve passed Isha.
+                    fetchAndBuildTimeline(
+                        for: targetDay(afterIshaFrom: fajr, isha: isha, now: now),
+                        now: now,
+                        completion: completion
+                    )
                 }
             } catch {
-                // Failed to parse cache → fetch today
-                fetchTimings(for: Date()) { result in
-                    guard let (fajr, sunrise, dhuhr, asr, maghrib, isha) = result else {
-                        completion(Timeline(entries: [fallback], policy: .after(Date().addingTimeInterval(30 * 60))))
-                        return
-                    }
-                    let entries = buildEntries(forDay: fajr, sunrise: sunrise, zuhr: dhuhr, asr: asr, maghrib: maghrib, isha: isha)
-                    completion(Timeline(entries: entries, policy: .after(isha.addingTimeInterval(60))))
-                }
+                let now = Date()
+                fetchAndBuildTimeline(
+                    for: targetDay(afterIshaFrom: nil, isha: nil, now: now),
+                    now: now,
+                    completion: completion
+                )
             }
         } else {
-            // No cache → fetch today
-            fetchTimings(for: Date()) { result in
-                guard let (fajr, sunrise, dhuhr, asr, maghrib, isha) = result else {
-                    completion(Timeline(entries: [fallback], policy: .after(Date().addingTimeInterval(30 * 60))))
-                    return
-                }
-                let entries = buildEntries(forDay: fajr, sunrise: sunrise, zuhr: dhuhr, asr: asr, maghrib: maghrib, isha: isha)
-                completion(Timeline(entries: entries, policy: .after(isha.addingTimeInterval(60))))
-            }
+            let now = Date()
+            fetchAndBuildTimeline(
+                for: targetDay(afterIshaFrom: nil, isha: nil, now: now),
+                now: now,
+                completion: completion
+            )
         }
     }
 
