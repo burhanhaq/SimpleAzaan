@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_azaan/constants.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
-import 'package:simple_azaan/providers/theme_provider.dart';
-import 'package:simple_azaan/constants.dart';
 
 class CompactPrayerView extends StatefulWidget {
   const CompactPrayerView({super.key});
@@ -98,17 +97,18 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
 
-    return Consumer3<LocationProvider, PrayerTimesProvider, ThemeProvider>(
-      builder: (context, locationProvider, prayerTimesProvider, themeProvider, child) {
+    return Consumer2<LocationProvider, PrayerTimesProvider>(
+      builder: (context, locationProvider, prayerTimesProvider, child) {
         final prayers = prayerTimesProvider.prayers;
         final previousPrayer = _getPreviousPrayer(prayers);
         final nextPrayer = prayerTimesProvider.nextPrayer;
-        
+
         String dateDisplay = 'Current Date';
         if (prayers.isNotEmpty) {
           dateDisplay = prayers.first.getDateString();
         } else {
-          dateDisplay = prayerTimesProvider.selectedDate.toString().split(' ')[0];
+          dateDisplay =
+              prayerTimesProvider.selectedDate.toString().split(' ')[0];
         }
 
         String locationDisplay = kLoadingLocation;
@@ -121,7 +121,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
         return Container(
           width: screenWidth,
           height: screenHeight,
-          color: themeProvider.backgroundColor,
+          color: kAppBackgroundColor,
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
@@ -135,7 +135,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.06,
                       fontWeight: FontWeight.w300,
-                      color: themeProvider.primaryTextColor,
+                      color: Colors.black,
                       decoration: TextDecoration.none,
                     ),
                     textAlign: TextAlign.center,
@@ -146,7 +146,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.04,
                       fontWeight: FontWeight.w200,
-                      color: themeProvider.secondaryTextColor,
+                      color: Colors.black54,
                       decoration: TextDecoration.none,
                     ),
                     textAlign: TextAlign.center,
@@ -167,7 +167,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.08,
                         fontWeight: FontWeight.w300,
-                        color: themeProvider.getColorsForPrayerModel(previousPrayer)?.primaryTextColor ?? themeProvider.primaryTextColor,
+                        color: Colors.black54,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -176,7 +176,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.06,
                         fontWeight: FontWeight.w200,
-                        color: themeProvider.getColorsForPrayerModel(previousPrayer)?.secondaryTextColor ?? themeProvider.secondaryTextColor,
+                        color: Colors.black45,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -190,7 +190,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.04,
                         fontWeight: FontWeight.w200,
-                        color: themeProvider.secondaryTextColor,
+                        color: Colors.black54,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -200,7 +200,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.12,
                         fontWeight: FontWeight.w300,
-                        color: themeProvider.getCurrentPrayerTextColor(),
+                        color: Colors.black,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -212,7 +212,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.04,
                         fontWeight: FontWeight.w200,
-                        color: themeProvider.secondaryTextColor,
+                        color: Colors.black54,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -222,7 +222,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.08,
                         fontWeight: FontWeight.w300,
-                        color: themeProvider.getColorsForPrayerModel(nextPrayer)?.primaryTextColor ?? themeProvider.primaryTextColor,
+                        color: Colors.black,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -231,7 +231,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.06,
                         fontWeight: FontWeight.w200,
-                        color: themeProvider.getColorsForPrayerModel(nextPrayer)?.secondaryTextColor ?? themeProvider.secondaryTextColor,
+                        color: Colors.black54,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -242,7 +242,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.06,
                         fontWeight: FontWeight.w300,
-                        color: themeProvider.secondaryTextColor,
+                        color: Colors.black54,
                         decoration: TextDecoration.none,
                       ),
                       textAlign: TextAlign.center,
@@ -259,7 +259,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.03,
                       fontWeight: FontWeight.w200,
-                      color: themeProvider.secondaryTextColor.withValues(alpha: 0.6),
+                      color: Colors.black38,
                       decoration: TextDecoration.none,
                     ),
                   ),

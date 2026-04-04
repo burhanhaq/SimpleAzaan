@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:simple_azaan/screens/home/home_screen.dart';
@@ -6,7 +7,6 @@ import 'package:simple_azaan/service/notification_service.dart';
 import 'package:simple_azaan/service/background_prayer_sync.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
-import 'package:simple_azaan/providers/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,13 @@ Future<void> main() async {
   // Initialize background prayer sync for automatic widget updates
   await BackgroundPrayerSync.initialize();
 
-  // System UI overlay style will be managed by ThemeProvider
+  // Ensure status bar icons/text are dark on light backgrounds
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // keep status bar transparent
+    statusBarIconBrightness: Brightness.dark, // Android: dark icons
+    statusBarBrightness: Brightness.light, // iOS: dark icons
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
   
   runApp(const MyApp());
 }
@@ -29,7 +35,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProxyProvider<LocationProvider, PrayerTimesProvider>(
           create: (_) => PrayerTimesProvider(),
@@ -45,15 +50,15 @@ class MyApp extends StatelessWidget {
           },
         ),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Simple Azaan',
-            theme: themeProvider.themeData,
-            home: const HomeScreen(),
-          );
-        },
+      child: Material(
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Simple Azaan',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: const HomeScreen(),
+        ),
       ),
     );
   }
