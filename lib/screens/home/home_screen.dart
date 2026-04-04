@@ -26,8 +26,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isInitialized = false;
   final PageController _pageController = PageController();
   int _currentViewIndex = 0;
+  bool _isWelcomeVisible = true;
+  bool _isWelcomeCollapsing = false;
 
-  bool canShowWelcomeScreen() {
+  bool _shouldKeepWelcomeExpanded() {
     if (_appLifecycleState != AppLifecycleState.resumed) {
       return true;
     }
@@ -38,6 +40,41 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
 
     return true;
+  }
+
+  void _syncWelcomeVisibility(bool shouldKeepExpanded) {
+    if (shouldKeepExpanded) {
+      if (!_isWelcomeVisible || _isWelcomeCollapsing) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          setState(() {
+            _isWelcomeVisible = true;
+            _isWelcomeCollapsing = false;
+          });
+        });
+      }
+      return;
+    }
+
+    if (_isWelcomeVisible && !_isWelcomeCollapsing) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          _isWelcomeCollapsing = true;
+        });
+      });
+    }
+  }
+
+  void _handleWelcomeCollapseCompleted() {
+    if (!_isWelcomeVisible) {
+      return;
+    }
+
+    setState(() {
+      _isWelcomeVisible = false;
+      _isWelcomeCollapsing = false;
+    });
   }
 
   @override
@@ -132,13 +169,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final showWelcomeScreen = canShowWelcomeScreen();
-    if (showWelcomeScreen) {
-      _refreshPrayerTimes();
-    }
-
     return Consumer2<LocationProvider, PrayerTimesProvider>(
       builder: (context, locationProvider, prayerTimesProvider, child) {
+        final shouldKeepWelcomeExpanded = _shouldKeepWelcomeExpanded();
+        _syncWelcomeVisibility(shouldKeepWelcomeExpanded);
+
         final prayers = _getPrayers(prayerTimesProvider);
         final showGoToTodayWidget = prayerTimesProvider.isToday;
 
@@ -253,12 +288,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               tapHandler: _getCurrentDayPrayerTime,
             ),
             const MenuIconWidget(),
-            WelcomeScreen(showWelcomeScreen: showWelcomeScreen),
           ],
         );
 
         Widget content;
-        if (!showWelcomeScreen && prayers.isNotEmpty) {
+        if (prayers.isNotEmpty) {
           content = PageView(
             controller: _pageController,
             onPageChanged: (index) {
@@ -281,7 +315,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             child: Stack(
               children: [
                 content,
-                if (!showWelcomeScreen && prayers.isNotEmpty)
+                if (_isWelcomeVisible)
+                  WelcomeScreen(
+                    isExpanded: !_isWelcomeCollapsing,
+                    onCollapseCompleted: _handleWelcomeCollapseCompleted,
+                  ),
+                if (!_isWelcomeVisible && prayers.isNotEmpty)
                   _buildViewIndicator(),
               ],
             ),

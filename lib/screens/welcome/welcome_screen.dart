@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  final bool showWelcomeScreen;
-  const WelcomeScreen({super.key, required this.showWelcomeScreen});
+  final bool isExpanded;
+  final VoidCallback? onCollapseCompleted;
+
+  const WelcomeScreen({
+    super.key,
+    required this.isExpanded,
+    this.onCollapseCompleted,
+  });
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  bool _collapseCompletionSent = false;
+
+  @override
+  void didUpdateWidget(covariant WelcomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isExpanded) {
+      _collapseCompletionSent = false;
+    }
+  }
+
+  void _handleAnimationEnd() {
+    if (widget.isExpanded || _collapseCompletionSent) {
+      return;
+    }
+    _collapseCompletionSent = true;
+    widget.onCollapseCompleted?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -26,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       var maxWidth = constraints.maxWidth;
       var maxIndividualHeight = maxHeight / 2;
       var borderColor = Colors.black;
-      if (!widget.showWelcomeScreen) {
+      if (!widget.isExpanded) {
         maxIndividualHeight = 0;
         borderColor = const Color(0xfff6f7f9);
       }
@@ -36,6 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           AnimatedContainer(
             duration: const Duration(milliseconds: 500),
             curve: Curves.slowMiddle,
+            onEnd: _handleAnimationEnd,
             width: maxWidth,
             height: maxIndividualHeight,
             decoration: BoxDecoration(
