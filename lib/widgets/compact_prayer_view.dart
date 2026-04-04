@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_azaan/constants.dart';
-import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
 
@@ -77,20 +76,6 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
     }
   }
 
-  Prayer? _getPreviousPrayer(List<Prayer> prayers) {
-    final now = DateTime.now();
-    Prayer? previousPrayer;
-    
-    for (final prayer in prayers.reversed) {
-      if (prayer.prayerTime.isBefore(now)) {
-        previousPrayer = prayer;
-        break;
-      }
-    }
-    
-    return previousPrayer;
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -100,7 +85,7 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
     return Consumer2<LocationProvider, PrayerTimesProvider>(
       builder: (context, locationProvider, prayerTimesProvider, child) {
         final prayers = prayerTimesProvider.prayers;
-        final previousPrayer = _getPreviousPrayer(prayers);
+        final currentPrayer = prayerTimesProvider.currentPrayer;
         final nextPrayer = prayerTimesProvider.nextPrayer;
 
         String dateDisplay = 'Current Date';
@@ -160,23 +145,23 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
 
-                  // Previous Prayer Section
-                  if (previousPrayer != null) ...[
+                  // Current Prayer Section
+                  if (currentPrayer != null) ...[
                     Text(
-                      previousPrayer.name,
+                      currentPrayer.name,
                       style: TextStyle(
-                        fontSize: screenWidth * 0.08,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.black54,
+                        fontSize: screenWidth * 0.18,
+                        fontWeight: FontWeight.w200,
+                        color: Colors.black,
                         decoration: TextDecoration.none,
                       ),
                     ),
                     Text(
-                      previousPrayer.getTimeString(),
+                      currentPrayer.getTimeString(),
                       style: TextStyle(
-                        fontSize: screenWidth * 0.06,
-                        fontWeight: FontWeight.w200,
-                        color: Colors.black45,
+                        fontSize: screenWidth * 0.11,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.black,
                         decoration: TextDecoration.none,
                       ),
                     ),
@@ -198,9 +183,9 @@ class _CompactPrayerViewState extends State<CompactPrayerView> {
                     Text(
                       _timeToNextPrayer,
                       style: TextStyle(
-                        fontSize: screenWidth * 0.12,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.black,
+                        fontSize: screenWidth * 0.08,
+                        fontWeight: FontWeight.w200,
+                        color: Colors.black87,
                         decoration: TextDecoration.none,
                       ),
                     ),

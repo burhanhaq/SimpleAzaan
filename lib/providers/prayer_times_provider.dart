@@ -49,7 +49,12 @@ class PrayerTimesProvider extends ChangeNotifier {
   }
 
   Prayer? get currentPrayer {
-    return _prayers.where((prayer) => prayer.isCurrentPrayer).firstOrNull;
+    for (final prayer in _prayers) {
+      if (prayer.isCurrentPrayer) {
+        return prayer;
+      }
+    }
+    return null;
   }
 
   Prayer? get nextPrayer {
@@ -154,14 +159,12 @@ class PrayerTimesProvider extends ChangeNotifier {
       return; // Don't mark current prayer for past/future dates
     }
 
-    // Find next prayer
-    final nextPrayerIndex = _prayers.indexWhere(
-      (prayer) => !prayer.hasPrayerPassed,
+    final currentPrayerIndex = _prayers.lastIndexWhere(
+      (prayer) => !prayer.prayerTime.isAfter(DateTime.now()),
     );
 
-    // Mark the next upcoming prayer as current
-    if (nextPrayerIndex >= 0) {
-      _prayers[nextPrayerIndex].isCurrentPrayer = true;
+    if (currentPrayerIndex >= 0) {
+      _prayers[currentPrayerIndex].isCurrentPrayer = true;
     }
   }
 
@@ -191,8 +194,4 @@ class PrayerTimesProvider extends ChangeNotifier {
     _setState(PrayerTimesState.error);
   }
 
-}
-
-extension ListExtension<T> on List<T> {
-  T? get firstOrNull => isEmpty ? null : first;
 }
