@@ -35,7 +35,7 @@ class _SleekLoadingIndicatorState extends State<SleekLoadingIndicator>
       duration: widget.animationDuration,
       vsync: this,
     );
-    
+
     _animation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -113,25 +113,25 @@ class _LoadingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final borderRadius = size.height / 2;
-    
+
     // Clip to rounded rectangle background
     final clipPath = Path()
       ..addRRect(RRect.fromRectAndRadius(
         Rect.fromLTWH(0, 0, size.width, size.height),
         Radius.circular(borderRadius),
       ));
-    
+
     canvas.clipPath(clipPath);
-    
+
     // Create a moving black bar
     final barWidth = size.width * 0.3; // Bar takes up 30% of total width
     final maxPosition = size.width - barWidth;
     final barPosition = maxPosition * progress;
-    
+
     final barPaint = Paint()
       ..color = primaryColor
       ..style = PaintingStyle.fill;
-    
+
     // Draw the moving black bar
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -179,11 +179,11 @@ class _SimpleHorizontalLoaderState extends State<SimpleHorizontalLoader>
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-    
+
     _controller.repeat();
   }
 

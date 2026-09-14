@@ -14,20 +14,23 @@ enum LocationState {
 class LocationProvider extends ChangeNotifier {
   final LocationRepository _locationRepository = LocationRepository.instance;
   final SettingsService _settingsService = SettingsService.instance;
-  
+
   LocationState _state = LocationState.initial;
   Location? _currentLocation;
   String? _errorMessage;
+  String? _warningMessage;
   bool _useCurrentLocation = true;
 
   // Getters
   LocationState get state => _state;
   Location? get currentLocation => _currentLocation;
   String? get errorMessage => _errorMessage;
+  String? get warningMessage => _warningMessage;
   bool get useCurrentLocation => _useCurrentLocation;
   bool get isLoading => _state == LocationState.loading;
   bool get hasError => _state == LocationState.error;
-  
+  bool get hasWarning => _warningMessage != null;
+
   String get displayLocation {
     if (_currentLocation != null) {
       return _currentLocation!.displayName;
@@ -39,28 +42,26 @@ class LocationProvider extends ChangeNotifier {
     try {
       _setState(LocationState.loading);
       final settings = await _settingsService.loadSettings();
-      
+
       _useCurrentLocation = settings.useCurrentLocation;
-      
+
+      _currentLocation = _locationFromSettings(settings);
+      _setState(LocationState.success);
+
       if (_useCurrentLocation) {
         await detectCurrentLocation();
-      } else {
-        _currentLocation = Location(
-          city: settings.customCity,
-          state: settings.customState,
-          country: settings.customCountry,
-        );
-        _setState(LocationState.success);
       }
     } catch (e) {
       // Fallback to default location if initialization completely fails
       _currentLocation = Location(
         city: kDefaultCity,
-        state: kDefaultState, 
+        state: kDefaultState,
         country: kDefaultCountry,
       );
+      _setWarning(
+        'Could not initialize automatic location. Using the saved location.',
+      );
       _setState(LocationState.success);
-      _setError('Failed to initialize location: ${e.toString()}. Using default location.');
     }
   }
 
@@ -68,50 +69,55 @@ class LocationProvider extends ChangeNotifier {
     try {
       _setState(LocationState.loading);
       final result = await _locationRepository.getCurrentLocation();
-      
+
       if (result.isSuccess && result.location != null) {
         _currentLocation = result.location;
-        
+        _warningMessage = null;
+        _errorMessage = null;
+
         // Update settings with detected location
         await _settingsService.updateLocationSettings(
           customCity: result.location!.city,
           customState: result.location!.state,
           customCountry: result.location!.country,
+          latitude: result.location!.latitude,
+          longitude: result.location!.longitude,
         );
-        
+
         _setState(LocationState.success);
       } else {
-        // If detection fails due to permissions, switch to manual mode
-        if (result.error?.contains('permission') == true || 
-            result.error?.contains('denied') == true) {
-          // Automatically switch to manual location mode
-          _useCurrentLocation = false;
-          await _settingsService.updateLocationSettings(useCurrentLocation: false);
-        }
-        
-        // Fall back to default/saved location
+        // A location failure should not discard the user's preference or make
+        // already usable saved data look like a fatal app error.
         await _loadDefaultLocation();
+        _setWarning(
+          result.error ??
+              'Could not update location. Using the saved location.',
+        );
         _setState(LocationState.success);
-        _setError(result.error ?? 'Failed to detect location. Using saved location.');
       }
     } catch (e) {
-      // If detection fails completely, fall back to default location  
+      // If detection fails completely, fall back to default location
       await _loadDefaultLocation();
+      _setWarning('Location detection failed. Using the saved location.');
       _setState(LocationState.success);
-      _setError('Location detection failed: ${e.toString()}. Using saved location.');
     }
   }
 
   Future<void> _loadDefaultLocation() async {
     final settings = await _settingsService.loadSettings();
-    _currentLocation = Location(
-      city: settings.customCity,
-      state: settings.customState,
-      country: settings.customCountry,
-    );
+    _currentLocation = _locationFromSettings(settings);
   }
 
-  Future<void> setCustomLocation(String city, {String? state, String? country}) async {
+  Location _locationFromSettings(AppSettings settings) => Location(
+        city: settings.customCity,
+        state: settings.customState,
+        country: settings.customCountry,
+        latitude: settings.latitude,
+        longitude: settings.longitude,
+      );
+
+  Future<void> setCustomLocation(String city,
+      {String? state, String? country}) async {
     if (city.isEmpty) {
       _setError('City name cannot be empty');
       return;
@@ -119,23 +125,32 @@ class LocationProvider extends ChangeNotifier {
 
     try {
       _setState(LocationState.loading);
-      
-      final location = Location(
-        city: city.trim(),
-        state: state?.trim() ?? '',
-        country: country?.trim() ?? 'United States',
-      );
-      
+
+      final address = [city.trim(), state?.trim(), country?.trim()]
+          .whereType<String>()
+          .where((part) => part.isNotEmpty)
+          .join(', ');
+      final result = await _locationRepository.getLocationFromAddress(address);
+      if (!result.isSuccess || result.location == null) {
+        _setError(result.error ?? 'Location not found.');
+        return;
+      }
+
+      final location = result.location!;
       _currentLocation = location;
-      
+      _warningMessage = null;
+      _errorMessage = null;
+
       // Update settings
       await _settingsService.updateLocationSettings(
         customCity: location.city,
         customState: location.state,
         customCountry: location.country,
+        latitude: location.latitude,
+        longitude: location.longitude,
         useCurrentLocation: false,
       );
-      
+
       _useCurrentLocation = false;
       _setState(LocationState.success);
     } catch (e) {
@@ -146,21 +161,18 @@ class LocationProvider extends ChangeNotifier {
   Future<void> toggleLocationMode(bool useCurrentLocation) async {
     try {
       _useCurrentLocation = useCurrentLocation;
-      
+
       await _settingsService.updateLocationSettings(
         useCurrentLocation: useCurrentLocation,
       );
-      
+
       if (useCurrentLocation) {
         await detectCurrentLocation();
       } else {
         // Load custom location from settings
         final settings = await _settingsService.loadSettings();
-        _currentLocation = Location(
-          city: settings.customCity,
-          state: settings.customState,
-          country: settings.customCountry,
-        );
+        _currentLocation = _locationFromSettings(settings);
+        _warningMessage = null;
         _setState(LocationState.success);
       }
     } catch (e) {
@@ -179,8 +191,16 @@ class LocationProvider extends ChangeNotifier {
   void clearError() {
     if (_state == LocationState.error) {
       _errorMessage = null;
-      _setState(_currentLocation != null ? LocationState.success : LocationState.initial);
+      _setState(_currentLocation != null
+          ? LocationState.success
+          : LocationState.initial);
     }
+  }
+
+  void clearWarning() {
+    if (_warningMessage == null) return;
+    _warningMessage = null;
+    notifyListeners();
   }
 
   void _setState(LocationState newState) {
@@ -195,4 +215,7 @@ class LocationProvider extends ChangeNotifier {
     _setState(LocationState.error);
   }
 
+  void _setWarning(String warning) {
+    _warningMessage = warning;
+  }
 }

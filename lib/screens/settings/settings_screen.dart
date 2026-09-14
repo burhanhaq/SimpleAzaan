@@ -51,33 +51,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       final locationProvider = context.read<LocationProvider>();
       await locationProvider.detectCurrentLocation();
-      
-      if (locationProvider.hasError) {
+
+      if (locationProvider.hasError || locationProvider.hasWarning) {
         if (mounted) {
-          String message = locationProvider.errorMessage ?? kLocationDetectionFailed;
-          bool isPermissionError = message.contains('permission') || message.contains('denied');
-          
+          final message = locationProvider.errorMessage ??
+              locationProvider.warningMessage ??
+              kLocationDetectionFailed;
+          bool isPermissionError =
+              message.contains('permission') || message.contains('denied');
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(message),
               duration: const Duration(seconds: 6),
-              action: isPermissionError 
-                ? SnackBarAction(
-                    label: 'OK', 
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    }
-                  )
-                : null,
+              action: isPermissionError
+                  ? SnackBarAction(
+                      label: 'Dismiss',
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      })
+                  : null,
             ),
           );
-          
-          // If it's a permission error, refresh the UI to reflect manual mode
-          if (isPermissionError && !locationProvider.useCurrentLocation) {
-            setState(() {
-              _currentSettings.useCurrentLocation = false;
-            });
-          }
+
+          locationProvider.clearWarning();
         }
       } else if (locationProvider.currentLocation != null) {
         final location = locationProvider.currentLocation!;
@@ -90,7 +87,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Location detected: ${location.displayName}')),
+            SnackBar(
+                content: Text('Location detected: ${location.displayName}')),
           );
         }
       }
@@ -101,9 +99,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       }
     } finally {
-      setState(() {
-        _isDetectingLocation = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isDetectingLocation = false;
+        });
+      }
     }
   }
 
@@ -156,16 +156,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           SwitchListTile(
             title: const Text('Use Current Location'),
-            subtitle: const Text('Automatically detect your location for prayer times'),
+            subtitle: const Text(
+                'Automatically detect your location for prayer times'),
             value: _currentSettings.useCurrentLocation,
             onChanged: (value) async {
               setState(() {
                 _currentSettings.useCurrentLocation = value;
               });
-              
+
               final locationProvider = context.read<LocationProvider>();
               await locationProvider.toggleLocationMode(value);
-              
+
+              if (!mounted) return;
               if (locationProvider.currentLocation != null) {
                 final location = locationProvider.currentLocation!;
                 setState(() {
@@ -176,6 +178,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _cityController.text = location.city;
                   }
                 });
+              }
+
+              if (locationProvider.hasWarning) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(locationProvider.warningMessage!)),
+                );
+                locationProvider.clearWarning();
               }
             },
           ),
@@ -193,7 +202,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   if (value.trim().isNotEmpty) {
                     final locationProvider = context.read<LocationProvider>();
                     await locationProvider.setCustomLocation(value.trim());
-                    
+
+                    if (!mounted) return;
                     if (locationProvider.currentLocation != null) {
                       final location = locationProvider.currentLocation!;
                       setState(() {
@@ -202,13 +212,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         _currentSettings.customCountry = location.country;
                       });
                     }
-                    
+
                     if (locationProvider.hasError) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(locationProvider.errorMessage ?? 'Failed to set location')),
-                        );
-                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(locationProvider.errorMessage ??
+                                'Failed to set location')),
+                      );
                     }
                   }
                 },
@@ -226,7 +236,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     )
                   : const Icon(Icons.location_searching),
               title: const Text('Detect Location'),
-              subtitle: _isDetectingLocation 
+              subtitle: _isDetectingLocation
                   ? const SleekLoadingIndicator(
                       height: 2,
                       primaryColor: Colors.black,
@@ -248,25 +258,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: PrayerType.values.map((prayerType) {
           return SwitchListTile(
             title: Text(_getPrayerDisplayName(prayerType)),
-            subtitle: Text('Receive notifications for ${_getPrayerDisplayName(prayerType).toLowerCase()}'),
+            subtitle: Text(
+                'Receive notifications for ${_getPrayerDisplayName(prayerType).toLowerCase()}'),
             value: _currentSettings.notificationSettings[prayerType] ?? false,
             onChanged: (value) async {
+              final schedule = context.read<PrayerTimesProvider>().schedule;
               setState(() {
                 _currentSettings.notificationSettings[prayerType] = value;
               });
-              await _settingsService.updateNotificationSetting(prayerType, value);
+              await _settingsService.updateNotificationSetting(
+                  prayerType, value);
 
               // Immediately reschedule notifications to reflect the change
-              final prayerTimesProvider = context.read<PrayerTimesProvider>();
-              final prayerData = prayerTimesProvider.prayerData;
-              final locProvider = context.read<LocationProvider>();
-              final location = locProvider.currentLocation;
-              if (prayerData != null && location != null) {
-                // Schedules only the enabled prayers (filtering inside service)
-                await NotificationService().scheduleForPrayerData(
-                  prayerData,
-                  cityLabel: location.displayName,
-                );
+              if (schedule != null) {
+                await NotificationService().scheduleForPrayerSchedule(schedule);
               }
             },
           );
@@ -282,31 +287,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           ListTile(
             title: const Text('App Theme'),
-            subtitle: Text('Current: ${_getThemeDisplayName(_currentSettings.themeMode)}'),
+            subtitle: Text(
+                'Current: ${_getThemeDisplayName(_currentSettings.themeMode)}'),
             trailing: const Icon(Icons.arrow_drop_down),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text('Select Theme'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: AppThemeMode.values.map((themeMode) {
-                      return RadioListTile<AppThemeMode>(
-                        title: Text(_getThemeDisplayName(themeMode)),
-                        value: themeMode,
-                        groupValue: _currentSettings.themeMode,
-                        onChanged: (AppThemeMode? value) async {
-                          if (value != null) {
-                            setState(() {
-                              _currentSettings.themeMode = value;
-                            });
-                            await _settingsService.updateThemeMode(value);
-                            if (mounted) Navigator.of(context).pop();
-                          }
-                        },
-                      );
-                    }).toList(),
+                  content: RadioGroup<AppThemeMode>(
+                    groupValue: _currentSettings.themeMode,
+                    onChanged: (value) async {
+                      if (value == null) return;
+                      setState(() {
+                        _currentSettings.themeMode = value;
+                      });
+                      await _settingsService.updateThemeMode(value);
+                      if (context.mounted) Navigator.of(context).pop();
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: AppThemeMode.values.map((themeMode) {
+                        return RadioListTile<AppThemeMode>(
+                          title: Text(_getThemeDisplayName(themeMode)),
+                          value: themeMode,
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               );
@@ -345,7 +352,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Widget sync test completed successfully!'),
+                        content:
+                            Text('Widget sync test completed successfully!'),
                         backgroundColor: Colors.green,
                       ),
                     );

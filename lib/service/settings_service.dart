@@ -1,7 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:simple_azaan/constants.dart';
-import 'package:simple_azaan/constants.dart';
 
 enum AppThemeMode {
   light,
@@ -23,6 +22,8 @@ class AppSettings {
   String customCity;
   String customState;
   String customCountry;
+  double? latitude;
+  double? longitude;
   Map<PrayerType, bool> notificationSettings;
   AppThemeMode themeMode;
 
@@ -31,6 +32,8 @@ class AppSettings {
     this.customCity = kDefaultCity,
     this.customState = kDefaultState,
     this.customCountry = kDefaultCountry,
+    this.latitude,
+    this.longitude,
     Map<PrayerType, bool>? notificationSettings,
     this.themeMode = AppThemeMode.light,
   }) : notificationSettings = notificationSettings ??
@@ -67,6 +70,8 @@ class SettingsService {
     final customCity = prefs.getString(_customCityKey) ?? kDefaultCity;
     final customState = prefs.getString(_customStateKey) ?? kDefaultState;
     final customCountry = prefs.getString(_customCountryKey) ?? kDefaultCountry;
+    final latitude = prefs.getDouble(kLatitudeKey);
+    final longitude = prefs.getDouble(kLongitudeKey);
     final themeModeIndex = prefs.getInt(_themeModeKey) ?? 0;
     final themeMode = AppThemeMode.values[themeModeIndex];
 
@@ -82,6 +87,8 @@ class SettingsService {
       customCity: customCity,
       customState: customState,
       customCountry: customCountry,
+      latitude: latitude,
+      longitude: longitude,
       notificationSettings: notificationSettings,
       themeMode: themeMode,
     );
@@ -94,6 +101,16 @@ class SettingsService {
     await prefs.setString(_customCityKey, settings.customCity);
     await prefs.setString(_customStateKey, settings.customState);
     await prefs.setString(_customCountryKey, settings.customCountry);
+    if (settings.latitude != null) {
+      await prefs.setDouble(kLatitudeKey, settings.latitude!);
+    } else {
+      await prefs.remove(kLatitudeKey);
+    }
+    if (settings.longitude != null) {
+      await prefs.setDouble(kLongitudeKey, settings.longitude!);
+    } else {
+      await prefs.remove(kLongitudeKey);
+    }
     await prefs.setInt(_themeModeKey, settings.themeMode.index);
 
     for (final entry in settings.notificationSettings.entries) {
@@ -105,7 +122,14 @@ class SettingsService {
     try {
       await WidgetKit.setItem(kCustomCityKey, settings.customCity, kGroup);
       await WidgetKit.setItem(kCustomStateKey, settings.customState, kGroup);
-      await WidgetKit.setItem(kCustomCountryKey, settings.customCountry, kGroup);
+      await WidgetKit.setItem(
+          kCustomCountryKey, settings.customCountry, kGroup);
+      if (settings.latitude != null) {
+        await WidgetKit.setItem(kLatitudeKey, settings.latitude!, kGroup);
+      }
+      if (settings.longitude != null) {
+        await WidgetKit.setItem(kLongitudeKey, settings.longitude!, kGroup);
+      }
       // Trigger a reload so widgets can pick up updated location
       WidgetKit.reloadAllTimelines();
     } catch (_) {
@@ -113,7 +137,8 @@ class SettingsService {
     }
   }
 
-  Future<void> updateNotificationSetting(PrayerType prayerType, bool enabled) async {
+  Future<void> updateNotificationSetting(
+      PrayerType prayerType, bool enabled) async {
     final settings = await loadSettings();
     settings.notificationSettings[prayerType] = enabled;
     await saveSettings(settings);
@@ -124,12 +149,24 @@ class SettingsService {
     String? customCity,
     String? customState,
     String? customCountry,
+    double? latitude,
+    double? longitude,
+    bool clearCoordinates = false,
   }) async {
     final settings = await loadSettings();
-    if (useCurrentLocation != null) settings.useCurrentLocation = useCurrentLocation;
+    if (useCurrentLocation != null) {
+      settings.useCurrentLocation = useCurrentLocation;
+    }
     if (customCity != null) settings.customCity = customCity;
     if (customState != null) settings.customState = customState;
     if (customCountry != null) settings.customCountry = customCountry;
+    if (clearCoordinates) {
+      settings.latitude = null;
+      settings.longitude = null;
+    } else {
+      if (latitude != null) settings.latitude = latitude;
+      if (longitude != null) settings.longitude = longitude;
+    }
     await saveSettings(settings);
   }
 

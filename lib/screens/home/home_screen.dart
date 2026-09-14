@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:simple_azaan/constants.dart';
 import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
@@ -8,8 +11,6 @@ import 'package:simple_azaan/screens/home/date_display_widget.dart';
 import 'package:simple_azaan/screens/home/go_to_today_widget.dart';
 import 'package:simple_azaan/screens/home/location_display_widget.dart';
 import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
-import 'package:simple_azaan/screens/welcome/welcome_screen.dart';
-import 'package:simple_azaan/widgets/compact_prayer_view.dart';
 import 'package:simple_azaan/widgets/prayer_name_card.dart';
 import 'package:simple_azaan/widgets/prayer_time_card.dart';
 import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
@@ -22,306 +23,165 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  AppLifecycleState? _appLifecycleState = AppLifecycleState.resumed;
-  bool _isInitialized = false;
-  final PageController _pageController = PageController();
-  int _currentViewIndex = 0;
-  bool _isWelcomeVisible = true;
-  bool _isWelcomeCollapsing = false;
-
-  bool _shouldKeepWelcomeExpanded() {
-    if (_appLifecycleState != AppLifecycleState.resumed) {
-      return true;
-    }
-
-    final prayerTimesProvider = context.read<PrayerTimesProvider>();
-    if (prayerTimesProvider.hasData) {
-      return false;
-    }
-
-    return true;
-  }
-
-  void _syncWelcomeVisibility(bool shouldKeepExpanded) {
-    if (shouldKeepExpanded) {
-      if (!_isWelcomeVisible || _isWelcomeCollapsing) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          setState(() {
-            _isWelcomeVisible = true;
-            _isWelcomeCollapsing = false;
-          });
-        });
-      }
-      return;
-    }
-
-    if (_isWelcomeVisible && !_isWelcomeCollapsing) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        setState(() {
-          _isWelcomeCollapsing = true;
-        });
-      });
-    }
-  }
-
-  void _handleWelcomeCollapseCompleted() {
-    if (!_isWelcomeVisible) {
-      return;
-    }
-
-    setState(() {
-      _isWelcomeVisible = false;
-      _isWelcomeCollapsing = false;
-    });
-  }
+  LocationProvider? _locationProvider;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeProviders();
+      if (!mounted) return;
+      _locationProvider = context.read<LocationProvider>();
+      _locationProvider!.addListener(_handleLocationChange);
+      unawaited(_locationProvider!.initialize());
     });
   }
 
-  Future<void> _initializeProviders() async {
-    if (_isInitialized) return;
+  void _handleLocationChange() {
+    if (!mounted) return;
+    final provider = _locationProvider!;
+    final location = provider.currentLocation;
+    if (provider.state != LocationState.success || location == null) return;
 
-    final locationProvider = context.read<LocationProvider>();
-    final prayerTimesProvider = context.read<PrayerTimesProvider>();
-
-    await locationProvider.initialize();
-
-    if (locationProvider.currentLocation != null) {
-      await prayerTimesProvider
-          .loadPrayerTimes(locationProvider.currentLocation!);
-    }
-
-    _isInitialized = true;
-    if (mounted) {
-      setState(() {});
+    final prayerProvider = context.read<PrayerTimesProvider>();
+    if (prayerProvider.currentLocation != location) {
+      unawaited(
+        prayerProvider.loadPrayerTimes(
+          location,
+          date: DateTime.now(),
+          forceRefresh: prayerProvider.currentLocation != null,
+        ),
+      );
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    setState(() {
-      _appLifecycleState = state;
-    });
-    if (state == AppLifecycleState.resumed) {
-      final prayerTimesProvider = context.read<PrayerTimesProvider>();
-      if (!prayerTimesProvider.hasData) {
-        _initializeProviders();
-      } else {
-        prayerTimesProvider.refreshPrayerTimes();
-      }
+    if (state == AppLifecycleState.resumed && mounted) {
+      unawaited(context.read<PrayerTimesProvider>().handleAppResumed());
     }
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _locationProvider?.removeListener(_handleLocationChange);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  void _refreshPrayerTimes() {
-    final prayerTimesProvider = context.read<PrayerTimesProvider>();
-    prayerTimesProvider.refreshPrayerTimes();
-  }
-
-  void _getCurrentDayPrayerTime() async {
-    final prayerTimesProvider = context.read<PrayerTimesProvider>();
-    await prayerTimesProvider.goToToday();
-  }
-
-  void _getNextDayPrayerTime() {
-    final prayerTimesProvider = context.read<PrayerTimesProvider>();
-    prayerTimesProvider.goToNextDay();
-  }
-
-  void _getPreviousDayPrayerTime() {
-    final prayerTimesProvider = context.read<PrayerTimesProvider>();
-    prayerTimesProvider.goToPreviousDay();
-  }
-
-  List<Prayer> _getPrayers(PrayerTimesProvider prayerTimesProvider) {
-    return prayerTimesProvider.prayers;
-  }
-
-  List<Widget> _getPrayerCards(List<Prayer> listOfPrayers) {
-    return List.generate(listOfPrayers.length, (index) {
+  List<Widget> _prayerCards(
+    List<Prayer> prayers,
+    Prayer? highlightedPrayer,
+  ) {
+    return prayers.map((prayer) {
+      final highlighted = identical(prayer, highlightedPrayer);
       return Column(
         children: [
-          PrayerNameCard(prayer: listOfPrayers[index]),
+          PrayerNameCard(
+            prayer: prayer,
+            isHighlighted: highlighted,
+          ),
           PrayerTimeCard(
-            prayer: listOfPrayers[index],
+            prayer: prayer,
             timeToDisplay: PrayerTimeDisplay.prayerTime,
+            isHighlighted: highlighted,
           ),
         ],
       );
-    });
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<LocationProvider, PrayerTimesProvider>(
-      builder: (context, locationProvider, prayerTimesProvider, child) {
-        final shouldKeepWelcomeExpanded = _shouldKeepWelcomeExpanded();
-        _syncWelcomeVisibility(shouldKeepWelcomeExpanded);
+      builder: (context, locationProvider, prayerProvider, child) {
+        final prayers = prayerProvider.prayers;
+        final dateDisplay = prayers.isNotEmpty
+            ? prayers.first.getDateString()
+            : prayerProvider.selectedDate.toString().split(' ')[0];
+        final locationDisplay =
+            locationProvider.currentLocation?.displayName ?? kUnknownLocation;
 
-        final prayers = _getPrayers(prayerTimesProvider);
-        final showGoToTodayWidget = prayerTimesProvider.isToday;
-
-        String dateDisplay = 'Current Date';
-        if (prayers.isNotEmpty) {
-          dateDisplay = prayers.first.getDateString();
-        } else {
-          dateDisplay =
-              prayerTimesProvider.selectedDate.toString().split(' ')[0];
-        }
-
-        String locationDisplay = kLoadingLocation;
-        if (locationProvider.hasError) {
-          locationDisplay = 'Error: ${locationProvider.errorMessage}';
-        } else if (locationProvider.currentLocation != null) {
-          locationDisplay = locationProvider.displayLocation;
-        }
-
-        final mainContent = Stack(
-          alignment: Alignment.center,
-          children: [
-            if (prayerTimesProvider.isLoading)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: _getPreviousDayPrayerTime,
-                    icon: const Icon(Icons.arrow_back_ios),
-                    color: Colors.black26,
-                    iconSize: 30,
-                  ),
-                  const Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: SleekLoadingIndicator(
-                        width: 200,
-                        height: 2,
-                        primaryColor: Colors.black26,
-                        backgroundColor: kLoadingBackgroundColor,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: _getNextDayPrayerTime,
-                    icon: const Icon(Icons.arrow_forward_ios),
-                    color: Colors.black26,
-                    iconSize: 30,
-                  ),
-                ],
-              )
-            else
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: _getPreviousDayPrayerTime,
-                    icon: const Icon(Icons.arrow_back_ios),
-                    color: Colors.black26,
-                    iconSize: 30,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        DateDisplayWidget(date: dateDisplay),
-                        LocationDisplayWidget(location: locationDisplay),
-                        const SizedBox(height: 10),
-                        if (prayerTimesProvider.hasError)
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Error loading prayer times',
-                                  style: TextStyle(color: kErrorColor),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  prayerTimesProvider.errorMessage ?? '',
-                                  style: const TextStyle(fontSize: 12),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 8),
-                                ElevatedButton(
-                                  onPressed: _refreshPrayerTimes,
-                                  child: const Text('Retry'),
-                                ),
-                              ],
-                            ),
-                          )
-                        else
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: _getPrayerCards(prayers),
-                          ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: _getNextDayPrayerTime,
-                    icon: const Icon(Icons.arrow_forward_ios),
-                    color: Colors.black26,
-                    iconSize: 30,
-                  ),
-                ],
-              ),
-            GoToTodayWidget(
-              offstage: showGoToTodayWidget,
-              tapHandler: _getCurrentDayPrayerTime,
-            ),
-            const MenuIconWidget(),
-          ],
-        );
-
-        Widget content;
-        if (prayers.isNotEmpty) {
-          content = PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentViewIndex = index;
-              });
-            },
-            children: [
-              const CompactPrayerView(),
-              mainContent,
-            ],
-          );
-        } else {
-          content = mainContent;
-        }
-
-        return Container(
-          color: kAppBackgroundColor,
-          child: SafeArea(
+        return Scaffold(
+          backgroundColor: kAppBackgroundColor,
+          body: SafeArea(
             child: Stack(
+              alignment: Alignment.center,
               children: [
-                content,
-                if (_isWelcomeVisible)
-                  WelcomeScreen(
-                    isExpanded: !_isWelcomeCollapsing,
-                    onCollapseCompleted: _handleWelcomeCollapseCompleted,
+                if (prayerProvider.isLoading && prayers.isEmpty)
+                  const Center(
+                    child: SleekLoadingIndicator(
+                      width: 200,
+                      height: 2,
+                      primaryColor: Colors.black26,
+                      backgroundColor: kLoadingBackgroundColor,
+                    ),
+                  )
+                else
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: prayerProvider.goToPreviousDay,
+                        icon: const Icon(Icons.arrow_back_ios),
+                        color: Colors.black26,
+                        iconSize: 30,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            DateDisplayWidget(date: dateDisplay),
+                            LocationDisplayWidget(location: locationDisplay),
+                            if (locationProvider.hasWarning)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 4),
+                                child: Text(
+                                  'Using saved location',
+                                  style: TextStyle(
+                                    color: Colors.black38,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 10),
+                            if (locationProvider.hasError &&
+                                locationProvider.currentLocation == null)
+                              _InlineError(
+                                message: locationProvider.errorMessage ??
+                                    'Unable to load location.',
+                                onRetry: locationProvider.refreshLocation,
+                              )
+                            else if (prayerProvider.hasError)
+                              _InlineError(
+                                message: prayerProvider.errorMessage ??
+                                    'Unable to load prayer times.',
+                                onRetry: prayerProvider.refreshPrayerTimes,
+                              )
+                            else
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: _prayerCards(
+                                  prayers,
+                                  prayerProvider.currentPrayer,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: prayerProvider.goToNextDay,
+                        icon: const Icon(Icons.arrow_forward_ios),
+                        color: Colors.black26,
+                        iconSize: 30,
+                      ),
+                    ],
                   ),
-                if (!_isWelcomeVisible && prayers.isNotEmpty)
-                  _buildViewIndicator(),
+                GoToTodayWidget(
+                  offstage: prayerProvider.isToday,
+                  tapHandler: prayerProvider.goToToday,
+                ),
+                const MenuIconWidget(),
               ],
             ),
           ),
@@ -329,48 +189,29 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       },
     );
   }
+}
 
-  Widget _buildViewIndicator() {
-    return Positioned(
-      bottom: 10,
-      left: 0,
-      right: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+class _InlineError extends StatelessWidget {
+  const _InlineError({required this.message, required this.onRetry});
+
+  final String message;
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: _currentViewIndex == 0 ? 24 : 6,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color:
-                        _currentViewIndex == 0 ? Colors.black87 : Colors.black26,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: _currentViewIndex == 1 ? 24 : 6,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color:
-                        _currentViewIndex == 1 ? Colors.black87 : Colors.black26,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-              ],
-            ),
+          Text(
+            message,
+            style: const TextStyle(color: kErrorColor, fontSize: 13),
+            textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
+          const SizedBox(height: 8),
+          OutlinedButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );

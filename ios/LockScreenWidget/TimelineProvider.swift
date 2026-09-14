@@ -35,8 +35,16 @@ struct Provider: TimelineProvider {
             let time6: String
         }
 
+        struct StoredSchedule: Decodable {
+            let schemaVersion: Int
+            let generatedAt: String
+            let calculationMethod: String
+            let days: [StoredPrayerData]
+        }
+
         let suiteName = "group.com.simpleAzaan"
         let key = "prayerData"
+        let scheduleKey = "prayerSchedule"
         let isoOut = ISO8601DateFormatter()
         isoOut.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         let isoFS = ISO8601DateFormatter()
@@ -53,10 +61,18 @@ struct Provider: TimelineProvider {
             return PrayerEntry(date: pc.prayerTime, prayerConfig: pc)
         }()
 
-        func buildEntries(forDay fajr: Date, sunrise: Date, zuhr: Date, asr: Date, maghrib: Date, isha: Date) -> [PrayerEntry] {
-            let dayStart = Calendar.current.date(bySettingHour: 0, minute: 5, second: 0, of: fajr)!
+        func buildEntries(
+            forDay fajr: Date,
+            sunrise: Date,
+            zuhr: Date,
+            asr: Date,
+            maghrib: Date,
+            isha: Date,
+            fajrVisibleFrom: Date? = nil
+        ) -> [PrayerEntry] {
+            let dayStart = Calendar.current.startOfDay(for: fajr)
             let configs = [
-                PrayerConfig(prayerType: Prayer.Fajr,    prayerTime: fajr,    timeWhenIconVisible: dayStart),
+                PrayerConfig(prayerType: Prayer.Fajr,    prayerTime: fajr,    timeWhenIconVisible: fajrVisibleFrom ?? dayStart),
                 PrayerConfig(prayerType: Prayer.Sunrise, prayerTime: sunrise, timeWhenIconVisible: fajr),
                 PrayerConfig(prayerType: Prayer.Zuhr,    prayerTime: zuhr,    timeWhenIconVisible: sunrise),
                 PrayerConfig(prayerType: Prayer.Asr,     prayerTime: asr,     timeWhenIconVisible: zuhr),
@@ -64,6 +80,18 @@ struct Provider: TimelineProvider {
                 PrayerConfig(prayerType: Prayer.Isha,    prayerTime: isha,    timeWhenIconVisible: maghrib),
             ]
             return configs.map { PrayerEntry(date: $0.timeWhenIconVisible, prayerConfig: $0) }
+        }
+
+        func decodedDay(_ stored: StoredPrayerData) -> (Date, Date, Date, Date, Date, Date)? {
+            guard let fajr = parseISO(stored.time1),
+                  let sunrise = parseISO(stored.time2),
+                  let dhuhr = parseISO(stored.time3),
+                  let asr = parseISO(stored.time4),
+                  let maghrib = parseISO(stored.time5),
+                  let isha = parseISO(stored.time6) else {
+                return nil
+            }
+            return (fajr, sunrise, dhuhr, asr, maghrib, isha)
         }
 
         func fetchAndBuildTimeline(
@@ -183,6 +211,34 @@ struct Provider: TimelineProvider {
         }
 
         let defaults = UserDefaults(suiteName: suiteName)
+        if let scheduleString = defaults?.string(forKey: scheduleKey),
+           let scheduleData = scheduleString.data(using: .utf8),
+           let schedule = try? JSONDecoder().decode(StoredSchedule.self, from: scheduleData) {
+            let decodedDays = schedule.days.compactMap(decodedDay).sorted { $0.0 < $1.0 }
+            if let lastDay = decodedDays.last, lastDay.5 > Date() {
+                var entries: [PrayerEntry] = []
+                var previousIsha: Date?
+                for day in decodedDays {
+                    entries.append(contentsOf: buildEntries(
+                        forDay: day.0,
+                        sunrise: day.1,
+                        zuhr: day.2,
+                        asr: day.3,
+                        maghrib: day.4,
+                        isha: day.5,
+                        fajrVisibleFrom: previousIsha
+                    ))
+                    previousIsha = day.5
+                }
+
+                completion(Timeline(
+                    entries: entries,
+                    policy: .after(lastDay.5.addingTimeInterval(60))
+                ))
+                return
+            }
+        }
+
         if let jsonString = defaults?.string(forKey: key), let data = jsonString.data(using: .utf8) {
             do {
                 let stored = try JSONDecoder().decode(StoredPrayerData.self, from: data)

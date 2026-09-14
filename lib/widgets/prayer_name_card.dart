@@ -3,9 +3,11 @@ import 'package:simple_azaan/models/prayer.dart';
 
 class PrayerNameCard extends StatefulWidget {
   final Prayer? prayer;
+  final bool isHighlighted;
   const PrayerNameCard({
     super.key,
     required this.prayer,
+    this.isHighlighted = false,
   });
 
   @override
@@ -13,12 +15,6 @@ class PrayerNameCard extends StatefulWidget {
 }
 
 class _PrayerNameCardState extends State<PrayerNameCard> {
-  _hasPrayerPassed() {
-    if (widget.prayer == null) return false;
-    if (widget.prayer!.isCurrentPrayer) return false;
-    return widget.prayer!.hasPrayerPassed;
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -29,7 +25,7 @@ class _PrayerNameCardState extends State<PrayerNameCard> {
     var inactivePrayerNameFontSize = screenWidth * 0.08;
 
     var prayerName = widget.prayer?.name ?? 'Prayer';
-    var isCurrentPrayer = widget.prayer?.isCurrentPrayer ?? false;
+    var isCurrentPrayer = widget.isHighlighted;
 
     var prayerNameFontWeight =
         isCurrentPrayer ? FontWeight.w200 : FontWeight.w100;

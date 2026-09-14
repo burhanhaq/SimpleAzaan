@@ -15,7 +15,7 @@ import workmanager
     }
     
     // Register background task identifier
-    WorkmanagerPlugin.registerTask(withIdentifier: "dailyPrayerSync")
+    WorkmanagerPlugin.registerTask(withIdentifier: "com.simpleAzaan.dailyPrayerSync")
     
     // Ensure notifications show in the foreground on iOS 10+
     UNUserNotificationCenter.current().delegate = self

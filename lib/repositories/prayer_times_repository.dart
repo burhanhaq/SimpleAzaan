@@ -47,16 +47,19 @@ class PrayerTimesResult {
   final bool isSuccess;
   final Location location;
 
-  PrayerTimesResult.success(this.prayerData, this.location) 
-    : error = null, isSuccess = true;
-  PrayerTimesResult.error(this.error, this.location) 
-    : prayerData = null, isSuccess = false;
+  PrayerTimesResult.success(this.prayerData, this.location)
+      : error = null,
+        isSuccess = true;
+  PrayerTimesResult.error(this.error, this.location)
+      : prayerData = null,
+        isSuccess = false;
 }
 
 class PrayerTimesRepository {
   static const String _apiUrl = kAladhanApiBaseUrl;
   static const String _timingsByCityEndpoint = kTimingsByCityEndpoint;
-  
+  static const String _timingsEndpoint = kTimingsEndpoint;
+
   final HttpRequest _httpRequest = HttpRequest();
 
   static PrayerTimesRepository? _instance;
@@ -75,8 +78,12 @@ class PrayerTimesRepository {
     try {
       final targetDate = date ?? DateTime.now();
       final formattedDate = DateFormat('dd-MM-yyyy').format(targetDate);
-      final url = '$_apiUrl$_timingsByCityEndpoint/$formattedDate';
-      
+      final hasCoordinates =
+          location.latitude != null && location.longitude != null;
+      final endpoint =
+          hasCoordinates ? _timingsEndpoint : _timingsByCityEndpoint;
+      final url = '$_apiUrl$endpoint/$formattedDate';
+
       final params = _buildQueryParams(location, method);
       final fullUrl = '$url?$params';
 
@@ -87,10 +94,9 @@ class PrayerTimesRepository {
 
       final response = await _httpRequest.getRequest(fullUrl, headers);
       final jsonResponse = _parseResponse(response);
-      
+
       final prayerData = PrayerData.fromAlAdhanApi(jsonResponse);
       return PrayerTimesResult.success(prayerData, location);
-      
     } catch (e) {
       String errorMessage;
       if (e.toString().contains('SocketException')) {
@@ -121,24 +127,67 @@ class PrayerTimesRepository {
 
   String _buildQueryParams(Location location, PrayerTimesMethod method) {
     final params = <String>[];
-    
+
     params.add('iso8601=true');
-    
-    if (location.city.isNotEmpty) {
-      params.add('city=${Uri.encodeComponent(location.city)}');
+
+    if (location.latitude != null && location.longitude != null) {
+      params.add('latitude=${location.latitude}');
+      params.add('longitude=${location.longitude}');
+    } else {
+      if (location.city.isNotEmpty) {
+        params.add('city=${Uri.encodeComponent(location.city)}');
+      }
+
+      if (location.state.isNotEmpty) {
+        params.add('state=${Uri.encodeComponent(location.state)}');
+      }
+
+      if (location.country.isNotEmpty) {
+        params.add('country=${Uri.encodeComponent(location.country)}');
+      }
     }
-    
-    if (location.state.isNotEmpty) {
-      params.add('state=${Uri.encodeComponent(location.state)}');
-    }
-    
-    if (location.country.isNotEmpty) {
-      params.add('country=${Uri.encodeComponent(location.country)}');
-    }
-    
+
     params.add('method=${method.methodNumber}');
-    
+
     return params.join('&');
+  }
+
+  Future<List<PrayerData>> getPrayerTimesRange({
+    required Location location,
+    required DateTime startDate,
+    required int dayCount,
+    PrayerTimesMethod method = PrayerTimesMethod.isna,
+    bool forceRefresh = false,
+  }) async {
+    if (forceRefresh) clearCache();
+
+    final results = await Future.wait(
+      List.generate(
+        dayCount,
+        (index) => getPrayerTimesWithCache(
+          location: location,
+          date: DateTime(
+            startDate.year,
+            startDate.month,
+            startDate.day + index,
+          ),
+          method: method,
+        ),
+      ),
+    );
+
+    PrayerTimesResult? failedResult;
+    for (final result in results) {
+      if (!result.isSuccess) {
+        failedResult = result;
+        break;
+      }
+    }
+    if (failedResult != null) {
+      throw Exception(failedResult.error ?? 'Failed to load prayer schedule');
+    }
+
+    return results.map((result) => result.prayerData!).toList();
   }
 
   dynamic _parseResponse(http.Response response) {
@@ -160,9 +209,10 @@ class PrayerTimesRepository {
   static const Duration _cacheTimeout = Duration(hours: 1);
   final Map<String, CacheEntry> _cache = {};
 
-  String _getCacheKey(Location location, DateTime date, PrayerTimesMethod method) {
+  String _getCacheKey(
+      Location location, DateTime date, PrayerTimesMethod method) {
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
-    return '${location.city}_${location.state}_${location.country}_${dateStr}_${method.methodNumber}';
+    return '${location.city}_${location.state}_${location.country}_${location.latitude}_${location.longitude}_${dateStr}_${method.methodNumber}';
   }
 
   Future<PrayerTimesResult> getPrayerTimesWithCache({
@@ -175,7 +225,7 @@ class PrayerTimesRepository {
     final cacheEntry = _cache[cacheKey];
 
     // Check if cache is valid
-    if (cacheEntry != null && 
+    if (cacheEntry != null &&
         DateTime.now().difference(cacheEntry.timestamp) < _cacheTimeout) {
       return PrayerTimesResult.success(cacheEntry.prayerData, location);
     }

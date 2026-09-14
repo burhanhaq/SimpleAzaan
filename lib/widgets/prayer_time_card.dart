@@ -5,10 +5,12 @@ import 'package:simple_azaan/constants.dart';
 class PrayerTimeCard extends StatefulWidget {
   final Prayer? prayer;
   final PrayerTimeDisplay timeToDisplay;
+  final bool isHighlighted;
   const PrayerTimeCard({
     super.key,
     required this.prayer,
     required this.timeToDisplay,
+    this.isHighlighted = false,
   });
 
   @override
@@ -16,12 +18,6 @@ class PrayerTimeCard extends StatefulWidget {
 }
 
 class _PrayerTimeCardState extends State<PrayerTimeCard> {
-  _hasPrayerPassed() {
-    if (widget.prayer == null) return false;
-    if (widget.prayer!.isCurrentPrayer) return false;
-    return widget.prayer!.hasPrayerPassed;
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -33,7 +29,7 @@ class _PrayerTimeCardState extends State<PrayerTimeCard> {
     var timeToNextPrayerFontSize = screenWidth * 0.06;
 
     var prayerTime = widget.prayer?.getTimeString() ?? '12:00';
-    var isCurrentPrayer = widget.prayer?.isCurrentPrayer ?? false;
+    var isCurrentPrayer = widget.isHighlighted;
 
     var prayerTimeFontWeight =
         isCurrentPrayer ? FontWeight.w300 : FontWeight.w200;

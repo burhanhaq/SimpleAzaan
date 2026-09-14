@@ -13,9 +13,12 @@ class Location {
     this.longitude,
   });
 
-  String get displayName => '$city, $state';
-  
-  String get fullDisplayName => '$city, $state, $country';
+  String get displayName => [city, state.isNotEmpty ? state : country]
+      .where((part) => part.isNotEmpty)
+      .join(', ');
+
+  String get fullDisplayName =>
+      [city, state, country].where((part) => part.isNotEmpty).join(', ');
 
   Location copyWith({
     String? city,
@@ -59,9 +62,11 @@ class Location {
     return other is Location &&
         other.city == city &&
         other.state == state &&
-        other.country == country;
+        other.country == country &&
+        other.latitude == latitude &&
+        other.longitude == longitude;
   }
 
   @override
-  int get hashCode => Object.hash(city, state, country);
+  int get hashCode => Object.hash(city, state, country, latitude, longitude);
 }
