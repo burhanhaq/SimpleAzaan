@@ -1,48 +1,29 @@
 import 'package:flutter/material.dart';
+
 import 'package:simple_azaan/models/prayer.dart';
 
-class PrayerNameCard extends StatefulWidget {
-  final Prayer? prayer;
-  final bool isHighlighted;
+class PrayerNameCard extends StatelessWidget {
   const PrayerNameCard({
     super.key,
     required this.prayer,
+    required this.fontSize,
     this.isHighlighted = false,
   });
 
-  @override
-  State<PrayerNameCard> createState() => _PrayerNameCardState();
-}
+  final Prayer? prayer;
+  final double fontSize;
+  final bool isHighlighted;
 
-class _PrayerNameCardState extends State<PrayerNameCard> {
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
-    var screenWidth = screenSize.width;
-    var screenHeight = screenSize.height;
-
-    var activePrayerNameFontSize = screenWidth * 0.18;
-    var inactivePrayerNameFontSize = screenWidth * 0.08;
-
-    var prayerName = widget.prayer?.name ?? 'Prayer';
-    var isCurrentPrayer = widget.isHighlighted;
-
-    var prayerNameFontWeight =
-        isCurrentPrayer ? FontWeight.w200 : FontWeight.w100;
-    var prayerNameFontSize =
-        isCurrentPrayer ? activePrayerNameFontSize : inactivePrayerNameFontSize;
-    var prayerNameFontColor = isCurrentPrayer ? Colors.black : Colors.grey;
-
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: screenHeight * 0.006),
-      child: Text(
-        prayerName,
-        style: TextStyle(
-          fontSize: prayerNameFontSize,
-          color: prayerNameFontColor,
-          fontWeight: prayerNameFontWeight,
-          decoration: TextDecoration.none,
-        ),
+    return Text(
+      prayer?.name ?? 'Prayer',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: fontSize,
+        color: isHighlighted ? Colors.black : Colors.grey,
+        fontWeight: isHighlighted ? FontWeight.w200 : FontWeight.w100,
+        decoration: TextDecoration.none,
       ),
     );
   }

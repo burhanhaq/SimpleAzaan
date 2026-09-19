@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:simple_azaan/constants.dart';
-import 'package:simple_azaan/models/prayer.dart';
 import 'package:simple_azaan/providers/location_provider.dart';
 import 'package:simple_azaan/providers/prayer_times_provider.dart';
 import 'package:simple_azaan/screens/home/date_display_widget.dart';
 import 'package:simple_azaan/screens/home/go_to_today_widget.dart';
 import 'package:simple_azaan/screens/home/location_display_widget.dart';
 import 'package:simple_azaan/screens/home/menu_icon_widget.dart';
-import 'package:simple_azaan/widgets/prayer_name_card.dart';
-import 'package:simple_azaan/widgets/prayer_time_card.dart';
+import 'package:simple_azaan/widgets/prayer_list.dart';
 import 'package:simple_azaan/widgets/sleek_loading_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -69,28 +67,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  List<Widget> _prayerCards(
-    List<Prayer> prayers,
-    Prayer? highlightedPrayer,
-  ) {
-    return prayers.map((prayer) {
-      final highlighted = identical(prayer, highlightedPrayer);
-      return Column(
-        children: [
-          PrayerNameCard(
-            prayer: prayer,
-            isHighlighted: highlighted,
-          ),
-          PrayerTimeCard(
-            prayer: prayer,
-            timeToDisplay: PrayerTimeDisplay.prayerTime,
-            isHighlighted: highlighted,
-          ),
-        ],
-      );
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer2<LocationProvider, PrayerTimesProvider>(
@@ -132,17 +108,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           children: [
                             DateDisplayWidget(date: dateDisplay),
                             LocationDisplayWidget(location: locationDisplay),
-                            if (locationProvider.hasWarning)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 4),
-                                child: Text(
-                                  'Using saved location',
-                                  style: TextStyle(
-                                    color: Colors.black38,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
                             const SizedBox(height: 10),
                             if (locationProvider.hasError &&
                                 locationProvider.currentLocation == null)
@@ -158,12 +123,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 onRetry: prayerProvider.refreshPrayerTimes,
                               )
                             else
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: _prayerCards(
-                                  prayers,
-                                  prayerProvider.currentPrayer,
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: kHomeBottomOverlayInset,
+                                  ),
+                                  child: PrayerList(
+                                    prayers: prayers,
+                                    highlightedPrayer:
+                                        prayerProvider.currentPrayer,
+                                  ),
                                 ),
                               ),
                           ],

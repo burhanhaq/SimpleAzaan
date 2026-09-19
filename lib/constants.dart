@@ -9,11 +9,10 @@ const int kScheduleHorizonDays = 7;
 // Settings Screen
 const double kSettingsScreenBumpWidth = 6.0;
 
-// Display Modes
-enum PrayerTimeDisplay {
-  prayerTime,
-  timeToNextPrayer,
-}
+// Home Screen
+// Mosque button: 48pt IconButton + 2pt container padding + 20pt bottom
+// offset + 10pt gap so Isha is not tucked under the menu.
+const double kHomeBottomOverlayInset = 80.0;
 
 // Settings Keys
 const String kUseCurrentLocationKey = 'use_current_location';
