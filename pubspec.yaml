@@ -63,11 +63,11 @@ flutter_launcher_icons:
     generate: true
   web:
     generate: true
-    background_color: "#1B2748"
-    theme_color: "#1B2748"
+    background_color: "#FFFFFF"
+    theme_color: "#FFFFFF"
   windows:
     generate: true
-  adaptive_icon_background: "#1B2748"
+  adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
   adaptive_icon_foreground_inset: 0
 
