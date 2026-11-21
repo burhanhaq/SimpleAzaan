@@ -1,0 +1,341 @@
+require "fileutils"
+require "shellwords"
+require "tmpdir"
+
+default_platform(:ios)
+
+ROOT = File.expand_path("..", __dir__)
+IOS_DIR = File.join(ROOT, "ios")
+
+# Bundle identifiers. Keep in sync with ios/Runner.xcodeproj. Every embedded bundle's ID must
+# start with its parent's ID, and App Store Connect rejects the upload otherwise. The case
+# matters too: the App ID registered in the developer portal is lowercase "simpleAzaan".
+APP_IDENTIFIER = "com.dumblemon.simpleAzaan"
+LOCK_SCREEN_WIDGET_IDENTIFIER = "#{APP_IDENTIFIER}.LockScreenWidget"
+WATCH_IDENTIFIER = "#{APP_IDENTIFIER}.watchkitapp"
+COMPLICATIONS_IDENTIFIER = "#{WATCH_IDENTIFIER}.SimpleAzaanComplications"
+APP_GROUP = "group.com.dumblemon.SimpleAzaan"
+APP_NAME = "Simple Azaan"
+
+# The iPhone app embeds the lock screen widget and the Watch app; the Watch app embeds the
+# complications. Each needs its own App Store profile. The Watch app ships inside the iPhone
+# app, so TestFlight delivers it with the same build.
+SIGNED_IDENTIFIERS = [
+  APP_IDENTIFIER,
+  LOCK_SCREEN_WIDGET_IDENTIFIER,
+  WATCH_IDENTIFIER,
+  COMPLICATIONS_IDENTIFIER
+].freeze
+
+# The Flutter app's version lives in pubspec.yaml as `version: <name>+<build>`. The name is
+# the marketing version; the build number comes from TestFlight.
+APP_VERSION = File.read(File.join(ROOT, "pubspec.yaml"))[/^version:\s*(\d+(?:\.\d+)*)/, 1] || raise("No version in pubspec.yaml")
+
+WORKSPACE = File.join(IOS_DIR, "Runner.xcworkspace")
+PROJECT_FILE = File.join(IOS_DIR, "Runner.xcodeproj/project.pbxproj")
+SCHEME = "Runner"
+APP_PLATFORM = "ios"
+CONFIGURATION = "Release"
+EXPORT_METHOD = "app-store"
+OUTPUT_DIRECTORY = File.join(ROOT, "build/fastlane")
+ARCHIVE_PATH = File.join(OUTPUT_DIRECTORY, "SimpleAzaan.xcarchive")
+IPA_NAME = "SimpleAzaan.ipa"
+
+# App Store Connect API key. The .p8 stays outside the repo.
+API_KEY_ID = "4CXZBFY8C3"
+API_KEY_ISSUER_ID = "64434334-ca1f-4252-a5f9-d3538bb45c69"
+API_KEY_PATH = File.expand_path("~/.appstoreconnect/private_keys/AuthKey_#{API_KEY_ID}.p8")
+# Backup of the Apple Distribution certificate and its private key.
+CERTIFICATES_DIR = File.expand_path("~/.appstoreconnect/certificates")
+DISTRIBUTION_CERTIFICATE = "Apple Distribution"
+
+# External testers join through the public link on this group.
+PUBLIC_GROUP_NAME = "Public Beta"
+PUBLIC_LINK_LIMIT = 10_000
+
+BETA_LOCALE = "en-US"
+FEEDBACK_EMAIL = "hello@dumblemon.com"
+MARKETING_URL = "https://dumblemon.com/apps/simple-azaan/"
+PRIVACY_POLICY_URL = "#{MARKETING_URL}privacy/"
+
+BETA_DESCRIPTION = <<~TEXT.strip
+  Simple Azaan shows today's prayer times for your location, with the current and next prayer highlighted at a glance.
+
+  Browse other days, get a notification at each prayer time, and see the next prayer on your Lock Screen. An Apple Watch app and watch face complications keep the next prayer on your wrist.
+
+  Prayer times come from the Aladhan API. Your location is used only to calculate accurate local times. No account, no ads, and no tracking.
+TEXT
+
+DEFAULT_WHAT_TO_TEST = <<~TEXT.strip
+  Please try:
+  - Allowing location access and checking that today's prayer times match your area.
+  - Moving between days and returning to today.
+  - Prayer notifications arriving at the right times.
+  - Adding the Lock Screen widget and checking it shows the next prayer.
+  - The Apple Watch app and its watch face complications: they should show the same next prayer as the iPhone.
+
+  Send feedback from TestFlight or to hello@dumblemon.com.
+TEXT
+
+REVIEW_CONTACT = {
+  contact_first_name: "Burhan",
+  contact_last_name: "Ul Haq",
+  contact_email: "hello@dumblemon.com",
+  contact_phone: "2405809477",
+  demo_account_required: false,
+  notes: <<~TEXT.strip
+    No account or sign-in. On first launch, allow location access to see prayer times for your area.
+    The Lock Screen widget and the Apple Watch app only display the prayer schedule the iPhone app has synced.
+  TEXT
+}.freeze
+
+platform :ios do
+  desc "Build the iPhone app with its Watch app, upload to TestFlight, and submit for external testing"
+  desc "Options: changelog:\"What to test\" internal_only:true build_only:true (sign and verify the .ipa, no upload)"
+  lane :beta do |options|
+    api_key = connect_api_key
+    verify_project_format
+
+    app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER)
+    UI.user_error!("No app for #{APP_IDENTIFIER} in App Store Connect. Create it once under Apps > New App, with this bundle ID.") unless app
+
+    # Uploads that failed processing never appear in TestFlight but still use up their number.
+    build_number = [
+      latest_testflight_build_number(api_key: api_key, app_identifier: APP_IDENTIFIER, initial_build_number: 0),
+      latest_uploaded_build_number
+    ].max + 1
+
+    prepare_flutter(build_number)
+
+    # Archive with automatic signing. Xcode registers any missing App ID and the App Group
+    # through the Apple ID signed in under Xcode > Settings > Accounts, which the App Store
+    # Connect API cannot do. The Apple Distribution signing happens at export.
+    FileUtils.mkdir_p(OUTPUT_DIRECTORY)
+    build_app(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      configuration: CONFIGURATION,
+      destination: "generic/platform=iOS",
+      archive_path: ARCHIVE_PATH,
+      output_directory: OUTPUT_DIRECTORY,
+      clean: true,
+      skip_package_ipa: true,
+      # The version settings apply to every target, so the Watch app, widget, and
+      # complications match the iPhone app.
+      xcargs: "CURRENT_PROJECT_VERSION=#{build_number} MARKETING_VERSION=#{APP_VERSION} -allowProvisioningUpdates"
+    )
+
+    # Signs locally with an Apple Distribution certificate, creating one if the keychain has none.
+    FileUtils.mkdir_p(CERTIFICATES_DIR)
+    get_certificates(
+      api_key: api_key,
+      development: false,
+      output_path: CERTIFICATES_DIR
+    )
+
+    # The API key has no access to cloud-managed certificates, so export signs manually with
+    # an App Store profile per bundle, tied to the certificate above. The profiles are
+    # regenerated after the archive so they include the App Group Xcode just registered.
+    profiles = SIGNED_IDENTIFIERS.to_h do |identifier|
+      get_provisioning_profile(
+        api_key: api_key,
+        app_identifier: identifier,
+        cert_id: lane_context[SharedValues::CERT_CERTIFICATE_ID],
+        output_path: CERTIFICATES_DIR,
+        force: true
+      )
+      verify_profile_has_app_group(lane_context[SharedValues::SIGH_PROFILE_PATH], identifier)
+      [identifier, lane_context[SharedValues::SIGH_NAME]]
+    end
+
+    build_app(
+      workspace: WORKSPACE,
+      scheme: SCHEME,
+      configuration: CONFIGURATION,
+      skip_build_archive: true,
+      archive_path: ARCHIVE_PATH,
+      export_method: EXPORT_METHOD,
+      output_directory: OUTPUT_DIRECTORY,
+      output_name: IPA_NAME,
+      export_options: {
+        signingStyle: "manual",
+        signingCertificate: DISTRIBUTION_CERTIFICATE,
+        provisioningProfiles: profiles
+      }
+    )
+
+    verify_ipa(lane_context[SharedValues::IPA_OUTPUT_PATH], build_number)
+
+    if options[:build_only]
+      UI.success("Built and verified #{lane_context[SharedValues::IPA_OUTPUT_PATH]}; skipping upload.")
+      next
+    end
+
+    if options[:internal_only]
+      upload_to_testflight(
+        api_key: api_key,
+        app_identifier: APP_IDENTIFIER,
+        changelog: options[:changelog] || DEFAULT_WHAT_TO_TEST,
+        uses_non_exempt_encryption: false
+      )
+      UI.success("Build #{APP_VERSION} (#{build_number}) uploaded for internal testers.")
+      next
+    end
+
+    group = ensure_public_group
+    upload_to_testflight(**external_testing_options(api_key, options[:changelog]))
+    UI.success("Build #{APP_VERSION} (#{build_number}) submitted. Public link: #{group.public_link}")
+  end
+
+  desc "Submit an already uploaded build for external testing, without rebuilding"
+  desc "Options: build_number:1 changelog:\"What to test\" (defaults to the latest build)"
+  lane :beta_distribute do |options|
+    api_key = connect_api_key
+    group = ensure_public_group
+
+    upload_to_testflight(
+      **external_testing_options(api_key, options[:changelog]),
+      distribute_only: true,
+      app_platform: APP_PLATFORM,
+      build_number: options[:build_number]&.to_s
+    )
+
+    UI.success("Submitted. Public link: #{group.public_link}")
+  end
+
+  desc "Print the public TestFlight link"
+  lane :beta_link do
+    connect_api_key
+    UI.success("Public link: #{ensure_public_group.public_link}")
+  end
+end
+
+def connect_api_key
+  app_store_connect_api_key(
+    key_id: API_KEY_ID,
+    issuer_id: API_KEY_ISSUER_ID,
+    key_filepath: API_KEY_PATH
+  )
+end
+
+# CocoaPods can't read the Xcode 16+ project format (objectVersion 70), which Xcode switches
+# to whenever a target with synchronized folders is added.
+def verify_project_format
+  version = File.read(PROJECT_FILE)[/objectVersion = (\d+);/, 1]
+  UI.user_error!("#{PROJECT_FILE} has objectVersion #{version}; set it back to 60 or `pod install` fails") unless version == "60"
+end
+
+# Writes Generated.xcconfig for the release build and runs `pod install`, so the Xcode archive
+# sees the right version and the Flutter engine and plugins.
+def prepare_flutter(build_number)
+  Dir.chdir(ROOT) do
+    sh("flutter", "pub", "get")
+    sh("flutter", "build", "ios", "--config-only", "--release", "--no-codesign",
+       "--build-name=#{APP_VERSION}", "--build-number=#{build_number}")
+  end
+end
+
+# The profile must carry the App Group, or the signed app's entitlements don't match it.
+def verify_profile_has_app_group(profile_path, identifier)
+  entitlements = `security cms -D -i #{profile_path.shellescape} | plutil -extract Entitlements xml1 -o - -`
+  return if entitlements.include?(APP_GROUP)
+
+  UI.user_error!(
+    "The App Store profile for #{identifier} lacks #{APP_GROUP}. Open ios/Runner.xcworkspace in Xcode once, " \
+    "signed in to the developer account, and build the Runner scheme so Xcode registers the App Group; then rerun."
+  )
+end
+
+# Stops before upload unless the .ipa has the iPhone app with its widget, the Watch app and
+# the complications, each ID prefixed by its parent's and at the expected build number.
+def verify_ipa(ipa_path, build_number)
+  Dir.mktmpdir("simple-azaan-ipa") do |dir|
+    system("unzip", "-q", ipa_path, "-d", dir) || UI.user_error!("Could not unzip #{ipa_path}")
+
+    app = Dir.glob(File.join(dir, "Payload/*.app")).first
+    widget = Dir.glob(File.join(app, "PlugIns/*.appex")).first
+    watch = Dir.glob(File.join(app, "Watch/*.app")).first
+    UI.user_error!("The .ipa has no Lock Screen widget extension") unless widget
+    UI.user_error!("The .ipa has no embedded Watch app") unless watch
+    complications = Dir.glob(File.join(watch, "PlugIns/*.appex")).first
+    UI.user_error!("The embedded Watch app has no complications extension") unless complications
+
+    ids = {
+      app => APP_IDENTIFIER,
+      widget => LOCK_SCREEN_WIDGET_IDENTIFIER,
+      watch => WATCH_IDENTIFIER,
+      complications => COMPLICATIONS_IDENTIFIER
+    }
+    ids.each do |bundle, expected|
+      name = bundle.sub("#{dir}/", "")
+      plist = File.join(bundle, "Info.plist")
+      actual = plist_value(plist, "CFBundleIdentifier")
+      UI.user_error!("#{name} has bundle ID #{actual}, expected #{expected}") unless actual == expected
+
+      version = plist_value(plist, "CFBundleVersion")
+      UI.user_error!("#{name} has build #{version}, expected #{build_number}") unless version == build_number.to_s
+      short = plist_value(plist, "CFBundleShortVersionString")
+      UI.user_error!("#{name} has version #{short}, expected #{APP_VERSION}") unless short == APP_VERSION
+    end
+
+    companion = plist_value(File.join(watch, "Info.plist"), "WKCompanionAppBundleIdentifier")
+    UI.user_error!("The Watch app's companion is #{companion}, expected #{APP_IDENTIFIER}") unless companion == APP_IDENTIFIER
+  end
+  UI.success("Build #{build_number} has the iPhone app, Lock Screen widget, Watch app, and complications, all correctly prefixed")
+end
+
+def plist_value(path, key)
+  value = `plutil -extract #{key.shellescape} raw -o - #{path.shellescape} 2>/dev/null`.strip
+  UI.user_error!("#{key} missing from #{path}") if value.empty?
+  value
+end
+
+# The highest build number uploaded for this app, including uploads that failed processing.
+def latest_uploaded_build_number
+  app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER)
+  uploads = Spaceship::ConnectAPI.get_build_uploads(app_id: app.id).body["data"] || []
+  uploads.map { |upload| upload.dig("attributes", "cfBundleVersion").to_i }.max || 0
+end
+
+# Test information, review contact, and the public group for an external TestFlight submission.
+def external_testing_options(api_key, changelog)
+  {
+    api_key: api_key,
+    app_identifier: APP_IDENTIFIER,
+    changelog: changelog || DEFAULT_WHAT_TO_TEST,
+    # Keyed by locale, not "default": "default" only updates localizations that already
+    # exist, and a new app has none, so the description would never be saved.
+    localized_app_info: {
+      BETA_LOCALE => {
+        description: BETA_DESCRIPTION,
+        feedback_email: FEEDBACK_EMAIL,
+        marketing_url: MARKETING_URL,
+        privacy_policy_url: PRIVACY_POLICY_URL
+      }
+    },
+    beta_app_review_info: REVIEW_CONTACT,
+    groups: [PUBLIC_GROUP_NAME],
+    distribute_external: true,
+    submit_beta_review: true,
+    notify_external_testers: true,
+    uses_non_exempt_encryption: false
+  }
+end
+
+# Finds the external group with the public link, creating it on first run.
+def ensure_public_group
+  app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER)
+  UI.user_error!("No app for #{APP_IDENTIFIER} in App Store Connect") unless app
+
+  group = app.get_beta_groups.find { |g| g.name == PUBLIC_GROUP_NAME }
+  return group if group
+
+  UI.message("Creating external group '#{PUBLIC_GROUP_NAME}' with a public link")
+  app.create_beta_group(
+    group_name: PUBLIC_GROUP_NAME,
+    is_internal_group: false,
+    public_link_enabled: true,
+    public_link_limit: PUBLIC_LINK_LIMIT,
+    public_link_limit_enabled: false
+  )
+end

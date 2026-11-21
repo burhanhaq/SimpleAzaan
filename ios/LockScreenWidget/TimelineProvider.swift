@@ -42,7 +42,7 @@ struct Provider: TimelineProvider {
             let days: [StoredPrayerData]
         }
 
-        let suiteName = "group.com.simpleAzaan"
+        let suiteName = "group.com.dumblemon.SimpleAzaan"
         let key = "prayerData"
         let scheduleKey = "prayerSchedule"
         let isoOut = ISO8601DateFormatter()

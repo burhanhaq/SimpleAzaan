@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // App Group and Core Keys
 const String kPrayerKey = 'prayerData';
 const String kPrayerScheduleKey = 'prayerSchedule';
-const String kGroup = 'group.com.simpleAzaan';
+const String kGroup = 'group.com.dumblemon.SimpleAzaan';
 const int kScheduleHorizonDays = 7;
 
 // Settings Screen

@@ -13,7 +13,7 @@ import 'package:simple_azaan/service/settings_service.dart';
 import 'package:simple_azaan/service/widget_sync.dart';
 
 class BackgroundPrayerSync {
-  static const String taskIdentifier = 'com.simpleAzaan.dailyPrayerSync';
+  static const String taskIdentifier = 'com.dumblemon.simpleAzaan.dailyPrayerSync';
   static const String _taskTag = 'prayer-sync';
 
   static Future<void> initialize() async {
