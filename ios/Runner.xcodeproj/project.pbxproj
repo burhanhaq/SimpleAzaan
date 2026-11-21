@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,6 +19,9 @@
 		01711D7128F0D74900B10A8D /* ZuhrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51BB28F0C363008C4947 /* ZuhrView.swift */; };
 		01711D7228F0D75000B10A8D /* SunShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B828F0B658008C4947 /* SunShape.swift */; };
 		01711D7328F0D75300B10A8D /* MoonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51AB28EF2E66008C4947 /* MoonShape.swift */; };
+		0191A662EFD037C1CA1DC1CE /* PrayerKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8CF77CA2F6315967849233 /* PrayerKind.swift */; };
+		01AF23783085B9280068DB4F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DC519328E74A20008C4947 /* WidgetKit.framework */; };
+		01AF23793085B9280068DB4F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DC519528E74A20008C4947 /* SwiftUI.framework */; };
 		01D1B92529BCE15B00B03EC8 /* PrayerEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92429BCE15B00B03EC8 /* PrayerEntry.swift */; };
 		01D1B92729BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92629BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift */; };
 		01D1B92B29BCE46700B03EC8 /* TimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92A29BCE46700B03EC8 /* TimelineProvider.swift */; };
@@ -36,13 +39,53 @@
 		01EE5C3F28F12D0000A262D0 /* SunriseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3D28F12D0000A262D0 /* SunriseView.swift */; };
 		01EE5C4528F88DEF00A262D0 /* PrayerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C4428F88DEF00A262D0 /* PrayerData.swift */; };
 		01EE5C4628F88DEF00A262D0 /* PrayerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C4428F88DEF00A262D0 /* PrayerData.swift */; };
+		0F77CF718B0E4736CB4F73B0 /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8168FCF8EDB031F03C56 /* SharedStorage.swift */; };
+		100C8CD8584C7448E4F45B70 /* PrayerStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AB1CD878DFA650CFF0A8D7 /* PrayerStatus.swift */; };
+		10C5C9EFBA23B529230E3232 /* PrayerStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AB1CD878DFA650CFF0A8D7 /* PrayerStatus.swift */; };
+		12BD7E142A3CBC5068C82925 /* AsrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3128F0E21400A262D0 /* AsrView.swift */; };
+		140E5FBA2220C74B0764F0F3 /* FajrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3728F101E200A262D0 /* FajrView.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		14F9C128C088DE7BBD2318E7 /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8168FCF8EDB031F03C56 /* SharedStorage.swift */; };
+		1DE88E67DA5F563D1F4C4AA1 /* StarShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3A28F1023C00A262D0 /* StarShape.swift */; };
 		212F5AE52D87F154401FCB0A /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EFDD504E9518247E7B22EE83 /* Pods_Runner.framework */; };
+		21E42BFC6A8DC8CC97D3CF8A /* PrayerSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9508332434303B0570A7081C /* PrayerSchedule.swift */; };
+		251EC3DC0564ECE7C2207BEF /* PrayerIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6176FF88E5E1C70A818A962 /* PrayerIcon.swift */; };
+		2B75CB2996793AA82FBB15EB /* MosqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92C29BCF21000B03EC8 /* MosqueView.swift */; };
+		3335B2DACAD3EB9A23DD2CAF /* MaghribView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3428F0FD9800A262D0 /* MaghribView.swift */; };
+		3384679078FB988B432F9771 /* PrayerKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8CF77CA2F6315967849233 /* PrayerKind.swift */; };
+		396FA6F59857BB7708F39836 /* MaghribView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3428F0FD9800A262D0 /* MaghribView.swift */; };
+		3A72500352017E2A55112A5E /* ZuhrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51BB28F0C363008C4947 /* ZuhrView.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		3E48510817C4654E2D2363AC /* PrayerIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6176FF88E5E1C70A818A962 /* PrayerIcon.swift */; };
+		3FB02F1F34C1EC3A5C6947CF /* SimpleAzaanComplicationsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 01AF23773085B9280068DB4F /* SimpleAzaanComplicationsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		566F4FBAF30CF6696E19DA9E /* SunriseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3D28F12D0000A262D0 /* SunriseView.swift */; };
+		58E37813728F74C40D5370E1 /* StarShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3A28F1023C00A262D0 /* StarShape.swift */; };
+		5FCEB787D9BAEA074C2ECB76 /* SunriseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3D28F12D0000A262D0 /* SunriseView.swift */; };
+		621C2C9C1AEACEABBF669AE0 /* SunShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B828F0B658008C4947 /* SunShape.swift */; };
+		6F92B0C5E8D35C9D6E7D493C /* PrayerStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9AB1CD878DFA650CFF0A8D7 /* PrayerStatus.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		7D12FC2B070898C111FA3C01 /* SunShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B828F0B658008C4947 /* SunShape.swift */; };
+		8AFC9B2A72594F3C787CF9BD /* MoonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51AB28EF2E66008C4947 /* MoonShape.swift */; };
+		8F16CC289E710A29D3E0C347 /* PrayerTimeFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAA6D8621CCF902AD9FC861 /* PrayerTimeFormat.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		ADAFD2C6E32AA025061A69E9 /* SimpleAzaan Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 01AF234B3085B8DF0068DB4F /* SimpleAzaan Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B1078D8D9BB02E1B94057C3C /* AsrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3128F0E21400A262D0 /* AsrView.swift */; };
+		B4AD6B7655C8416BC80F00AA /* WatchScheduleSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA7B390390ABEACC090D0EE /* WatchScheduleSender.swift */; };
+		BBF40DB386B5232BE658460F /* MoonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51AB28EF2E66008C4947 /* MoonShape.swift */; };
+		BF0D7E19E5082357230EE487 /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8168FCF8EDB031F03C56 /* SharedStorage.swift */; };
+		CBC3B6466AF52F65CE3DD7E1 /* PrayerSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9508332434303B0570A7081C /* PrayerSchedule.swift */; };
+		DBC31F815BF2058688BF3AC1 /* PrayerSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9508332434303B0570A7081C /* PrayerSchedule.swift */; };
+		DDACE387AA1B569C7D848677 /* IshaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B028EFB0B4008C4947 /* IshaView.swift */; };
+		ED7E9BDCCA6FBFA8F8EB2EC0 /* PrayerTimeFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAA6D8621CCF902AD9FC861 /* PrayerTimeFormat.swift */; };
+		EE2E0CEF6956AEE2D9349CBF /* PrayerKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8CF77CA2F6315967849233 /* PrayerKind.swift */; };
+		F3F8A401200561DCC8591E7E /* FajrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EE5C3728F101E200A262D0 /* FajrView.swift */; };
+		FAC0ED591DCDB1CBDA392EBD /* ZuhrView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51BB28F0C363008C4947 /* ZuhrView.swift */; };
+		FC5235BE5749CA640FA3C495 /* IshaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC51B028EFB0B4008C4947 /* IshaView.swift */; };
+		FCAC6B8283D759B7A9F1C693 /* PrayerTimeFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDAA6D8621CCF902AD9FC861 /* PrayerTimeFormat.swift */; };
+		FF2E3CC1AF0B9E1F32C76066 /* MosqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1B92C29BCF21000B03EC8 /* MosqueView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +96,34 @@
 			remoteGlobalIDString = 01711D5C28F0D60300B10A8D;
 			remoteInfo = LockScreenWidgetExtension;
 		};
+		01AF23583085B8E10068DB4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01AF234A3085B8DF0068DB4F;
+			remoteInfo = "SimpleAzaan Watch Watch App";
+		};
+		01AF23623085B8E10068DB4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01AF234A3085B8DF0068DB4F;
+			remoteInfo = "SimpleAzaan Watch Watch App";
+		};
+		6116D686339224FFF449862E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01AF234A3085B8DF0068DB4F;
+			remoteInfo = "SimpleAzaan Watch Watch App";
+		};
+		EAC4724552FFA8040C8E61E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01AF23763085B9280068DB4F;
+			remoteInfo = SimpleAzaanComplicationsExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +133,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
+				ADAFD2C6E32AA025061A69E9 /* SimpleAzaan Watch Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -73,6 +145,17 @@
 			dstSubfolderSpec = 13;
 			files = (
 				01711D6828F0D60400B10A8D /* LockScreenWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		10322A0B1F00B4096E72FCBC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3FB02F1F34C1EC3A5C6947CF /* SimpleAzaanComplicationsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +177,10 @@
 		01711D6128F0D60300B10A8D /* LockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidget.swift; sourceTree = "<group>"; };
 		01711D6328F0D60400B10A8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01711D6528F0D60400B10A8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01AF234B3085B8DF0068DB4F /* SimpleAzaan Watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SimpleAzaan Watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01AF23573085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SimpleAzaan Watch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01AF23613085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SimpleAzaan Watch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01AF23773085B9280068DB4F /* SimpleAzaanComplicationsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SimpleAzaanComplicationsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		01D1B92429BCE15B00B03EC8 /* PrayerEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerEntry.swift; sourceTree = "<group>"; };
 		01D1B92629BCE1D300B03EC8 /* LockScreenWidgetEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidgetEntryView.swift; sourceTree = "<group>"; };
 		01D1B92A29BCE46700B03EC8 /* TimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineProvider.swift; sourceTree = "<group>"; };
@@ -115,11 +202,14 @@
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		2558E651F1D93A95CC07DC92 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		2BA7B390390ABEACC090D0EE /* WatchScheduleSender.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchScheduleSender.swift; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		598BBE28609B38977AACC21E /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		9508332434303B0570A7081C /* PrayerSchedule.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrayerSchedule.swift; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,12 +217,27 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9E8CF77CA2F6315967849233 /* PrayerKind.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrayerKind.swift; sourceTree = "<group>"; };
+		CC6F8168FCF8EDB031F03C56 /* SharedStorage.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SharedStorage.swift; sourceTree = "<group>"; };
+		D6176FF88E5E1C70A818A962 /* PrayerIcon.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrayerIcon.swift; sourceTree = "<group>"; };
+		D9AB1CD878DFA650CFF0A8D7 /* PrayerStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrayerStatus.swift; sourceTree = "<group>"; };
+		EDAA6D8621CCF902AD9FC861 /* PrayerTimeFormat.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrayerTimeFormat.swift; sourceTree = "<group>"; };
 		EFDD504E9518247E7B22EE83 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F50746250ED38E70A7BEF311 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		01AF23843085B92A0068DB4F /* Exceptions for "SimpleAzaanComplications" folder in "SimpleAzaanComplicationsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 01AF23763085B9280068DB4F /* SimpleAzaanComplicationsExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		01C013392E674CC200426C18 /* SimpleAzaan Watch Watch App */ = {
+		01AF234C3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 			);
@@ -143,7 +248,7 @@
 			path = "SimpleAzaan Watch Watch App";
 			sourceTree = "<group>";
 		};
-		01C013472E674CC400426C18 /* SimpleAzaan Watch Watch AppTests */ = {
+		01AF235A3085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 			);
@@ -154,7 +259,7 @@
 			path = "SimpleAzaan Watch Watch AppTests";
 			sourceTree = "<group>";
 		};
-		01C013512E674CC400426C18 /* SimpleAzaan Watch Watch AppUITests */ = {
+		01AF23643085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 			);
@@ -163,6 +268,18 @@
 			explicitFolders = (
 			);
 			path = "SimpleAzaan Watch Watch AppUITests";
+			sourceTree = "<group>";
+		};
+		01AF237A3085B9280068DB4F /* SimpleAzaanComplications */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				01AF23843085B92A0068DB4F /* Exceptions for "SimpleAzaanComplications" folder in "SimpleAzaanComplicationsExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = SimpleAzaanComplications;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -177,10 +294,41 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01AF23483085B8DF0068DB4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23543085B8E10068DB4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF235E3085B8E10068DB4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23743085B9280068DB4F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01AF23793085B9280068DB4F /* SwiftUI.framework in Frameworks */,
+				01AF23783085B9280068DB4F /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				212F5AE52D87F154401FCB0A /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -251,6 +399,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -266,12 +415,15 @@
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				01711D6028F0D60300B10A8D /* LockScreenWidget */,
-				01C013392E674CC200426C18 /* SimpleAzaan Watch Watch App */,
-				01C013472E674CC400426C18 /* SimpleAzaan Watch Watch AppTests */,
-				01C013512E674CC400426C18 /* SimpleAzaan Watch Watch AppUITests */,
+				01AF234C3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */,
+				01AF235A3085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests */,
+				01AF23643085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests */,
+				01AF237A3085B9280068DB4F /* SimpleAzaanComplications */,
 				01DC519228E74A20008C4947 /* Frameworks */,
 				97C146EF1CF9000F007C117D /* Products */,
 				1275863B75224D9E6777C0C9 /* Pods */,
+				DD1BBA9EFFCC38D72B4468CA /* Shared */,
+				DDE6BA378A9880462DA56835 /* WatchShared */,
 			);
 			sourceTree = "<group>";
 		};
@@ -280,6 +432,10 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				01711D5D28F0D60300B10A8D /* LockScreenWidgetExtension.appex */,
+				01AF234B3085B8DF0068DB4F /* SimpleAzaan Watch Watch App.app */,
+				01AF23573085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests.xctest */,
+				01AF23613085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests.xctest */,
+				01AF23773085B9280068DB4F /* SimpleAzaanComplicationsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -296,8 +452,30 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				2BA7B390390ABEACC090D0EE /* WatchScheduleSender.swift */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		DD1BBA9EFFCC38D72B4468CA /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				9E8CF77CA2F6315967849233 /* PrayerKind.swift */,
+				9508332434303B0570A7081C /* PrayerSchedule.swift */,
+				D9AB1CD878DFA650CFF0A8D7 /* PrayerStatus.swift */,
+				EDAA6D8621CCF902AD9FC861 /* PrayerTimeFormat.swift */,
+				CC6F8168FCF8EDB031F03C56 /* SharedStorage.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		DDE6BA378A9880462DA56835 /* WatchShared */ = {
+			isa = PBXGroup;
+			children = (
+				D6176FF88E5E1C70A818A962 /* PrayerIcon.swift */,
+			);
+			name = WatchShared;
+			path = WatchShared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -320,6 +498,90 @@
 			productReference = 01711D5D28F0D60300B10A8D /* LockScreenWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		01AF234A3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01AF23673085B8E10068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaan Watch Watch App" */;
+			buildPhases = (
+				01AF23473085B8DF0068DB4F /* Sources */,
+				01AF23483085B8DF0068DB4F /* Frameworks */,
+				01AF23493085B8DF0068DB4F /* Resources */,
+				10322A0B1F00B4096E72FCBC /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6D91026D2DA6D9511146A325 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				01AF234C3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */,
+			);
+			name = "SimpleAzaan Watch Watch App";
+			productName = "SimpleAzaan Watch Watch App";
+			productReference = 01AF234B3085B8DF0068DB4F /* SimpleAzaan Watch Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		01AF23563085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01AF236B3085B8E10068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaan Watch Watch AppTests" */;
+			buildPhases = (
+				01AF23533085B8E10068DB4F /* Sources */,
+				01AF23543085B8E10068DB4F /* Frameworks */,
+				01AF23553085B8E10068DB4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				01AF23593085B8E10068DB4F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				01AF235A3085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests */,
+			);
+			name = "SimpleAzaan Watch Watch AppTests";
+			productName = "SimpleAzaan Watch Watch AppTests";
+			productReference = 01AF23573085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		01AF23603085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01AF236F3085B8E10068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaan Watch Watch AppUITests" */;
+			buildPhases = (
+				01AF235D3085B8E10068DB4F /* Sources */,
+				01AF235E3085B8E10068DB4F /* Frameworks */,
+				01AF235F3085B8E10068DB4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				01AF23633085B8E10068DB4F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				01AF23643085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests */,
+			);
+			name = "SimpleAzaan Watch Watch AppUITests";
+			productName = "SimpleAzaan Watch Watch AppUITests";
+			productReference = 01AF23613085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		01AF23763085B9280068DB4F /* SimpleAzaanComplicationsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01AF23853085B92A0068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaanComplicationsExtension" */;
+			buildPhases = (
+				01AF23733085B9280068DB4F /* Sources */,
+				01AF23743085B9280068DB4F /* Frameworks */,
+				01AF23753085B9280068DB4F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				01AF237A3085B9280068DB4F /* SimpleAzaanComplications */,
+			);
+			name = SimpleAzaanComplicationsExtension;
+			productName = SimpleAzaanComplicationsExtension;
+			productReference = 01AF23773085B9280068DB4F /* SimpleAzaanComplicationsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -340,8 +602,12 @@
 			);
 			dependencies = (
 				01711D6728F0D60400B10A8D /* PBXTargetDependency */,
+				24699C05279FAE15588C6394 /* PBXTargetDependency */,
 			);
 			name = Runner;
+			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -352,12 +618,26 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					01711D5C28F0D60300B10A8D = {
 						CreatedOnToolsVersion = 14.0.1;
+					};
+					01AF234A3085B8DF0068DB4F = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					01AF23563085B8E10068DB4F = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 01AF234A3085B8DF0068DB4F;
+					};
+					01AF23603085B8E10068DB4F = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 01AF234A3085B8DF0068DB4F;
+					};
+					01AF23763085B9280068DB4F = {
+						CreatedOnToolsVersion = 27.0;
 					};
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -374,12 +654,19 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				01711D5C28F0D60300B10A8D /* LockScreenWidgetExtension */,
+				01AF234A3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */,
+				01AF23563085B8E10068DB4F /* SimpleAzaan Watch Watch AppTests */,
+				01AF23603085B8E10068DB4F /* SimpleAzaan Watch Watch AppUITests */,
+				01AF23763085B9280068DB4F /* SimpleAzaanComplicationsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -390,6 +677,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				01711D6428F0D60400B10A8D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23493085B8DF0068DB4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23553085B8E10068DB4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF235F3085B8E10068DB4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23753085B9280068DB4F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,6 +834,66 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01AF23473085B8DF0068DB4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE2E0CEF6956AEE2D9349CBF /* PrayerKind.swift in Sources */,
+				21E42BFC6A8DC8CC97D3CF8A /* PrayerSchedule.swift in Sources */,
+				6F92B0C5E8D35C9D6E7D493C /* PrayerStatus.swift in Sources */,
+				FCAC6B8283D759B7A9F1C693 /* PrayerTimeFormat.swift in Sources */,
+				14F9C128C088DE7BBD2318E7 /* SharedStorage.swift in Sources */,
+				FF2E3CC1AF0B9E1F32C76066 /* MosqueView.swift in Sources */,
+				BBF40DB386B5232BE658460F /* MoonShape.swift in Sources */,
+				1DE88E67DA5F563D1F4C4AA1 /* StarShape.swift in Sources */,
+				3A72500352017E2A55112A5E /* ZuhrView.swift in Sources */,
+				12BD7E142A3CBC5068C82925 /* AsrView.swift in Sources */,
+				3335B2DACAD3EB9A23DD2CAF /* MaghribView.swift in Sources */,
+				566F4FBAF30CF6696E19DA9E /* SunriseView.swift in Sources */,
+				7D12FC2B070898C111FA3C01 /* SunShape.swift in Sources */,
+				FC5235BE5749CA640FA3C495 /* IshaView.swift in Sources */,
+				140E5FBA2220C74B0764F0F3 /* FajrView.swift in Sources */,
+				3E48510817C4654E2D2363AC /* PrayerIcon.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23533085B8E10068DB4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF235D3085B8E10068DB4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01AF23733085B9280068DB4F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3384679078FB988B432F9771 /* PrayerKind.swift in Sources */,
+				CBC3B6466AF52F65CE3DD7E1 /* PrayerSchedule.swift in Sources */,
+				100C8CD8584C7448E4F45B70 /* PrayerStatus.swift in Sources */,
+				8F16CC289E710A29D3E0C347 /* PrayerTimeFormat.swift in Sources */,
+				0F77CF718B0E4736CB4F73B0 /* SharedStorage.swift in Sources */,
+				2B75CB2996793AA82FBB15EB /* MosqueView.swift in Sources */,
+				8AFC9B2A72594F3C787CF9BD /* MoonShape.swift in Sources */,
+				58E37813728F74C40D5370E1 /* StarShape.swift in Sources */,
+				FAC0ED591DCDB1CBDA392EBD /* ZuhrView.swift in Sources */,
+				B1078D8D9BB02E1B94057C3C /* AsrView.swift in Sources */,
+				396FA6F59857BB7708F39836 /* MaghribView.swift in Sources */,
+				5FCEB787D9BAEA074C2ECB76 /* SunriseView.swift in Sources */,
+				621C2C9C1AEACEABBF669AE0 /* SunShape.swift in Sources */,
+				DDACE387AA1B569C7D848677 /* IshaView.swift in Sources */,
+				F3F8A401200561DCC8591E7E /* FajrView.swift in Sources */,
+				251EC3DC0564ECE7C2207BEF /* PrayerIcon.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EA1CF9000F007C117D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -535,6 +910,12 @@
 				01711D7228F0D75000B10A8D /* SunShape.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				01EE5C3828F101E200A262D0 /* FajrView.swift in Sources */,
+				0191A662EFD037C1CA1DC1CE /* PrayerKind.swift in Sources */,
+				DBC31F815BF2058688BF3AC1 /* PrayerSchedule.swift in Sources */,
+				10C5C9EFBA23B529230E3232 /* PrayerStatus.swift in Sources */,
+				ED7E9BDCCA6FBFA8F8EB2EC0 /* PrayerTimeFormat.swift in Sources */,
+				BF0D7E19E5082357230EE487 /* SharedStorage.swift in Sources */,
+				B4AD6B7655C8416BC80F00AA /* WatchScheduleSender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -545,6 +926,28 @@
 			isa = PBXTargetDependency;
 			target = 01711D5C28F0D60300B10A8D /* LockScreenWidgetExtension */;
 			targetProxy = 01711D6628F0D60400B10A8D /* PBXContainerItemProxy */;
+		};
+		01AF23593085B8E10068DB4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01AF234A3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */;
+			targetProxy = 01AF23583085B8E10068DB4F /* PBXContainerItemProxy */;
+		};
+		01AF23633085B8E10068DB4F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01AF234A3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */;
+			targetProxy = 01AF23623085B8E10068DB4F /* PBXContainerItemProxy */;
+		};
+		24699C05279FAE15588C6394 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SimpleAzaan Watch Watch App";
+			target = 01AF234A3085B8DF0068DB4F /* SimpleAzaan Watch Watch App */;
+			targetProxy = 6116D686339224FFF449862E /* PBXContainerItemProxy */;
+		};
+		6D91026D2DA6D9511146A325 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SimpleAzaanComplicationsExtension;
+			target = 01AF23763085B9280068DB4F /* SimpleAzaanComplicationsExtension */;
+			targetProxy = EAC4724552FFA8040C8E61E8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -673,6 +1076,480 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
+		01AF23683085B8E10068DB4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SimpleAzaanWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "SimpleAzaan Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.simpleAzaan;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simpleAzaan.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		01AF23693085B8E10068DB4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SimpleAzaanWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "SimpleAzaan Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.simpleAzaan;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simpleAzaan.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		01AF236A3085B8E10068DB4F /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SimpleAzaanWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "SimpleAzaan Watch";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.simpleAzaan;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simpleAzaan.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Profile;
+		};
+		01AF236C3085B8E10068DB4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.simpleAzaan.watchkitapp.SimpleAzaan-Watch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleAzaan Watch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleAzaan Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		01AF236D3085B8E10068DB4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.simpleAzaan.watchkitapp.SimpleAzaan-Watch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleAzaan Watch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleAzaan Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		01AF236E3085B8E10068DB4F /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.simpleAzaan.watchkitapp.SimpleAzaan-Watch-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleAzaan Watch Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleAzaan Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Profile;
+		};
+		01AF23703085B8E10068DB4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.simpleAzaan.watchkitapp.SimpleAzaan-Watch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "SimpleAzaan Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		01AF23713085B8E10068DB4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.simpleAzaan.watchkitapp.SimpleAzaan-Watch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "SimpleAzaan Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		01AF23723085B8E10068DB4F /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.simpleAzaan.watchkitapp.SimpleAzaan-Watch-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "SimpleAzaan Watch Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Profile;
+		};
+		01AF23863085B92A0068DB4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SimpleAzaanComplicationsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleAzaanComplications/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SimpleAzaanComplications;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simpleAzaan.watchkitapp.SimpleAzaanComplications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		01AF23873085B92A0068DB4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SimpleAzaanComplicationsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleAzaanComplications/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SimpleAzaanComplications;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simpleAzaan.watchkitapp.SimpleAzaanComplications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		01AF23883085B92A0068DB4F /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = SimpleAzaanComplicationsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AZ5MV7JVW3;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleAzaanComplications/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SimpleAzaanComplications;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.simpleAzaan.watchkitapp.SimpleAzaanComplications;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 			};
 			name = Profile;
 		};
@@ -931,6 +1808,46 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		01AF23673085B8E10068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaan Watch Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01AF23683085B8E10068DB4F /* Debug */,
+				01AF23693085B8E10068DB4F /* Release */,
+				01AF236A3085B8E10068DB4F /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01AF236B3085B8E10068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaan Watch Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01AF236C3085B8E10068DB4F /* Debug */,
+				01AF236D3085B8E10068DB4F /* Release */,
+				01AF236E3085B8E10068DB4F /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01AF236F3085B8E10068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaan Watch Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01AF23703085B8E10068DB4F /* Debug */,
+				01AF23713085B8E10068DB4F /* Release */,
+				01AF23723085B8E10068DB4F /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01AF23853085B92A0068DB4F /* Build configuration list for PBXNativeTarget "SimpleAzaanComplicationsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01AF23863085B92A0068DB4F /* Debug */,
+				01AF23873085B92A0068DB4F /* Release */,
+				01AF23883085B92A0068DB4F /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		97C146E91CF9000F007C117D /* Build configuration list for PBXProject "Runner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -952,6 +1869,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }

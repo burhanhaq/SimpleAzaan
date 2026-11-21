@@ -2,7 +2,7 @@
 //  SimpleAzaan_Watch_Watch_AppUITests.swift
 //  SimpleAzaan Watch Watch AppUITests
 //
-//  Created by Burhan Ul Haq on 9/2/25.
+//  Created by Burhan Ul Haq on 10/18/26.
 //
 
 import XCTest
@@ -29,6 +29,8 @@ final class SimpleAzaan_Watch_Watch_AppUITests: XCTestCase {
         app.launch()
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // XCUIAutomation Documentation
+        // https://developer.apple.com/documentation/xcuiautomation
     }
 
     @MainActor

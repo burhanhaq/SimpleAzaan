@@ -20,6 +20,9 @@ import workmanager
     // Ensure notifications show in the foreground on iOS 10+
     UNUserNotificationCenter.current().delegate = self
     GeneratedPluginRegistrant.register(with: self)
+
+    // Forward the prayer schedule to the Apple Watch whenever Flutter saves it
+    WatchScheduleSender.shared.start()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
