@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct LockScreenWidgetEntryView : View {
     var entry: PrayerEntry
@@ -14,14 +15,10 @@ struct LockScreenWidgetEntryView : View {
     var body: some View {
         switch (widgetFamily) {
         case .accessoryCircular:
-            if #available(iOSApplicationExtension 17.0, *) {
-                IconAndTimeCircularWidget(entry: entry)
+            IconAndTimeCircularWidget(entry: entry)
                 .containerBackground(for: .widget) {
                     Color.clear
                 }
-            } else {
-                IconAndTimeCircularWidget(entry: entry)
-            }
         case .accessoryInline:
             NameAndTimeInlineWidget(entry: entry)
         default:
@@ -33,33 +30,53 @@ struct LockScreenWidgetEntryView : View {
 struct NameAndTimeInlineWidget: View {
     let entry: PrayerEntry
     var body: some View {
-        let timeString: String = getTimeString(entry: entry)
-        HStack {
-            Text("\(entry.prayerConfig.prayerType) \(timeString)" as String)
-        }
+        // iOS picks the inline widget's font, so only the text matters here.
+        Text("\(entry.prayerConfig.prayerType) \(entry.prayerConfig.prayerTime.formatted(PrayerTimeStyle.inline))" as String)
     }
 }
 
 struct IconAndTimeCircularWidget: View {
+    private enum Layout {
+        /// The prayer shapes are drawn for this frame size.
+        static let iconDesignSize: CGFloat = 15
+        static let iconSize: CGFloat = 18
+        static let timeFontSize: CGFloat = 15
+        static let timeMinimumScale: CGFloat = 0.6
+        /// Keeps the time inside the circle's narrower lower half; longer times shrink instead.
+        static let timeHorizontalInset: CGFloat = 12
+        static let spacing: CGFloat = 2
+    }
+
     let entry: PrayerEntry
     var body: some View {
-        let timeString: String = getTimeString(entry: entry)
-        ZStack{
-            Circle()
-                .frame(width: 60, height: 60)
-                .foregroundColor(.gray)
-                .blur(radius: 8)
-                .opacity(0.7)
-            // .foregroundColor(Color.init(.sRGB, red: 0.89, green: 0.89, blue: 0.89, opacity: 0.75))
-            
-            VStack(spacing: 2){
+        ZStack {
+            AccessoryWidgetBackground()
+
+            VStack(spacing: Layout.spacing) {
                 PrayerView(entry: entry)
-                    .frame(width: 15, height: 15)
-                Text(timeString)
-                    .font(.system(size: 14))
+                    .frame(width: Layout.iconDesignSize, height: Layout.iconDesignSize)
+                    .scaleEffect(Layout.iconSize / Layout.iconDesignSize)
+                    .frame(width: Layout.iconSize, height: Layout.iconSize)
+                    .widgetAccentable()
+                Text(entry.prayerConfig.prayerTime, format: PrayerTimeStyle.circular)
+                    .font(.system(size: Layout.timeFontSize, weight: .semibold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(Layout.timeMinimumScale)
+                    .padding(.horizontal, Layout.timeHorizontalInset)
             }
         }
     }
+}
+
+/// Times follow the phone's 12/24-hour setting.
+enum PrayerTimeStyle {
+    /// "5:42 PM" or "17:42".
+    static let inline = Date.FormatStyle(date: .omitted, time: .shortened)
+    /// "5:42" or "17:42": no AM/PM, which would not fit in the circle.
+    static let circular = Date.FormatStyle()
+        .hour(.defaultDigits(amPM: .omitted))
+        .minute(.twoDigits)
 }
 
 struct PrayerView: View {
@@ -82,13 +99,4 @@ struct PrayerView: View {
             MosqueView()
         }
     }
-}
-
-func getTimeString(entry: PrayerEntry) -> String{
-    let dateToShow = entry.prayerConfig.prayerTime
-    let hour = Calendar.current.component(.hour, from: dateToShow)
-    let minute = Calendar.current.component(.minute, from: dateToShow)
-    let timeString: String = String(format: "%02d:%02d", hour, minute)
-    
-    return timeString
 }
